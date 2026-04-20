@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aura Platform — Enterprise Dashboard</title>
+    <title>Aura Platform — Developer Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; overscroll-behavior: none; }
+        /* Base Reset & Fonts */
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; overscroll-behavior: none; margin: 0; padding: 0; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* View Transitions */
+        /* Smooth View Transitions */
         .view-section { display: none; animation: fadeIn 0.3s ease-out forwards; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Sidebar & Nav */
-        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; }
-        .nav-item { transition: all 0.2s ease; border-radius: 8px; color: #4b5563; font-weight: 500; }
+        /* Sidebar Styling */
+        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-item { transition: all 0.2s ease; border-radius: 8px; color: #4b5563; font-weight: 500; cursor: pointer; }
         .nav-item:hover { background-color: #f3f4f6; color: #111827; }
         .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 600; }
         
@@ -26,24 +27,24 @@
         .btn-primary:hover:not(:disabled) { background-color: #1d4ed8; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); transform: translateY(-1px); }
         .btn-primary:disabled { background-color: #93c5fd; cursor: not-allowed; }
         
-        /* Badges */
-        .badge { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        /* Scopes Badges */
+        .badge { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-right: 4px; margin-bottom: 4px; }
         .badge-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
         .badge-purple { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
         .badge-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
         .badge-orange { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
 
-        /* Checkbox Custom */
-        .custom-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #d1d5db; appearance: none; background-color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        /* Custom Checkbox */
+        .custom-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #d1d5db; appearance: none; background-color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 2px;}
         .custom-checkbox:checked { background-color: #2563eb; border-color: #2563eb; }
         .custom-checkbox:checked::after { content: '✓'; color: white; font-size: 12px; font-weight: bold; }
 
-        .modal-overlay { background-color: rgba(17, 24, 39, 0.7); backdrop-filter: blur(4px); }
-        
-        /* Faux Chart Bars */
-        .bar-chart-col { width: 12%; background: #e5e7eb; border-radius: 4px 4px 0 0; position: relative; overflow: hidden; }
-        .bar-fill { position: absolute; bottom: 0; width: 100%; background: #3b82f6; border-radius: 4px 4px 0 0; transition: height 1s ease-out; }
+        /* Modals */
+        .modal-overlay { background-color: rgba(17, 24, 39, 0.6); backdrop-filter: blur(2px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* Mobile Sidebar */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); position: fixed; inset: 0; z-index: 50; width: 280px; }
             .sidebar.open { transform: translateX(0); }
@@ -52,12 +53,12 @@
 </head>
 <body class="flex h-screen overflow-hidden text-gray-900">
 
-    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden transition-opacity" onclick="toggleSidebar()"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden transition-opacity opacity-0" onclick="toggleSidebar()"></div>
 
-    <aside id="sidebar" class="sidebar w-[260px] flex flex-col h-full overflow-y-auto transition-transform duration-300 z-50">
+    <aside id="sidebar" class="sidebar flex flex-col h-full overflow-y-auto">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
             <span class="ml-3 text-lg font-bold tracking-tight">Aura Platform</span>
         </div>
@@ -77,7 +78,7 @@
 
             <button onclick="switchView('view-usage', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                Usage & Activity
+                Activity Logs
             </button>
 
             <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-3 mt-6 mb-3">Configuration</div>
@@ -88,43 +89,43 @@
             </button>
         </nav>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
+        <div class="p-4 border-t border-gray-200 bg-gray-50 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-bold text-sm">MH</div>
+                <div class="w-9 h-9 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm border border-gray-300">MH</div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-bold text-gray-900">Mohammad Bhai</span>
-                    <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Ultra Pro Admin</span>
+                    <span class="text-sm font-bold text-gray-900 leading-tight">Mohammad Bhai</span>
+                    <span class="text-[10px] text-green-600 font-bold uppercase tracking-wider">Free Tier Active</span>
                 </div>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f9fafb] relative">
         
-        <header class="h-16 border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 shrink-0 bg-white z-10">
+        <header class="h-16 border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0 z-10 shadow-sm">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100 text-gray-600">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-                <h2 id="headerTitle" class="font-semibold text-gray-800">API Keys</h2>
+                <h2 id="headerTitle" class="font-semibold text-gray-800 text-lg">API Keys</h2>
             </div>
             <div>
-                <span id="serverStatusBadge" class="text-[10px] bg-gray-100 text-gray-500 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-gray-200 transition-colors shadow-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Server Pending
-                </span>
+                <button onclick="pingServer()" id="serverStatusBadge" class="text-[10px] bg-gray-100 text-gray-500 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer" title="Click to test connection">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> <span id="statusText">Check Status</span>
+                </button>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-10 bg-gray-50/50">
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 hide-scrollbar">
             <div class="max-w-5xl mx-auto w-full">
 
                 <div id="view-apikeys" class="view-section active">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                         <div>
-                            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">API keys</h1>
-                            <p class="text-gray-500 text-sm">Manage authentication keys and their authorized capabilities.</p>
+                            <h1 class="text-2xl font-bold text-gray-900 mb-1">API keys</h1>
+                            <p class="text-gray-500 text-sm">Manage your authentication keys and permissions.</p>
                         </div>
-                        <button onclick="openModal('keyModal')" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow-sm shrink-0">
+                        <button onclick="openModal('keyModal')" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shrink-0">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             Create new secret key
                         </button>
@@ -132,97 +133,86 @@
 
                     <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[700px]">
+                            <table class="w-full text-left border-collapse min-w-[650px]">
                                 <thead class="bg-gray-50 border-b border-gray-200">
                                     <tr>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Secret Key</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Permissions (Scopes)</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Created</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Secret Key</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Scopes</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Created</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="keyTableBody" class="divide-y divide-gray-100">
                                     </tbody>
                             </table>
                         </div>
-                        <div id="emptyState" class="p-12 text-center flex flex-col items-center bg-white">
+                        <div id="emptyState" class="p-10 text-center flex flex-col items-center bg-white">
                             <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                             </div>
-                            <p class="text-gray-600 font-medium">No API keys active.</p>
-                            <p class="text-gray-400 text-sm mt-1">Generate a key to grant access to the AI engine.</p>
+                            <p class="text-gray-600 font-medium">No API keys found.</p>
+                            <p class="text-gray-400 text-sm mt-1">Click "Create new secret key" to start.</p>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-dashboard" class="view-section">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Dashboard</h1>
-                    <p class="text-gray-500 text-sm mb-8">Platform overview and high-level metrics.</p>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Dashboard</h1>
+                    <p class="text-gray-500 text-sm mb-6">Overview of your Aura AI Platform.</p>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total API Keys</p>
                             <h3 id="statTotalKeys" class="text-3xl font-bold text-gray-900">0</h3>
                         </div>
                         <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Requests Today</p>
-                            <h3 class="text-3xl font-bold text-gray-900">1,248</h3>
-                            <p class="text-xs text-green-500 mt-1 font-medium">↑ 12% from yesterday</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Keys Generated</p>
+                            <h3 id="statTotalLogs" class="text-3xl font-bold text-gray-900">0</h3>
+                            <p class="text-xs text-gray-400 mt-1">Lifetime</p>
                         </div>
                         <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Avg Latency</p>
-                            <h3 class="text-3xl font-bold text-gray-900">1.2s</h3>
-                            <p class="text-xs text-gray-400 mt-1">Render.com Server</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Server Engine</p>
+                            <h3 class="text-xl font-bold text-gray-900 mt-1">Node.js Express</h3>
+                            <p class="text-xs text-gray-400 mt-1">Render.com</p>
                         </div>
                         <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Credit Limit</p>
-                            <h3 class="text-3xl font-bold text-blue-600">Unlimited</h3>
-                            <p class="text-xs text-gray-400 mt-1">Admin bypass active</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Data Storage</p>
+                            <h3 class="text-xl font-bold text-emerald-600 mt-1">Local Indexed</h3>
+                            <p class="text-xs text-gray-400 mt-1">Zero-latency cache</p>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-6">
-                        <h3 class="text-sm font-bold text-gray-700 mb-4">API Capabilities Enabled</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <span class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Deep Context (100 msgs)</span>
-                            <span class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Parallel Execution</span>
-                            <span class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> Vision & File Reading</span>
-                            <span class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-orange-500"></span> Image Generation</span>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-sm font-bold text-gray-700 mb-4">Platform Capabilities</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-xs font-semibold">100+ Models Supported</span>
+                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-100 rounded-lg text-xs font-semibold">Deep Context Memory</span>
+                            <span class="px-3 py-1.5 bg-green-50 text-green-700 border border-green-100 rounded-lg text-xs font-semibold">Vision & File Analysis</span>
+                            <span class="px-3 py-1.5 bg-orange-50 text-orange-700 border border-orange-100 rounded-lg text-xs font-semibold">Image/Video Endpoints</span>
+                            <span class="px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">Real-Time Auto Retry</span>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-usage" class="view-section">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Usage & Activity</h1>
-                    <p class="text-gray-500 text-sm mb-8">Track API requests, token consumption, and response times.</p>
-                    
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-8">
-                        <h3 class="text-sm font-bold text-gray-700 mb-6">API Requests (Last 7 Days)</h3>
-                        <div class="h-48 flex items-end justify-between gap-2 border-b border-gray-200 pb-2">
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 30%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 50%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 20%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 80%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 65%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill" style="height: 45%;"></div></div>
-                            <div class="bar-chart-col h-full"><div class="bar-fill bg-blue-600" style="height: 90%;"></div></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 mb-1">Activity Logs</h1>
+                            <p class="text-gray-500 text-sm">Real-time tracking of API events.</p>
                         </div>
-                        <div class="flex justify-between text-xs text-gray-400 mt-2 px-1">
-                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span class="text-blue-600 font-bold">Today</span>
-                        </div>
+                        <button onclick="clearLogs()" class="px-4 py-2 border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg text-xs font-bold transition-colors shadow-sm">Clear Logs</button>
                     </div>
-
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity Log</h3>
+                    
                     <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
+                            <table class="w-full text-left border-collapse min-w-[500px]">
                                 <thead class="bg-gray-50 border-b border-gray-200">
                                     <tr>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase">Timestamp</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase">Endpoint</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase">Tokens</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase">Status</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Time</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Action</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Key Name</th>
+                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="activityLogBody" class="divide-y divide-gray-100">
@@ -233,22 +223,19 @@
                 </div>
 
                 <div id="view-settings" class="view-section">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Server Settings</h1>
-                    <p class="text-gray-500 text-sm mb-8">Configure your backend connection and engine variables.</p>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Server Settings</h1>
+                    <p class="text-gray-500 text-sm mb-6">Configure your connection to the Render backend.</p>
                     
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm mb-6">
-                        <label class="block text-sm font-bold text-gray-700 mb-1">Backend Server URL</label>
-                        <p class="text-xs text-gray-500 mb-4">The master endpoint where the Node.js server is hosted (Render.com).</p>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Backend URL Endpoint</label>
+                        <p class="text-xs text-gray-500 mb-4">Make sure this is exactly your Render.com URL (No slash at the end).</p>
+                        
                         <div class="flex flex-col sm:flex-row gap-3">
                             <input type="text" id="configBackendUrl" placeholder="https://your-api.onrender.com" class="flex-1 border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            <button onclick="saveBackendUrl(this)" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-semibold whitespace-nowrap">Save URL</button>
+                            <button onclick="saveBackendUrl(this)" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-semibold whitespace-nowrap text-center">Save & Test</button>
                         </div>
-                    </div>
-
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm">
-                        <h3 class="text-sm font-bold text-gray-700 mb-1">Data Logging</h3>
-                        <p class="text-xs text-gray-500 mb-4">Track local token usage and API key generation events in this browser.</p>
-                        <button onclick="clearLogs()" class="px-4 py-2 border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg text-sm font-semibold transition-colors">Clear Activity Logs</button>
+                        
+                        <div id="urlTestResult" class="hidden mt-4 text-sm font-medium p-3 rounded-lg"></div>
                     </div>
                 </div>
 
@@ -257,75 +244,75 @@
     </main>
 
     <div id="keyModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal('keyModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="keyModalContent">
+        <div class="modal-overlay absolute inset-0 transition-opacity opacity-0" id="keyModalOverlay" onclick="closeModal('keyModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 transform transition-all scale-95 opacity-0 duration-200" id="keyModalContent">
             <h2 class="text-xl font-bold text-gray-900 mb-1">Create secret key</h2>
-            <p class="text-sm text-gray-500 mb-6">Configure permissions and generate a new key.</p>
+            <p class="text-sm text-gray-500 mb-5">Configure permissions and generate a new key.</p>
             
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Key Name</label>
-            <input type="text" id="keyNameInput" placeholder="e.g. Production App" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-6">
+            <input type="text" id="keyNameInput" placeholder="e.g. My Web App" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-5">
 
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">Permissions (Scopes)</label>
-            <div class="space-y-3 mb-8">
+            <div class="space-y-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
                 <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5" id="scopeText" checked disabled>
+                    <input type="checkbox" class="custom-checkbox mt-0.5" checked disabled>
                     <div>
                         <p class="text-sm font-bold text-gray-900">Text & Reasoning</p>
-                        <p class="text-xs text-gray-500">Standard text generation and deep reasoning (DeepSeek).</p>
+                        <p class="text-xs text-gray-500">Base API access (DeepSeek, Llama, Gemma).</p>
                     </div>
                 </label>
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="vision" checked>
                     <div>
-                        <p class="text-sm font-bold text-gray-900">Vision & File Analysis</p>
-                        <p class="text-xs text-gray-500">Allows uploading images, .js, .txt, .csv for context injection.</p>
+                        <p class="text-sm font-bold text-gray-900">Vision & Files</p>
+                        <p class="text-xs text-gray-500">Allow image, .js, .txt, .csv uploads.</p>
                     </div>
                 </label>
                 <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="image_gen">
+                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="image_gen" checked>
                     <div>
                         <p class="text-sm font-bold text-gray-900">Image Generation</p>
-                        <p class="text-xs text-gray-500">Access to real-time text-to-image capabilities.</p>
+                        <p class="text-xs text-gray-500">Access to /image capabilities.</p>
                     </div>
                 </label>
                 <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="video_gen">
+                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="video_gen" checked>
                     <div>
                         <p class="text-sm font-bold text-gray-900">Video Generation</p>
-                        <p class="text-xs text-gray-500">Enable placeholder video generation endpoints.</p>
+                        <p class="text-xs text-gray-500">Access to /video capabilities.</p>
                     </div>
                 </label>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
-                <button onclick="closeModal('keyModal')" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors w-full sm:w-auto border border-transparent">Cancel</button>
+            <div id="retryStatusBox" class="hidden mb-4 bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-800 font-medium flex items-center gap-3">
+                <svg class="animate-spin h-5 w-5 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <span>Server is waking up from sleep mode. Please wait up to 50 seconds...</span>
+            </div>
+
+            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
+                <button onclick="closeModal('keyModal')" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors w-full sm:w-auto border border-gray-200 sm:border-transparent">Cancel</button>
                 <button onclick="generateKey()" id="generateBtn" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold w-full sm:w-auto flex justify-center items-center gap-2">
                     <span id="btnText">Generate key</span>
-                    <svg id="btnLoader" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
             </div>
-            
-            <p id="wakeUpMessage" class="hidden text-xs text-orange-700 bg-orange-50 p-3 rounded-lg border border-orange-200 mt-4 font-medium animate-pulse text-center">
-                Waking up Render server... May take ~50s. Please wait.
-            </p>
         </div>
     </div>
 
     <div id="successModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal('successModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="successModalContent">
-            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-5">
+        <div class="modal-overlay absolute inset-0 transition-opacity opacity-0" id="successModalOverlay" onclick="closeModal('successModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="successModalContent">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Save your secret key</h2>
-            <p class="text-sm text-gray-500 mb-6">
-                Please copy this key and save it securely. You won't be able to view it again.
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Key Generated!</h2>
+            <p class="text-sm text-gray-500 mb-5">
+                Copy this key now. For security reasons, you cannot view it again.
             </p>
             
             <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg flex items-center justify-between gap-3 mb-6">
-                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800 px-1"></code>
-                <button onclick="copyNewKey()" id="copyBtn" class="p-2 bg-white border border-gray-200 hover:bg-gray-100 rounded-md transition-colors shrink-0 text-gray-600">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800 px-1 select-all"></code>
+                <button onclick="copyToClipboardFallback('newKeyDisplay', this)" class="p-2 bg-white border border-gray-200 hover:bg-gray-100 rounded-md transition-colors shrink-0 text-gray-600 shadow-sm" title="Copy">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                 </button>
             </div>
 
@@ -339,48 +326,78 @@
 
     <script>
         /**
-         * AURA PLATFORM - ENTERPRISE DASHBOARD
-         * Handles API Keys, Scopes, Activity Logs, and Render Auto-Retry.
+         * AURA PLATFORM - BUG-FREE ENTERPRISE DASHBOARD
          */
 
+        // 🚨 YOUR RENDER URL 🚨
         let BACKEND_URL = localStorage.getItem('aura_backend_url') || "https://aura-backend-api-1cnr.onrender.com";
-        let myKeys = JSON.parse(localStorage.getItem('aura_api_keys')) || [];
-        let activityLogs = JSON.parse(localStorage.getItem('aura_api_logs')) || [];
+        
+        let myKeys = [];
+        let activityLogs = [];
 
-        // INIT
+        // INIT (Load data safely)
         window.onload = () => {
+            try { myKeys = JSON.parse(localStorage.getItem('aura_api_keys')) || []; } catch(e) { myKeys = []; }
+            try { activityLogs = JSON.parse(localStorage.getItem('aura_api_logs')) || []; } catch(e) { activityLogs = []; }
+            
             document.getElementById('configBackendUrl').value = BACKEND_URL;
-            renderTable();
-            renderLogs();
+            updateAllViews();
             checkServerStatusSilent();
-            logActivity("/auth/session", "Success", Math.floor(Math.random() * 50) + 10);
+            
+            // Welcome Log if empty
+            if(activityLogs.length === 0) logActivity("System Boot", "Admin", "Success");
         };
 
-        // --- NAVIGATION ---
+        // --- MASTER UPDATE FUNCTION ---
+        function updateAllViews() {
+            renderTable();
+            renderLogs();
+            document.getElementById('statTotalKeys').innerText = myKeys.length;
+            document.getElementById('statTotalLogs').innerText = activityLogs.length;
+        }
+
+        // --- SPA NAVIGATION ---
         function switchView(viewId, btnElement) {
+            // Update Active Tab UI
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
+
+            // Switch Sections
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
 
-            const titles = { 'view-apikeys': 'API Keys', 'view-dashboard': 'Dashboard', 'view-settings': 'Server Settings', 'view-usage': 'Usage & Activity' };
+            // Update Header
+            const titles = { 'view-apikeys': 'API Keys', 'view-dashboard': 'Dashboard', 'view-settings': 'Server Settings', 'view-usage': 'Activity Logs' };
             document.getElementById('headerTitle').innerText = titles[viewId];
 
-            if(window.innerWidth < 768) toggleSidebar();
+            // Auto-close mobile sidebar (BUG FIXED)
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('mobileOverlay').classList.add('hidden');
+                document.getElementById('mobileOverlay').classList.remove('opacity-100');
+            }
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('mobileOverlay').classList.toggle('hidden');
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('mobileOverlay');
+            
+            if (sb.classList.contains('open')) {
+                sb.classList.remove('open');
+                ov.classList.remove('opacity-100');
+                setTimeout(() => ov.classList.add('hidden'), 300);
+            } else {
+                sb.classList.add('open');
+                ov.classList.remove('hidden');
+                setTimeout(() => ov.classList.add('opacity-100'), 10);
+            }
         }
 
-        // --- DATA RENDERING (Keys & Badges) ---
+        // --- DATA RENDERING ---
         function renderTable() {
             const tbody = document.getElementById('keyTableBody');
             const empty = document.getElementById('emptyState');
             
-            document.getElementById('statTotalKeys').innerText = myKeys.length;
-
             tbody.innerHTML = '';
             if (myKeys.length === 0) {
                 empty.classList.remove('hidden'); return;
@@ -393,19 +410,19 @@
                 const originalIndex = myKeys.findIndex(orig => orig.key === k.key);
                 
                 // Build Scope Badges
-                let badges = `<span class="badge badge-blue mr-1">TXT</span>`;
-                if(k.scopes.includes('vision')) badges += `<span class="badge badge-purple mr-1">VIS</span>`;
-                if(k.scopes.includes('image_gen')) badges += `<span class="badge badge-green mr-1">IMG</span>`;
-                if(k.scopes.includes('video_gen')) badges += `<span class="badge badge-orange mr-1">VID</span>`;
+                let badges = `<span class="badge badge-blue">TXT</span>`;
+                if(k.scopes && k.scopes.includes('vision')) badges += `<span class="badge badge-purple">VIS</span>`;
+                if(k.scopes && k.scopes.includes('image_gen')) badges += `<span class="badge badge-green">IMG</span>`;
+                if(k.scopes && k.scopes.includes('video_gen')) badges += `<span class="badge badge-orange">VID</span>`;
 
                 const row = document.createElement('tr');
                 row.className = "hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0";
                 row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-bold text-gray-900">${escapeHTML(k.name)}</td>
-                    <td class="px-6 py-4 text-sm font-mono text-gray-500">sk-aura-••••••••${k.key.slice(-4)}</td>
-                    <td class="px-6 py-4 flex flex-wrap gap-1 items-center mt-2">${badges}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${k.date}</td>
-                    <td class="px-6 py-4 text-right">
+                    <td class="px-5 py-4 text-sm font-bold text-gray-900">${escapeHTML(k.name)}</td>
+                    <td class="px-5 py-4 text-sm font-mono text-gray-500">sk-aura-••••••••${k.key.slice(-4)}</td>
+                    <td class="px-5 py-4 flex flex-wrap mt-1">${badges}</td>
+                    <td class="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">${k.date}</td>
+                    <td class="px-5 py-4 text-right">
                         <button onclick="deleteKey(${originalIndex})" class="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="Revoke Key">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
@@ -415,49 +432,64 @@
             });
         }
 
-        // --- USAGE LOGGING ---
-        function logActivity(endpoint, status, tokens) {
+        // --- ACTIVITY LOGS ---
+        function logActivity(action, keyName, status) {
             const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
-            activityLogs.unshift({ time, endpoint, status, tokens });
-            if(activityLogs.length > 20) activityLogs.pop(); // Keep only last 20
+            activityLogs.unshift({ time, action, keyName, status });
+            if(activityLogs.length > 30) activityLogs.pop(); // Keep last 30
             localStorage.setItem('aura_api_logs', JSON.stringify(activityLogs));
-            renderLogs();
+            updateAllViews();
         }
 
         function renderLogs() {
             const tbody = document.getElementById('activityLogBody');
             tbody.innerHTML = '';
             if(activityLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-sm text-gray-400">No activity recorded yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-sm text-gray-400">No activity recorded yet.</td></tr>`;
                 return;
             }
             activityLogs.forEach(log => {
-                const statusColor = log.status === 'Success' ? 'text-green-600 bg-green-50' : (log.status === 'Pending' ? 'text-orange-600 bg-orange-50' : 'text-red-600 bg-red-50');
+                const statusColor = log.status === 'Success' ? 'text-green-600 bg-green-50 border-green-200' : 'text-red-600 bg-red-50 border-red-200';
                 const row = document.createElement('tr');
-                row.className = "border-b border-gray-100 last:border-0";
+                row.className = "border-b border-gray-100 hover:bg-gray-50 transition-colors";
                 row.innerHTML = `
-                    <td class="px-6 py-3 text-sm text-gray-500 font-mono">${log.time}</td>
-                    <td class="px-6 py-3 text-sm font-medium text-gray-800">${log.endpoint}</td>
-                    <td class="px-6 py-3 text-sm text-gray-500 font-mono">${log.tokens}</td>
-                    <td class="px-6 py-3 text-xs font-bold"><span class="px-2 py-1 rounded-md ${statusColor}">${log.status}</span></td>
+                    <td class="px-5 py-3.5 text-xs text-gray-500 font-mono whitespace-nowrap">${log.time}</td>
+                    <td class="px-5 py-3.5 text-sm font-medium text-gray-900">${escapeHTML(log.action)}</td>
+                    <td class="px-5 py-3.5 text-sm text-gray-600">${escapeHTML(log.keyName)}</td>
+                    <td class="px-5 py-3.5 text-xs font-bold"><span class="px-2.5 py-1 rounded-md border ${statusColor}">${log.status}</span></td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
         function clearLogs() {
-            if(confirm("Clear local activity logs?")) {
+            if(confirm("Clear all local activity logs?")) {
                 activityLogs = [];
                 localStorage.setItem('aura_api_logs', JSON.stringify([]));
-                renderLogs();
-                showToast("Logs cleared.");
+                updateAllViews();
+                showToast("Logs cleared successfully.");
             }
         }
 
-        // --- SMART PING SYSTEM ---
+        // --- SMART PING & AUTO-RETRY ENGINE (The 1-Minute Sleep Fix) ---
+        
+        async function pingServer() {
+            const badge = document.getElementById('serverStatusBadge');
+            document.getElementById('statusText').innerText = "Pinging...";
+            badge.classList.replace('bg-gray-100', 'bg-blue-50');
+            badge.classList.replace('text-gray-500', 'text-blue-600');
+            
+            await checkServerStatusSilent();
+        }
+
         async function checkServerStatusSilent() {
             try {
-                const res = await fetch(`${BACKEND_URL}/`);
+                // Fetch with a 3 second timeout for quick UI updates
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                
+                const res = await fetch(`${BACKEND_URL}/`, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 setServerStatus(res.ok);
             } catch(e) { setServerStatus(false); }
         }
@@ -465,23 +497,37 @@
         function setServerStatus(isAwake) {
             const badge = document.getElementById('serverStatusBadge');
             if(isAwake) {
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Server Online`;
-                badge.className = "text-[10px] bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-emerald-200";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="statusText">Server Online</span>`;
+                badge.className = "text-[10px] bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-emerald-200 transition-colors shadow-sm cursor-pointer hover:bg-emerald-100";
             } else {
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-orange-400"></span> Server Asleep`;
-                badge.className = "text-[10px] bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-orange-200";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-orange-400"></span> <span id="statusText">Server Asleep</span>`;
+                badge.className = "text-[10px] bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-orange-200 transition-colors shadow-sm cursor-pointer hover:bg-orange-100";
             }
         }
 
-        async function fetchWithAutoRetry(url, options, maxRetries = 10) {
+        // Bulletproof Fetch that retries until Render wakes up (Max 60 seconds)
+        async function fetchWithRetry(url, options, maxRetries = 12) {
             for (let i = 0; i < maxRetries; i++) {
                 try {
-                    const res = await fetch(url, options);
-                    if (res.status === 502 || res.status === 504) throw new Error("Cold Start");
+                    // Try fetch, but abort if it takes more than 10 seconds per try (Render 502/504 errors usually hang)
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000);
+                    
+                    const res = await fetch(url, { ...options, signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    
+                    // Render specific cold start errors
+                    if (res.status === 502 || res.status === 504) {
+                        throw new Error("Cold Start");
+                    }
                     return res;
                 } catch (error) {
-                    if (i === maxRetries - 1) throw error;
-                    if(i === 0) document.getElementById('wakeUpMessage').classList.remove('hidden');
+                    if (i === maxRetries - 1) throw new Error("Server timeout. It refused to wake up.");
+                    
+                    // Show Wake Up message on first fail
+                    if(i === 0) document.getElementById('retryStatusBox').classList.remove('hidden');
+                    
+                    // Wait 5 seconds before retrying
                     await new Promise(resolve => setTimeout(resolve, 5000));
                 }
             }
@@ -490,24 +536,24 @@
         // --- API KEY GENERATION ---
         async function generateKey() {
             const nameInput = document.getElementById('keyNameInput').value.trim();
-            if (!nameInput) return showToast("Please name your key first.");
+            if (!nameInput) return showToast("Bhai, key ka naam to daalo!");
 
-            // Gather Scopes
+            // Get selected scopes
             const scopes = [];
             document.querySelectorAll('.scope-cb:checked').forEach(cb => scopes.push(cb.value));
 
             const genBtn = document.getElementById('generateBtn');
             const btnText = document.getElementById('btnText');
-            const btnLoader = document.getElementById('btnLoader');
             
-            genBtn.disabled = true; btnText.innerText = "Connecting..."; btnLoader.classList.remove('hidden');
-            logActivity("/api/keys/generate", "Pending", 0);
+            genBtn.disabled = true;
+            btnText.innerText = "Connecting to Server...";
 
             try {
-                const res = await fetchWithAutoRetry(`${BACKEND_URL}/generate-key`, {
+                // Use the Bulletproof Retry Fetch
+                const res = await fetchWithRetry(`${BACKEND_URL}/generate-key`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: nameInput, scopes: scopes }) // Send scopes to backend if needed
+                    body: JSON.stringify({ name: nameInput, scopes: scopes })
                 });
 
                 const data = await res.json();
@@ -526,30 +572,34 @@
                     document.getElementById('newKeyDisplay').innerText = data.apiKey;
                     
                     setServerStatus(true); 
-                    logActivity("/api/keys/generate", "Success", 24); // mock token cost
+                    logActivity("Generated Key", nameInput, "Success");
+                    
                     closeModal('keyModal');
                     openModal('successModal');
-                    renderTable();
+                    updateAllViews();
                 } else {
-                    showToast("Error: " + data.error);
-                    logActivity("/api/keys/generate", "Failed", 0);
+                    showToast("Error: " + (data.error || "Unknown Error"));
+                    logActivity("Failed to Generate", nameInput, "Failed");
                 }
             } catch (e) {
-                showToast("Connection failed. Check Server Settings.");
+                showToast(e.message || "Network Error. Check your Render URL.");
                 setServerStatus(false);
-                logActivity("/api/keys/generate", "Failed", 0);
+                logActivity("Connection Error", nameInput, "Failed");
             } finally {
-                genBtn.disabled = false; btnText.innerText = "Generate key"; btnLoader.classList.add('hidden');
-                document.getElementById('wakeUpMessage').classList.add('hidden');
+                // Reset Button state (Bug Fix)
+                genBtn.disabled = false;
+                btnText.innerText = "Generate key";
+                document.getElementById('retryStatusBox').classList.add('hidden');
             }
         }
 
         function deleteKey(index) {
-            if (confirm("Revoke this secret key? Any application using it will stop working immediately.")) {
+            if (confirm("Are you sure? Revoking this key will disable all access for it.")) {
+                const keyName = myKeys[index].name;
                 myKeys.splice(index, 1);
                 localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
-                logActivity("/api/keys/revoke", "Success", 0);
-                renderTable();
+                logActivity("Revoked Key", keyName, "Success");
+                updateAllViews();
                 showToast("Key Revoked Successfully.");
             }
         }
@@ -557,413 +607,48 @@
         // --- SETTINGS ---
         function saveBackendUrl(btn) {
             let url = document.getElementById('configBackendUrl').value.trim();
+            if(!url) return showToast("URL cannot be empty");
             if(url.endsWith('/')) url = url.slice(0, -1);
             
             BACKEND_URL = url;
             localStorage.setItem('aura_backend_url', BACKEND_URL);
             
             setServerStatus(false);
-            checkServerStatusSilent(); 
-            logActivity("/system/config/update", "Success", 0);
             
-            btn.innerText = "Saved!";
-            btn.classList.replace('bg-blue-600', 'bg-green-600');
-            setTimeout(() => { btn.innerText = "Save URL"; btn.classList.replace('bg-green-600', 'bg-blue-600'); }, 2000);
-            showToast("Backend Configuration Updated");
-        }
-
-        // --- UI UTILS ---
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            setTimeout(() => { document.getElementById(id + 'Content').classList.remove('scale-95', 'opacity-0'); }, 10);
-        }
-
-        function closeModal(id) {
-            document.getElementById(id + 'Content').classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                document.getElementById(id).classList.add('hidden');
-                if(id === 'keyModal') { document.getElementById('keyNameInput').value = ''; document.getElementById('wakeUpMessage').classList.add('hidden'); }
-            }, 200);
-        }
-
-        function copyNewKey() {
-            const keyText = document.getElementById('newKeyDisplay').innerText;
-            navigator.clipboard.writeText(keyText);
-            document.getElementById('copyBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            showToast("Key copied to clipboard!");
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast'); document.getElementById('toastMsg').innerText = msg;
-            t.classList.remove('opacity-0', 'translate-y-20');
-            setTimeout(() => t.classList.add('opacity-0', 'translate-y-20'), 3000);
-        }
-
-        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag)); }
-    </script>
-</body>
-</html>
-                    </p>
-
-                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[500px]">
-                                <thead class="bg-gray-50 border-b border-gray-200">
-                                    <tr>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Secret Key</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Created</th>
-                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="keyTableBody" class="divide-y divide-gray-100">
-                                    </tbody>
-                            </table>
-                        </div>
-                        <div id="emptyState" class="p-10 text-center flex flex-col items-center">
-                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
-                            </div>
-                            <p class="text-gray-500 text-sm font-medium">No API keys found.</p>
-                            <p class="text-gray-400 text-xs mt-1">Generate your first key to start making requests.</p>
-                        </div>
-                    </div>
-
-                    <button onclick="openModal('keyModal')" class="mt-6 btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Create new secret key
-                    </button>
-                </div>
-
-                <div id="view-dashboard" class="view-section">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-                    <p class="text-gray-500 text-sm mb-8">Overview of your Aura AI Platform usage and statistics.</p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Keys</p>
-                            <h3 id="statTotalKeys" class="text-3xl font-bold text-gray-900">0</h3>
-                        </div>
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">API Requests</p>
-                            <h3 class="text-3xl font-bold text-gray-900">0</h3>
-                            <p class="text-xs text-gray-400 mt-1">Free tier data</p>
-                        </div>
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Credit Limit</p>
-                            <h3 class="text-3xl font-bold text-emerald-600">500</h3>
-                            <p class="text-xs text-gray-400 mt-1">Per generated key</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
-                        <p class="text-gray-500 text-sm">System usage graphs will appear here once you start making AI requests through your backend server.</p>
-                    </div>
-                </div>
-
-                <div id="view-settings" class="view-section">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-                    <p class="text-gray-500 text-sm mb-8">Manage your backend configuration.</p>
-                    
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Render.com Backend URL</label>
-                        <p class="text-xs text-gray-500 mb-3">Ensure this URL points to your live Render server (without trailing slash).</p>
-                        <div class="flex gap-2">
-                            <input type="text" id="configBackendUrl" placeholder="https://your-api.onrender.com" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            <button onclick="saveBackendUrl()" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">Save URL</button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <div id="keyModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal('keyModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="keyModalContent">
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Create new secret key</h2>
-            <p class="text-sm text-gray-500 mb-6">Give your key a name to easily identify it later.</p>
+            btn.innerText = "Testing...";
+            btn.disabled = true;
             
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Name</label>
-            <input type="text" id="keyNameInput" placeholder="e.g. Mobile App Key" 
-                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-6">
+            const resultBox = document.getElementById('urlTestResult');
+            resultBox.classList.remove('hidden');
+            resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-blue-50 text-blue-700 animate-pulse";
+            resultBox.innerText = "Pinging server... Please wait.";
 
-            <div class="flex justify-end gap-3">
-                <button onclick="closeModal('keyModal')" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">Cancel</button>
-                <button onclick="generateKey()" id="generateBtn" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold">Generate key</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="successModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal('successModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="successModalContent">
-            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-5">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Save your secret key</h2>
-            <p class="text-sm text-gray-500 mb-6 leading-relaxed">
-                Please copy this key and save it securely. For your protection, <b>you will not be able to view it again</b> through this dashboard.
-            </p>
-            
-            <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg flex items-center justify-between gap-3 mb-6">
-                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800 px-1"></code>
-                <button onclick="copyNewKey()" id="copyBtn" class="p-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-md transition-colors shrink-0 text-gray-600" title="Copy to clipboard">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                </button>
-            </div>
-
-            <button onclick="closeModal('successModal')" class="w-full btn-primary py-2.5 rounded-lg text-sm font-semibold transition-all">Done</button>
-        </div>
-    </div>
-
-    <div id="wakeOverlay" class="fixed inset-0 z-[120] hidden flex flex-col items-center justify-center bg-gray-900/90 backdrop-blur-sm text-white p-4">
-        <div class="max-w-sm w-full text-center">
-            <div class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
-            <h2 class="text-2xl font-bold mb-2">Waking up AI Engine...</h2>
-            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                Because we use a free Render.com server, it goes to sleep when not used. It takes up to <b>50 seconds</b> to wake up. Please don't close this page.
-            </p>
-            
-            <div class="w-full bg-gray-800 rounded-full h-3 mb-2 overflow-hidden border border-gray-700">
-                <div id="progressBar" class="bg-blue-500 h-3 rounded-full progress-bar-fill" style="width: 0%"></div>
-            </div>
-            <p class="text-xs text-gray-500 font-mono">Estimated time left: <span id="timeLeft">50</span>s</p>
-        </div>
-    </div>
-
-    <script>
-        /**
-         * AURA PLATFORM - DEVELOPER DASHBOARD
-         * Real SPA Logic, Server Cold-Start handling, and Local DB.
-         */
-
-        // 🚨 UPDATE THIS IF YOU CHANGE YOUR RENDER URL 🚨
-        let BACKEND_URL = localStorage.getItem('aura_backend_url') || "https://aura-backend-api-1cnr.onrender.com";
-
-        let myKeys = JSON.parse(localStorage.getItem('aura_api_keys')) || [];
-
-        // INITIALIZE APP
-        function init() {
-            document.getElementById('configBackendUrl').value = BACKEND_URL;
-            renderTable();
-            checkServerStatusSilent(); // Check if server is awake in background
-        }
-
-        // --- NAVIGATION LOGIC ---
-        function switchView(viewId, btnElement) {
-            // Update Sidebar UI
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-
-            // Hide all views, show target view
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-
-            // Update Header Title
-            const titles = { 'view-apikeys': 'API Keys', 'view-dashboard': 'Dashboard', 'view-settings': 'Settings' };
-            document.getElementById('headerTitle').innerText = titles[viewId];
-
-            if(window.innerWidth < 768) toggleSidebar(); // Auto close on mobile
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('mobileOverlay').classList.toggle('hidden');
-        }
-
-        // --- DATA RENDERING ---
-        function renderTable() {
-            const tbody = document.getElementById('keyTableBody');
-            const empty = document.getElementById('emptyState');
-            
-            // Update Stats
-            document.getElementById('keyCount').innerText = myKeys.length;
-            document.getElementById('statTotalKeys').innerText = myKeys.length;
-
-            tbody.innerHTML = '';
-            if (myKeys.length === 0) {
-                empty.classList.remove('hidden');
-                return;
-            }
-
-            empty.classList.add('hidden');
-            
-            // Sort keys newest first
-            const sortedKeys = [...myKeys].reverse();
-
-            sortedKeys.forEach((k) => {
-                // Find actual index in original array for deletion
-                const originalIndex = myKeys.findIndex(orig => orig.key === k.key);
-                
-                const row = document.createElement('tr');
-                row.className = "key-row transition-colors border-b border-gray-50 last:border-0";
-                row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${escapeHTML(k.name)}</td>
-                    <td class="px-6 py-4 text-sm font-mono text-gray-500">sk-aura-••••••••${k.key.slice(-4)}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${k.date}</td>
-                    <td class="px-6 py-4 text-right">
-                        <button onclick="deleteKey(${originalIndex})" class="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="Delete Key">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // --- SERVER PING & WAKE SYSTEM (The Magic Fix) ---
-        let isServerAwake = false;
-
-        async function checkServerStatusSilent() {
-            try {
-                // We ping the '/' route of your server
-                const res = await fetch(`${BACKEND_URL}/`);
-                if(res.ok) setServerStatus(true);
-            } catch(e) { setServerStatus(false); }
-        }
-
-        function setServerStatus(awake) {
-            isServerAwake = awake;
-            const badge = document.getElementById('serverStatusBadge');
-            if(awake) {
-                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Server Online`;
-                badge.className = "text-[10px] bg-emerald-50 text-emerald-700 px-2.5 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-emerald-200";
-            } else {
-                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Server Asleep`;
-                badge.className = "text-[10px] bg-orange-50 text-orange-700 px-2.5 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-orange-200";
-            }
-        }
-
-        // This handles the 1-minute Render wait time
-        async function ensureServerIsAwake() {
-            if (isServerAwake) return true; // Already awake, proceed immediately
-
-            const wakeOverlay = document.getElementById('wakeOverlay');
-            const progressBar = document.getElementById('progressBar');
-            const timeLeftText = document.getElementById('timeLeft');
-            
-            wakeOverlay.classList.remove('hidden');
-            
-            // Start 50-second visual countdown
-            let time = 50;
-            let width = 0;
-            const timerInterval = setInterval(() => {
-                time--;
-                width += 2; // 2% per second
-                timeLeftText.innerText = time;
-                progressBar.style.width = `${Math.min(width, 98)}%`;
-                if(time <= 0) clearInterval(timerInterval);
-            }, 1000);
-
-            try {
-                // Keep trying to ping until it responds
-                while (!isServerAwake && time > 0) {
-                    try {
-                        const res = await fetch(`${BACKEND_URL}/`);
-                        if(res.ok) isServerAwake = true;
-                    } catch(e) { /* Ignore fail, wait and retry */ }
-                    
-                    if(!isServerAwake) await new Promise(r => setTimeout(r, 3000)); // wait 3s before retry
-                }
-            } finally {
-                clearInterval(timerInterval);
-                wakeOverlay.classList.add('hidden');
-                progressBar.style.width = '0%';
-                if(isServerAwake) setServerStatus(true);
-            }
-            
-            return isServerAwake;
-        }
-
-        // --- API KEY GENERATION ---
-        async function generateKey() {
-            const nameInput = document.getElementById('keyNameInput').value.trim();
-            if (!nameInput) return alert("Please enter a name for your key.");
-
-            const genBtn = document.getElementById('generateBtn');
-            genBtn.disabled = true;
-
-            // 1. Wake up server if it's sleeping (Shows loader if needed)
-            const isAwake = await ensureServerIsAwake();
-            if(!isAwake) {
-                alert("Server failed to wake up. Check if your Render URL is correct in Settings.");
-                genBtn.disabled = false;
-                return;
-            }
-
-            genBtn.innerText = "Processing...";
-
-            // 2. Actually generate the key
-            try {
-                const res = await fetch(`${BACKEND_URL}/generate-key`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: nameInput })
+            // Test Connection
+            fetch(`${BACKEND_URL}/`)
+                .then(res => {
+                    if(res.ok) {
+                        resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-green-50 text-green-700 border border-green-200";
+                        resultBox.innerText = "Connection Successful! Server is active.";
+                        setServerStatus(true);
+                    } else {
+                        throw new Error();
+                    }
+                })
+                .catch(e => {
+                    resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-orange-50 text-orange-700 border border-orange-200";
+                    resultBox.innerText = "URL saved, but server is asleep or unreachable. We will wake it up automatically on next key generation.";
+                })
+                .finally(() => {
+                    btn.innerText = "Save & Test";
+                    btn.disabled = false;
+                    logActivity("Updated Backend URL", "System", "Success");
                 });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    const newKeyObj = {
-                        name: nameInput,
-                        key: data.apiKey,
-                        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                    };
-
-                    myKeys.push(newKeyObj);
-                    localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
-                    
-                    document.getElementById('newKeyDisplay').innerText = data.apiKey;
-                    document.getElementById('copyBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`; // Reset icon
-                    
-                    closeModal('keyModal');
-                    openModal('successModal');
-                    renderTable();
-                } else {
-                    alert("Backend Error: " + data.error);
-                }
-            } catch (e) {
-                alert("Network Error. Cannot connect to backend.");
-                setServerStatus(false);
-            } finally {
-                genBtn.disabled = false;
-                genBtn.innerText = "Generate key";
-            }
         }
 
-        function deleteKey(index) {
-            if (confirm("Revoke this secret key? Any application using it will stop working immediately.")) {
-                myKeys.splice(index, 1);
-                localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
-                renderTable();
-            }
-        }
-
-        // --- SETTINGS ---
-        function saveBackendUrl() {
-            const url = document.getElementById('configBackendUrl').value.trim();
-            if(url.endsWith('/')) url = url.slice(0, -1); // remove trailing slash
-            
-            BACKEND_URL = url;
-            localStorage.setItem('aura_backend_url', BACKEND_URL);
-            
-            setServerStatus(false); // Reset status
-            checkServerStatusSilent(); // Test new URL
-            
-            const btn = event.target;
-            btn.innerText = "Saved!";
-            btn.classList.replace('bg-[#0b57d0]', 'bg-green-600');
-            setTimeout(() => {
-                btn.innerText = "Save URL";
-                btn.classList.replace('bg-green-600', 'bg-[#0b57d0]');
-            }, 2000);
-        }
-
-        // --- MODAL UTILS ---
+        // --- MODAL & UI UTILS ---
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id + 'Overlay').classList.remove('opacity-0');
             setTimeout(() => {
                 document.getElementById(id + 'Content').classList.remove('scale-95', 'opacity-0');
             }, 10);
@@ -971,25 +656,60 @@
 
         function closeModal(id) {
             document.getElementById(id + 'Content').classList.add('scale-95', 'opacity-0');
+            document.getElementById(id + 'Overlay').classList.add('opacity-0');
             setTimeout(() => {
                 document.getElementById(id).classList.add('hidden');
-                if(id === 'keyModal') document.getElementById('keyNameInput').value = '';
+                if(id === 'keyModal') {
+                    document.getElementById('keyNameInput').value = '';
+                    document.getElementById('retryStatusBox').classList.add('hidden');
+                }
             }, 200);
         }
 
-        function copyNewKey() {
-            const keyText = document.getElementById('newKeyDisplay').innerText;
-            navigator.clipboard.writeText(keyText);
-            const btn = document.getElementById('copyBtn');
-            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10a37f" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        // Bulletproof Copy Fallback
+        function copyToClipboardFallback(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                // Navigator clipboard api method
+                navigator.clipboard.writeText(text).then(showCopySuccess).catch(err => fallbackCopyTextToClipboard(text));
+            } else {
+                // Fallback method
+                fallbackCopyTextToClipboard(text);
+            }
+            
+            function showCopySuccess() {
+                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                showToast("Copied to clipboard!");
+                setTimeout(() => {
+                    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`;
+                }, 2000);
+            }
+
+            function fallbackCopyTextToClipboard(text) {
+                var textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus(); textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopySuccess();
+                } catch (err) {
+                    showToast("Copy failed. Please select and copy manually.");
+                }
+                document.body.removeChild(textArea);
+            }
         }
 
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag));
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.classList.remove('opacity-0', 'translate-y-20');
+            setTimeout(() => t.classList.add('opacity-0', 'translate-y-20'), 3000);
         }
 
-        // Boot
-        window.onload = init;
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag)); }
     </script>
 </body>
 </html>
