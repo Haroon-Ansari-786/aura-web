@@ -3,210 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aura AI — Developer Dashboard</title>
+    <title>Aura Platform — Developer Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1f1f1f; }
-        .sidebar { background-color: #f9f9f9; border-right: 1px solid #e5e5e5; }
-        .nav-item:hover { background-color: #ececec; }
-        .nav-item.active { background-color: #ececec; font-weight: 600; }
-        .btn-primary { background-color: #10a37f; color: white; transition: all 0.2s; }
-        .btn-primary:hover { background-color: #0d8a6c; }
-        .key-row:hover { background-color: #f7f7f8; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #1f1f1f; overscroll-behavior: none; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Modal Background Blur */
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); }
+        /* Smooth View Transitions */
+        .view-section { display: none; animation: fadeIn 0.3s ease-out forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sidebar Styling */
+        .sidebar { background-color: #ffffff; border-right: 1px solid #e3e3e3; }
+        .nav-item { transition: all 0.2s ease; border-radius: 8px; color: #444746; }
+        .nav-item:hover { background-color: #f0f4f9; color: #1f1f1f; }
+        .nav-item.active { background-color: #e8f0fe; color: #0b57d0; font-weight: 600; }
         
-        /* Mobile View Fixes */
+        /* Buttons */
+        .btn-primary { background-color: #0b57d0; color: white; transition: all 0.2s; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .btn-primary:hover:not(:disabled) { background-color: #0842a0; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1); transform: translateY(-1px); }
+        .btn-primary:disabled { background-color: #a8c7fa; cursor: not-allowed; }
+        
+        /* Modals & Overlays */
+        .modal-overlay { background-color: rgba(31, 31, 31, 0.6); backdrop-filter: blur(4px); }
+        
+        /* Progress Bar Animation */
+        .progress-bar-fill { transition: width 1s linear; }
+
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .sidebar.open { display: flex; position: fixed; inset: 0; z-index: 50; width: 80%; }
+            .sidebar { transform: translateX(-100%); position: fixed; inset: 0; z-index: 50; width: 280px; }
+            .sidebar.open { transform: translateX(0); }
         }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <div id="mobileOverlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleSidebar()"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity" onclick="toggleSidebar()"></div>
 
-    <aside id="sidebar" class="sidebar w-64 flex flex-col h-full overflow-y-auto transition-all">
-        <div class="p-6 flex items-center gap-3 border-b border-gray-200">
-            <div class="w-8 h-8 bg-[#10a37f] rounded flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <aside id="sidebar" class="sidebar w-[280px] flex flex-col h-full overflow-y-auto transition-transform duration-300 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
-            <span class="text-lg font-bold tracking-tight">Aura AI</span>
+            <span class="ml-3 text-lg font-bold tracking-tight text-gray-900">Aura Platform</span>
         </div>
 
-        <nav class="flex-1 p-4 space-y-2">
-            <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">Platform</div>
-            <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2 rounded-lg text-sm">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">Platform Setup</div>
+            
+            <button onclick="switchView('view-dashboard', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
                 Dashboard
-            </a>
-            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600">
+            </button>
+            
+            <button onclick="switchView('view-apikeys', this)" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                 API Keys
-            </a>
-            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
-                Usage
-            </a>
-            <div class="pt-6 text-[11px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">Account</div>
-            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Organization
-            </a>
-            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600">
+            </button>
+            
+            <button onclick="switchView('view-settings', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 Settings
-            </a>
+            </button>
         </nav>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
+        <div class="p-4 border-t border-gray-200">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-emerald-500 text-white flex items-center justify-center text-xs font-bold">MH</div>
+                <div class="w-9 h-9 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm border border-gray-300">DV</div>
                 <div class="flex flex-col">
-                    <span class="text-xs font-bold">Mohammad Haroon</span>
-                    <span class="text-[10px] text-gray-500 uppercase">Personal Account</span>
+                    <span class="text-sm font-bold text-gray-900">Developer</span>
+                    <span class="text-[10px] text-green-600 font-bold uppercase tracking-wider">Free Tier Active</span>
                 </div>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-y-auto">
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
         
-        <header class="h-[64px] border-b border-gray-200 flex items-center justify-between px-6 bg-white shrink-0">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100">
+        <header class="h-16 border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 shrink-0 bg-white z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100 text-gray-600">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-                <h2 class="font-semibold text-sm text-gray-500">API Keys</h2>
+                <h2 id="headerTitle" class="font-semibold text-gray-800">API Keys</h2>
             </div>
-            <div class="flex items-center gap-4">
-                <span id="statusInd" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold uppercase tracking-wider">System Live</span>
+            <div>
+                <span id="serverStatusBadge" class="text-[10px] bg-gray-100 text-gray-500 px-2.5 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-gray-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Server Sleep
+                </span>
             </div>
         </header>
 
-        <div class="p-6 md:p-12 max-w-5xl w-full mx-auto">
-            <h1 class="text-3xl font-bold mb-4">API keys</h1>
-            <p class="text-gray-500 text-[15px] mb-8 leading-relaxed">
-                Your secret API keys are listed below. Please note that we do not display your secret API keys again after you generate them. Keep them safe and don't share them.
-            </p>
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12">
+            <div class="max-w-4xl mx-auto w-full">
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="border border-gray-200 p-6 rounded-xl shadow-sm">
-                    <p class="text-xs font-bold text-gray-400 uppercase mb-1">Active Keys</p>
-                    <h3 id="keyCount" class="text-2xl font-bold">0</h3>
+                <div id="view-apikeys" class="view-section active">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">API keys</h1>
+                    <p class="text-gray-500 text-sm sm:text-base mb-8 max-w-2xl leading-relaxed">
+                        Your secret API keys are used to authenticate requests to our AI Engine. Please keep them safe and do not share them in public repositories.
+                    </p>
+
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[500px]">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Secret Key</th>
+                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Created</th>
+                                        <th class="px-6 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="keyTableBody" class="divide-y divide-gray-100">
+                                    </tbody>
+                            </table>
+                        </div>
+                        <div id="emptyState" class="p-10 text-center flex flex-col items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
+                            </div>
+                            <p class="text-gray-500 text-sm font-medium">No API keys found.</p>
+                            <p class="text-gray-400 text-xs mt-1">Generate your first key to start making requests.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="openModal('keyModal')" class="mt-6 btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Create new secret key
+                    </button>
                 </div>
-                <div class="border border-gray-200 p-6 rounded-xl shadow-sm">
-                    <p class="text-xs font-bold text-gray-400 uppercase mb-1">Requests Today</p>
-                    <h3 class="text-2xl font-bold">142</h3>
+
+                <div id="view-dashboard" class="view-section">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+                    <p class="text-gray-500 text-sm mb-8">Overview of your Aura AI Platform usage and statistics.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Keys</p>
+                            <h3 id="statTotalKeys" class="text-3xl font-bold text-gray-900">0</h3>
+                        </div>
+                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">API Requests</p>
+                            <h3 class="text-3xl font-bold text-gray-900">0</h3>
+                            <p class="text-xs text-gray-400 mt-1">Free tier data</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Credit Limit</p>
+                            <h3 class="text-3xl font-bold text-emerald-600">500</h3>
+                            <p class="text-xs text-gray-400 mt-1">Per generated key</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                        <p class="text-gray-500 text-sm">System usage graphs will appear here once you start making AI requests through your backend server.</p>
+                    </div>
                 </div>
-                <div class="border border-gray-200 p-6 rounded-xl shadow-sm">
-                    <p class="text-xs font-bold text-gray-400 uppercase mb-1">Credit Limit</p>
-                    <h3 class="text-2xl font-bold text-emerald-600">Unlimited</h3>
+
+                <div id="view-settings" class="view-section">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Settings</h1>
+                    <p class="text-gray-500 text-sm mb-8">Manage your backend configuration.</p>
+                    
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Render.com Backend URL</label>
+                        <p class="text-xs text-gray-500 mb-3">Ensure this URL points to your live Render server (without trailing slash).</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="configBackendUrl" placeholder="https://your-api.onrender.com" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <button onclick="saveBackendUrl()" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">Save URL</button>
+                        </div>
+                    </div>
                 </div>
+
             </div>
-
-            <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Name</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Secret Key</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Created</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="keyTableBody" class="divide-y divide-gray-100">
-                        </tbody>
-                </table>
-                <div id="emptyState" class="p-12 text-center text-gray-400 text-sm">
-                    You haven't generated any API keys yet.
-                </div>
-            </div>
-
-            <button onclick="openModal()" class="mt-8 btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Create new secret key
-            </button>
         </div>
     </main>
 
     <div id="keyModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-8 transform transition-all scale-95 opacity-0 duration-200" id="modalContent">
-            <h2 class="text-xl font-bold mb-2">Create secret key</h2>
-            <p class="text-sm text-gray-500 mb-6">Choose a name for your key to identify it in your dashboard.</p>
+        <div class="modal-overlay absolute inset-0" onclick="closeModal('keyModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="keyModalContent">
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Create new secret key</h2>
+            <p class="text-sm text-gray-500 mb-6">Give your key a name to easily identify it later.</p>
             
-            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Name</label>
-            <input type="text" id="keyNameInput" placeholder="e.g. My Project" 
-                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#10a37f] mb-6">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Name</label>
+            <input type="text" id="keyNameInput" placeholder="e.g. Mobile App Key" 
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-6">
 
             <div class="flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-100">Cancel</button>
+                <button onclick="closeModal('keyModal')" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">Cancel</button>
                 <button onclick="generateKey()" id="generateBtn" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold">Generate key</button>
             </div>
         </div>
     </div>
 
     <div id="successModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeSuccess()"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-8">
-            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="modal-overlay absolute inset-0" onclick="closeModal('successModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="successModalContent">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-5">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h2 class="text-xl font-bold mb-2">Save your secret key</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Save your secret key</h2>
             <p class="text-sm text-gray-500 mb-6 leading-relaxed">
-                Please save this secret key somewhere safe and accessible. For security reasons, <b>you won't be able to view it again</b>.
+                Please copy this key and save it securely. For your protection, <b>you will not be able to view it again</b> through this dashboard.
             </p>
             
-            <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl flex items-center justify-between gap-4 mb-8">
-                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800"></code>
-                <button onclick="copyNewKey()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg flex items-center justify-between gap-3 mb-6">
+                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800 px-1"></code>
+                <button onclick="copyNewKey()" id="copyBtn" class="p-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-md transition-colors shrink-0 text-gray-600" title="Copy to clipboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                 </button>
             </div>
 
-            <button onclick="closeSuccess()" class="w-full btn-primary py-3 rounded-xl font-bold transition-all">Done</button>
+            <button onclick="closeModal('successModal')" class="w-full btn-primary py-2.5 rounded-lg text-sm font-semibold transition-all">Done</button>
+        </div>
+    </div>
+
+    <div id="wakeOverlay" class="fixed inset-0 z-[120] hidden flex flex-col items-center justify-center bg-gray-900/90 backdrop-blur-sm text-white p-4">
+        <div class="max-w-sm w-full text-center">
+            <div class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+            <h2 class="text-2xl font-bold mb-2">Waking up AI Engine...</h2>
+            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                Because we use a free Render.com server, it goes to sleep when not used. It takes up to <b>50 seconds</b> to wake up. Please don't close this page.
+            </p>
+            
+            <div class="w-full bg-gray-800 rounded-full h-3 mb-2 overflow-hidden border border-gray-700">
+                <div id="progressBar" class="bg-blue-500 h-3 rounded-full progress-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="text-xs text-gray-500 font-mono">Estimated time left: <span id="timeLeft">50</span>s</p>
         </div>
     </div>
 
     <script>
-        // 🚨 YOUR RENDER URL 🚨
-        const BACKEND_URL = "https://aura-backend-api-1cnr.onrender.com";
+        /**
+         * AURA PLATFORM - DEVELOPER DASHBOARD
+         * Real SPA Logic, Server Cold-Start handling, and Local DB.
+         */
+
+        // 🚨 UPDATE THIS IF YOU CHANGE YOUR RENDER URL 🚨
+        let BACKEND_URL = localStorage.getItem('aura_backend_url') || "https://aura-backend-api-1cnr.onrender.com";
 
         let myKeys = JSON.parse(localStorage.getItem('aura_api_keys')) || [];
 
+        // INITIALIZE APP
         function init() {
+            document.getElementById('configBackendUrl').value = BACKEND_URL;
             renderTable();
+            checkServerStatusSilent(); // Check if server is awake in background
         }
 
+        // --- NAVIGATION LOGIC ---
+        function switchView(viewId, btnElement) {
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            // Hide all views, show target view
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            // Update Header Title
+            const titles = { 'view-apikeys': 'API Keys', 'view-dashboard': 'Dashboard', 'view-settings': 'Settings' };
+            document.getElementById('headerTitle').innerText = titles[viewId];
+
+            if(window.innerWidth < 768) toggleSidebar(); // Auto close on mobile
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('hidden');
+        }
+
+        // --- DATA RENDERING ---
         function renderTable() {
             const tbody = document.getElementById('keyTableBody');
             const empty = document.getElementById('emptyState');
-            const count = document.getElementById('keyCount');
+            
+            // Update Stats
+            document.getElementById('keyCount').innerText = myKeys.length;
+            document.getElementById('statTotalKeys').innerText = myKeys.length;
 
             tbody.innerHTML = '';
             if (myKeys.length === 0) {
                 empty.classList.remove('hidden');
-                count.innerText = "0";
                 return;
             }
 
             empty.classList.add('hidden');
-            count.innerText = myKeys.length;
+            
+            // Sort keys newest first
+            const sortedKeys = [...myKeys].reverse();
 
-            myKeys.forEach((k, index) => {
+            sortedKeys.forEach((k) => {
+                // Find actual index in original array for deletion
+                const originalIndex = myKeys.findIndex(orig => orig.key === k.key);
+                
                 const row = document.createElement('tr');
-                row.className = "key-row transition-colors";
+                row.className = "key-row transition-colors border-b border-gray-50 last:border-0";
                 row.innerHTML = `
-                    <td class="px-6 py-5 text-sm font-medium">${escapeHTML(k.name)}</td>
-                    <td class="px-6 py-5 text-sm font-mono text-gray-400">sk-aura-••••••••${k.key.slice(-4)}</td>
-                    <td class="px-6 py-5 text-sm text-gray-500">${k.date}</td>
-                    <td class="px-6 py-5 text-right">
-                        <button onclick="deleteKey(${index})" class="text-gray-400 hover:text-red-500 p-2 transition-colors">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${escapeHTML(k.name)}</td>
+                    <td class="px-6 py-4 text-sm font-mono text-gray-500">sk-aura-••••••••${k.key.slice(-4)}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${k.date}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="deleteKey(${originalIndex})" class="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="Delete Key">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                     </td>
                 `;
@@ -214,14 +313,89 @@
             });
         }
 
+        // --- SERVER PING & WAKE SYSTEM (The Magic Fix) ---
+        let isServerAwake = false;
+
+        async function checkServerStatusSilent() {
+            try {
+                // We ping the '/' route of your server
+                const res = await fetch(`${BACKEND_URL}/`);
+                if(res.ok) setServerStatus(true);
+            } catch(e) { setServerStatus(false); }
+        }
+
+        function setServerStatus(awake) {
+            isServerAwake = awake;
+            const badge = document.getElementById('serverStatusBadge');
+            if(awake) {
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Server Online`;
+                badge.className = "text-[10px] bg-emerald-50 text-emerald-700 px-2.5 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-emerald-200";
+            } else {
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Server Asleep`;
+                badge.className = "text-[10px] bg-orange-50 text-orange-700 px-2.5 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-orange-200";
+            }
+        }
+
+        // This handles the 1-minute Render wait time
+        async function ensureServerIsAwake() {
+            if (isServerAwake) return true; // Already awake, proceed immediately
+
+            const wakeOverlay = document.getElementById('wakeOverlay');
+            const progressBar = document.getElementById('progressBar');
+            const timeLeftText = document.getElementById('timeLeft');
+            
+            wakeOverlay.classList.remove('hidden');
+            
+            // Start 50-second visual countdown
+            let time = 50;
+            let width = 0;
+            const timerInterval = setInterval(() => {
+                time--;
+                width += 2; // 2% per second
+                timeLeftText.innerText = time;
+                progressBar.style.width = `${Math.min(width, 98)}%`;
+                if(time <= 0) clearInterval(timerInterval);
+            }, 1000);
+
+            try {
+                // Keep trying to ping until it responds
+                while (!isServerAwake && time > 0) {
+                    try {
+                        const res = await fetch(`${BACKEND_URL}/`);
+                        if(res.ok) isServerAwake = true;
+                    } catch(e) { /* Ignore fail, wait and retry */ }
+                    
+                    if(!isServerAwake) await new Promise(r => setTimeout(r, 3000)); // wait 3s before retry
+                }
+            } finally {
+                clearInterval(timerInterval);
+                wakeOverlay.classList.add('hidden');
+                progressBar.style.width = '0%';
+                if(isServerAwake) setServerStatus(true);
+            }
+            
+            return isServerAwake;
+        }
+
+        // --- API KEY GENERATION ---
         async function generateKey() {
             const nameInput = document.getElementById('keyNameInput').value.trim();
-            if (!nameInput) return alert("Bhai, key ka koi naam to rakho!");
+            if (!nameInput) return alert("Please enter a name for your key.");
 
             const genBtn = document.getElementById('generateBtn');
             genBtn.disabled = true;
+
+            // 1. Wake up server if it's sleeping (Shows loader if needed)
+            const isAwake = await ensureServerIsAwake();
+            if(!isAwake) {
+                alert("Server failed to wake up. Check if your Render URL is correct in Settings.");
+                genBtn.disabled = false;
+                return;
+            }
+
             genBtn.innerText = "Processing...";
 
+            // 2. Actually generate the key
             try {
                 const res = await fetch(`${BACKEND_URL}/generate-key`, {
                     method: 'POST',
@@ -235,19 +409,24 @@
                     const newKeyObj = {
                         name: nameInput,
                         key: data.apiKey,
-                        date: new Date().toLocaleDateString('en-GB', { day: 'd', month: 'short', year: 'Y' })
+                        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                     };
 
                     myKeys.push(newKeyObj);
                     localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
                     
                     document.getElementById('newKeyDisplay').innerText = data.apiKey;
-                    closeModal();
-                    openSuccess();
+                    document.getElementById('copyBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`; // Reset icon
+                    
+                    closeModal('keyModal');
+                    openModal('successModal');
                     renderTable();
+                } else {
+                    alert("Backend Error: " + data.error);
                 }
             } catch (e) {
-                alert("Server Connection Error! Make sure your Render server is up.");
+                alert("Network Error. Cannot connect to backend.");
+                setServerStatus(false);
             } finally {
                 genBtn.disabled = false;
                 genBtn.innerText = "Generate key";
@@ -255,54 +434,61 @@
         }
 
         function deleteKey(index) {
-            if (confirm("Are you sure you want to delete this key? This cannot be undone.")) {
+            if (confirm("Revoke this secret key? Any application using it will stop working immediately.")) {
                 myKeys.splice(index, 1);
                 localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
                 renderTable();
             }
         }
 
-        // UI Helpers
-        function openModal() {
-            document.getElementById('keyModal').classList.remove('hidden');
+        // --- SETTINGS ---
+        function saveBackendUrl() {
+            const url = document.getElementById('configBackendUrl').value.trim();
+            if(url.endsWith('/')) url = url.slice(0, -1); // remove trailing slash
+            
+            BACKEND_URL = url;
+            localStorage.setItem('aura_backend_url', BACKEND_URL);
+            
+            setServerStatus(false); // Reset status
+            checkServerStatusSilent(); // Test new URL
+            
+            const btn = event.target;
+            btn.innerText = "Saved!";
+            btn.classList.replace('bg-[#0b57d0]', 'bg-green-600');
             setTimeout(() => {
-                document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0');
+                btn.innerText = "Save URL";
+                btn.classList.replace('bg-green-600', 'bg-[#0b57d0]');
+            }, 2000);
+        }
+
+        // --- MODAL UTILS ---
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById(id + 'Content').classList.remove('scale-95', 'opacity-0');
             }, 10);
         }
 
-        function closeModal() {
-            document.getElementById('modalContent').classList.add('scale-95', 'opacity-0');
+        function closeModal(id) {
+            document.getElementById(id + 'Content').classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
-                document.getElementById('keyModal').classList.add('hidden');
-                document.getElementById('keyNameInput').value = '';
+                document.getElementById(id).classList.add('hidden');
+                if(id === 'keyModal') document.getElementById('keyNameInput').value = '';
             }, 200);
-        }
-
-        function openSuccess() {
-            document.getElementById('successModal').classList.remove('hidden');
-        }
-
-        function closeSuccess() {
-            document.getElementById('successModal').classList.add('hidden');
         }
 
         function copyNewKey() {
             const keyText = document.getElementById('newKeyDisplay').innerText;
             navigator.clipboard.writeText(keyText);
-            alert("Key copied to clipboard!");
-        }
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const ov = document.getElementById('mobileOverlay');
-            sb.classList.toggle('open');
-            ov.classList.toggle('hidden');
+            const btn = document.getElementById('copyBtn');
+            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10a37f" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         }
 
         function escapeHTML(str) {
             return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag));
         }
 
+        // Boot
         window.onload = init;
     </script>
 </body>
