@@ -27,6 +27,9 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         .progress-bar { transition: width 0.5s ease; }
+        
+        /* Code Block Styling for Docs */
+        .code-block { background-color: #1f2937; color: #f3f4f6; border-radius: 12px; padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.5; margin-top: 12px; border: 1px solid #374151;}
 
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); position: fixed; inset: 0; z-index: 50; width: 280px; }
@@ -46,7 +49,7 @@
             <span class="ml-3 text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Aura Enterprise</span>
         </div>
 
-        <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
             <button onclick="switchView('view-dashboard', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
                 Dashboard
@@ -54,6 +57,10 @@
             <button onclick="switchView('view-apikeys', this)" class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-sm">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                 API Keys
+            </button>
+            <button onclick="switchView('view-docs', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                API Documentation
             </button>
             <button onclick="switchView('view-logs', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
@@ -129,6 +136,86 @@
                             </div>
                             <p class="text-gray-400 font-medium text-sm">No keys provisioned on this browser.</p>
                         </div>
+                    </div>
+                </div>
+
+                <div id="view-docs" class="view-section">
+                    <h1 class="text-3xl font-extrabold mb-2">API Documentation</h1>
+                    <p class="text-gray-500 mb-8">Learn how to authenticate and make requests to your Aura Neural Engine.</p>
+                    
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm mb-8">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">1. Base URL & Authentication</h3>
+                        <p class="text-sm text-gray-600 mb-4">Your API requests should be sent to your live Render.com backend URL. You authenticate by passing your <code>sk-aura-...</code> key in the <b>Authorization</b> header.</p>
+                        
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-6">
+                            <p class="text-xs font-bold text-gray-400 uppercase mb-1">Your Base Endpoint:</p>
+                            <code id="docBaseUrlDisplay" class="text-sm font-bold text-blue-600">https://your-api.onrender.com/v1/chat/completions</code>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 mt-8">2. Integration Examples</h3>
+                        <p class="text-sm text-gray-600 mb-4">Choose your preferred language to see how to connect to your custom Aura Platform.</p>
+
+                        <div class="mb-8">
+                            <p class="text-sm font-bold text-gray-800">JavaScript / Node.js (Fetch API)</p>
+                            <div class="code-block font-mono">
+<span class="text-blue-400">const</span> response = <span class="text-blue-400">await</span> <span class="text-yellow-200">fetch</span>(<span class="text-green-300">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions"</span>, {
+    <span class="text-blue-200">method</span>: <span class="text-green-300">"POST"</span>,
+    <span class="text-blue-200">headers</span>: {
+        <span class="text-green-300">"Authorization"</span>: <span class="text-green-300">"Bearer sk-aura-YOUR_API_KEY_HERE"</span>,
+        <span class="text-green-300">"Content-Type"</span>: <span class="text-green-300">"application/json"</span>
+    },
+    <span class="text-blue-200">body</span>: <span class="text-blue-400">JSON</span>.<span class="text-yellow-200">stringify</span>({
+        <span class="text-blue-200">model</span>: <span class="text-green-300">"openrouter/free"</span>,
+        <span class="text-blue-200">messages</span>: [
+            { <span class="text-blue-200">role</span>: <span class="text-green-300">"user"</span>, <span class="text-blue-200">content</span>: <span class="text-green-300">"Hello Aura AI!"</span> }
+        ]
+    })
+});
+
+<span class="text-blue-400">const</span> data = <span class="text-blue-400">await</span> response.<span class="text-yellow-200">json</span>();
+<span class="text-blue-400">console</span>.<span class="text-yellow-200">log</span>(data.choices[<span class="text-orange-300">0</span>].message.content);
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <p class="text-sm font-bold text-gray-800">Python (Requests Library)</p>
+                            <div class="code-block font-mono">
+<span class="text-purple-400">import</span> requests
+<span class="text-purple-400">import</span> json
+
+url = <span class="text-green-300">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions"</span>
+headers = {
+    <span class="text-green-300">"Authorization"</span>: <span class="text-green-300">"Bearer sk-aura-YOUR_API_KEY_HERE"</span>,
+    <span class="text-green-300">"Content-Type"</span>: <span class="text-green-300">"application/json"</span>
+}
+data = {
+    <span class="text-green-300">"model"</span>: <span class="text-green-300">"openrouter/free"</span>,
+    <span class="text-green-300">"messages"</span>: [{<span class="text-green-300">"role"</span>: <span class="text-green-300">"user"</span>, <span class="text-green-300">"content"</span>: <span class="text-green-300">"Explain quantum computing."</span>}]
+}
+
+response = requests.<span class="text-yellow-200">post</span>(url, headers=headers, json=data)
+<span class="text-yellow-200">print</span>(response.<span class="text-yellow-200">json</span>()[<span class="text-green-300">"choices"</span>][<span class="text-orange-300">0</span>][<span class="text-green-300">"message"</span>][<span class="text-green-300">"content"</span>])
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">cURL (Terminal / Command Line)</p>
+                            <div class="code-block font-mono">
+curl -X POST <span class="text-green-300"><span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions</span> \
+  -H <span class="text-green-300">"Content-Type: application/json"</span> \
+  -H <span class="text-green-300">"Authorization: Bearer sk-aura-YOUR_API_KEY_HERE"</span> \
+  -d <span class="text-green-300">'{
+    "model": "openrouter/free",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the capital of India?"
+      }
+    ]
+  }'</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -233,7 +320,9 @@ Go to Settings and enter your Admin Secret.</pre>
                 </div>
 
                 <div class="flex flex-col gap-3 pt-2">
-                    <button id="genBtn" onclick="generateKey()" class="btn-primary w-full py-3.5 rounded-xl font-bold">Generate API Key</button>
+                    <button id="genBtn" onclick="generateKey()" class="btn-primary w-full py-3.5 rounded-xl font-bold flex justify-center items-center gap-2">
+                        <span id="btnText">Generate API Key</span>
+                    </button>
                     <button onclick="closeModal('keyModal')" class="w-full bg-white border border-gray-200 text-gray-600 py-3.5 rounded-xl font-bold hover:bg-gray-50 transition-colors">Cancel</button>
                 </div>
             </div>
@@ -276,8 +365,7 @@ Go to Settings and enter your Admin Secret.</pre>
     </div>
 
     <script>
-        // --- THE BULLETPROOF NETWORK ENGINE ---
-        
+        // --- GLOBAL VARIABLES ---
         let CONFIG = {
             url: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com",
             admin: localStorage.getItem('aura_admin') || ""
@@ -290,7 +378,15 @@ Go to Settings and enter your Admin Secret.</pre>
             document.getElementById('cfgUrl').value = CONFIG.url;
             document.getElementById('cfgAdminSecret').value = CONFIG.admin;
             updateUI();
+            updateDocUrls();
             testPing();
+        }
+
+        // --- DYNAMIC DOCS URL UPDATER ---
+        function updateDocUrls() {
+            const displayUrl = CONFIG.url || "https://your-api.onrender.com";
+            document.getElementById('docBaseUrlDisplay').innerText = displayUrl + "/v1/chat/completions";
+            document.querySelectorAll('.dynamic-url').forEach(el => el.innerText = displayUrl);
         }
 
         // --- NAVIGATION & UI ---
@@ -300,7 +396,7 @@ Go to Settings and enter your Admin Secret.</pre>
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
-            const titles = {'view-dashboard':'Dashboard Overview','view-apikeys':'API Key Management','view-logs':'Activity Logs','view-health':'System Health','view-settings':'Server Config'};
+            const titles = {'view-dashboard':'Dashboard Overview','view-apikeys':'API Key Management','view-docs': 'API Documentation', 'view-logs':'Activity Logs','view-health':'System Health','view-settings':'Server Config'};
             document.getElementById('headerTitle').innerText = titles[id];
             if(window.innerWidth < 768) toggleSidebar();
         }
@@ -377,7 +473,6 @@ Go to Settings and enter your Admin Secret.</pre>
             badge.innerHTML = `<span class="bg-blue-50 text-blue-600 border border-blue-100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"><svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Pinging...</span>`;
             
             try {
-                // Short timeout ping
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 4000);
                 const res = await fetch(CONFIG.url + '/', { mode: 'cors', signal: controller.signal });
@@ -391,9 +486,8 @@ Go to Settings and enter your Admin Secret.</pre>
             }
         }
 
-        // The "Bulletproof" Fetch that handles Render's cold start by retrying aggressively
         async function aggressiveFetch(endpoint, payload) {
-            const maxRetries = 15; // Allows up to 60 seconds of waiting
+            const maxRetries = 15; 
             const overlay = document.getElementById('wakeOverlay');
             const timeText = document.getElementById('timeElapsed');
             const bar = document.getElementById('progressBar');
@@ -404,7 +498,6 @@ Go to Settings and enter your Admin Secret.</pre>
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const controller = new AbortController();
-                    // 6 second timeout per fetch attempt
                     const timeoutId = setTimeout(() => controller.abort(), 6000);
                     
                     const res = await fetch(CONFIG.url + endpoint, {
@@ -417,26 +510,20 @@ Go to Settings and enter your Admin Secret.</pre>
                     
                     clearTimeout(timeoutId);
 
-                    // If it's a cold start error, throw to trigger retry
-                    if (res.status === 502 || res.status === 503 || res.status === 504) {
-                        throw new Error("Render Cold Start");
-                    }
+                    if (res.status === 502 || res.status === 503 || res.status === 504) throw new Error("Render Cold Start");
                     
-                    // SUCCESS! Clean up UI and return
                     if(timerInterval) clearInterval(timerInterval);
                     overlay.classList.add('hidden');
-                    testPing(); // Update badge to green
+                    testPing(); 
                     return await res.json();
 
                 } catch (error) {
-                    // It failed (Network Error / CORS / Abort / Cold Start)
                     if (i === maxRetries - 1) {
                         if(timerInterval) clearInterval(timerInterval);
                         overlay.classList.add('hidden');
                         throw new Error("Server refused to wake up. Please check your Render dashboard logs.");
                     }
                     
-                    // On first failure, show the Wake-Up screen
                     if(i === 0) {
                         overlay.classList.remove('hidden');
                         timerInterval = setInterval(() => {
@@ -446,7 +533,6 @@ Go to Settings and enter your Admin Secret.</pre>
                         }, 1000);
                     }
                     
-                    // Wait 4 seconds before trying again
                     await new Promise(r => setTimeout(r, 4000));
                 }
             }
@@ -467,7 +553,6 @@ Go to Settings and enter your Admin Secret.</pre>
             btn.disabled = true;
 
             try {
-                // Use the Bulletproof Engine
                 const data = await aggressiveFetch('/api/auth/generate', { name, scopes });
                 
                 if(data && data.success) {
@@ -514,9 +599,6 @@ Go to Settings and enter your Admin Secret.</pre>
 
             try {
                 const data = await aggressiveFetch('/api/admin/system-health', {});
-                // Technically aggressiveFetch uses POST, but our backend health route is GET
-                // To fix this without breaking architecture, we use standard fetch for health
-                
                 const res = await fetch(CONFIG.url + '/api/admin/system-health', {
                     headers: { 'x-admin-secret': CONFIG.admin }
                 });
@@ -531,7 +613,7 @@ Go to Settings and enter your Admin Secret.</pre>
                 logBox.innerText = `[ACCESS DENIED OR TIMEOUT]\n\nDetails: ${e.message}\nMake sure your Admin Secret matches the backend.`;
                 logActivity("Health Ping", "Admin Console", "Failed");
             } finally {
-                btn.disabled = false; btn.innerText = "Refresh Telemetry";
+                btn.disabled = false; btn.innerText = "Fetch Live Telemetry";
             }
         }
 
@@ -545,6 +627,7 @@ Go to Settings and enter your Admin Secret.</pre>
             
             logActivity("Updated Configuration", "System Settings", "Success");
             showToast("Settings Saved! Pinging Gateway...");
+            updateDocUrls(); // Updates the documentation URLs instantly
             testPing();
         }
 
@@ -566,7 +649,6 @@ Go to Settings and enter your Admin Secret.</pre>
                     showToast("Key copied!");
                 });
             } else {
-                // Fallback for older mobile browsers
                 const ta = document.createElement("textarea"); ta.value = key; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
                 showToast("Key copied (Fallback)!");
             }
