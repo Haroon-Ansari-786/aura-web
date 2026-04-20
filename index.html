@@ -3,239 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aura Platform — Developer Dashboard</title>
+    <title>Aura Enterprise — Ultimate Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Base Reset & Fonts */
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; overscroll-behavior: none; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #111827; margin: 0; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Smooth View Transitions */
-        .view-section { display: none; animation: fadeIn 0.3s ease-out forwards; }
+        .view-section { display: none; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Sidebar Styling */
-        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-item { transition: all 0.2s ease; border-radius: 8px; color: #4b5563; font-weight: 500; cursor: pointer; }
-        .nav-item:hover { background-color: #f3f4f6; color: #111827; }
-        .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 600; }
+        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; transition: all 0.3s ease; }
+        .nav-item { transition: all 0.2s; border-radius: 10px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
+        .nav-item:hover { background-color: #f9fafb; color: #111827; }
+        .nav-item.active { background-color: #2563eb; color: #ffffff; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
         
-        /* Buttons */
-        .btn-primary { background-color: #2563eb; color: white; transition: all 0.2s; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
-        .btn-primary:hover:not(:disabled) { background-color: #1d4ed8; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); transform: translateY(-1px); }
-        .btn-primary:disabled { background-color: #93c5fd; cursor: not-allowed; }
+        .btn-primary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; transition: all 0.3s; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; transform: none; box-shadow: none; }
         
-        /* Scopes Badges */
-        .badge { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-right: 4px; margin-bottom: 4px; }
-        .badge-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        .badge-purple { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
-        .badge-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .badge-orange { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .badge-live { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* Custom Checkbox */
-        .custom-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #d1d5db; appearance: none; background-color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 2px;}
-        .custom-checkbox:checked { background-color: #2563eb; border-color: #2563eb; }
-        .custom-checkbox:checked::after { content: '✓'; color: white; font-size: 12px; font-weight: bold; }
+        .progress-bar-fill { transition: width 1s linear; }
 
-        /* Modals */
-        .modal-overlay { background-color: rgba(17, 24, 39, 0.6); backdrop-filter: blur(2px); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Mobile Sidebar */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); position: fixed; inset: 0; z-index: 50; width: 280px; }
             .sidebar.open { transform: translateX(0); }
         }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-900">
+<body class="flex h-screen overflow-hidden">
 
-    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden transition-opacity opacity-0" onclick="toggleSidebar()"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden" onclick="toggleSidebar()"></div>
 
-    <aside id="sidebar" class="sidebar flex flex-col h-full overflow-y-auto">
-        <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <aside id="sidebar" class="sidebar w-72 flex flex-col h-full z-50">
+        <div class="h-20 flex items-center px-8 border-b border-gray-100">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
-            <span class="ml-3 text-lg font-bold tracking-tight">Aura Platform</span>
+            <span class="ml-3 text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Aura Enterprise</span>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-1">
-            <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-3">Organization</div>
-            
-            <button onclick="switchView('view-dashboard', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-                Dashboard
+        <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
+            <button onclick="switchView('view-dashboard', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+                Dashboard Overview
             </button>
-            
-            <button onclick="switchView('view-apikeys', this)" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
-                API Keys
+            <button onclick="switchView('view-apikeys', this)" class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
+                API Key Management
             </button>
-
-            <button onclick="switchView('view-usage', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <button onclick="switchView('view-logs', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                 Activity Logs
             </button>
-
-            <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-3 mt-6 mb-3">Configuration</div>
-            
-            <button onclick="switchView('view-settings', this)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                Server Settings
+            <button onclick="switchView('view-health', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                System Health (Admin)
+            </button>
+            <button onclick="switchView('view-settings', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Server Config
             </button>
         </nav>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50 shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm border border-gray-300">MH</div>
-                <div class="flex flex-col">
-                    <span class="text-sm font-bold text-gray-900 leading-tight">Mohammad Bhai</span>
-                    <span class="text-[10px] text-green-600 font-bold uppercase tracking-wider">Free Tier Active</span>
+        <div class="p-6 border-t border-gray-100 bg-gray-50/50">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-indigo-700">MH</div>
+                <div>
+                    <p class="text-sm font-bold">Mohammad Haroon</p>
+                    <p class="text-[10px] uppercase font-bold text-blue-600 tracking-tighter">Ultra Pro Master</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f9fafb] relative">
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
         
-        <header class="h-16 border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0 z-10 shadow-sm">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
+        <header class="h-20 border-b border-gray-100 flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-10">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-500">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-                <h2 id="headerTitle" class="font-semibold text-gray-800 text-lg">API Keys</h2>
+                <h2 id="headerTitle" class="font-bold text-gray-500 text-sm uppercase tracking-widest">API Key Management</h2>
             </div>
-            <div>
-                <button onclick="pingServer()" id="serverStatusBadge" class="text-[10px] bg-gray-100 text-gray-500 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer" title="Click to test connection">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> <span id="statusText">Check Status</span>
-                </button>
+            <div id="liveStatus" class="flex items-center gap-2">
+                <span class="bg-gray-100 text-gray-500 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Checking...</span>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 hide-scrollbar">
-            <div class="max-w-5xl mx-auto w-full">
+        <div class="flex-1 overflow-y-auto p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
 
                 <div id="view-apikeys" class="view-section active">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900 mb-1">API keys</h1>
-                            <p class="text-gray-500 text-sm">Manage your authentication keys and permissions.</p>
+                            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Secret keys</h1>
+                            <p class="text-gray-500 max-w-lg text-[15px]">Manage enterprise-grade keys for your applications.</p>
                         </div>
-                        <button onclick="openModal('keyModal')" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shrink-0">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <button onclick="openModal('keyModal')" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             Create new secret key
                         </button>
                     </div>
 
-                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                    <div class="border border-gray-100 rounded-2xl overflow-hidden shadow-xl shadow-blue-500/5 bg-white">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[650px]">
-                                <thead class="bg-gray-50 border-b border-gray-200">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Secret Key</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Scopes</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Created</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Name</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Key Mask</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Scopes</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-right">Delete</th>
                                     </tr>
                                 </thead>
-                                <tbody id="keyTableBody" class="divide-y divide-gray-100">
-                                    </tbody>
+                                <tbody id="keyTableBody" class="divide-y divide-gray-50"></tbody>
                             </table>
                         </div>
-                        <div id="emptyState" class="p-10 text-center flex flex-col items-center bg-white">
-                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
+                        <div id="emptyState" class="p-20 text-center flex flex-col items-center">
+                            <div class="w-16 h-16 bg-blue-50 text-blue-200 rounded-full flex items-center justify-center mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                             </div>
-                            <p class="text-gray-600 font-medium">No API keys found.</p>
-                            <p class="text-gray-400 text-sm mt-1">Click "Create new secret key" to start.</p>
+                            <p class="text-gray-400 font-medium text-sm">No keys provisioned on this browser.</p>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-dashboard" class="view-section">
-                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Dashboard</h1>
-                    <p class="text-gray-500 text-sm mb-6">Overview of your Aura AI Platform.</p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total API Keys</p>
-                            <h3 id="statTotalKeys" class="text-3xl font-bold text-gray-900">0</h3>
+                    <h1 class="text-3xl font-extrabold mb-8">Platform Overview</h1>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+                            <p class="text-[10px] font-extrabold text-gray-400 uppercase mb-2 tracking-widest">Total Managed Keys</p>
+                            <h2 id="dashKeyCount" class="text-4xl font-black text-blue-600">0</h2>
                         </div>
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Keys Generated</p>
-                            <h3 id="statTotalLogs" class="text-3xl font-bold text-gray-900">0</h3>
-                            <p class="text-xs text-gray-400 mt-1">Lifetime</p>
+                        <div class="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+                            <p class="text-[10px] font-extrabold text-gray-400 uppercase mb-2 tracking-widest">Activity Logs</p>
+                            <h2 id="dashLogCount" class="text-4xl font-black text-emerald-500">0</h2>
+                            <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold">Events Recorded</p>
                         </div>
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Server Engine</p>
-                            <h3 class="text-xl font-bold text-gray-900 mt-1">Node.js Express</h3>
-                            <p class="text-xs text-gray-400 mt-1">Render.com</p>
-                        </div>
-                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Data Storage</p>
-                            <h3 class="text-xl font-bold text-emerald-600 mt-1">Local Indexed</h3>
-                            <p class="text-xs text-gray-400 mt-1">Zero-latency cache</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                        <h3 class="text-sm font-bold text-gray-700 mb-4">Platform Capabilities</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-xs font-semibold">100+ Models Supported</span>
-                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-100 rounded-lg text-xs font-semibold">Deep Context Memory</span>
-                            <span class="px-3 py-1.5 bg-green-50 text-green-700 border border-green-100 rounded-lg text-xs font-semibold">Vision & File Analysis</span>
-                            <span class="px-3 py-1.5 bg-orange-50 text-orange-700 border border-orange-100 rounded-lg text-xs font-semibold">Image/Video Endpoints</span>
-                            <span class="px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">Real-Time Auto Retry</span>
+                        <div class="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+                            <p class="text-[10px] font-extrabold text-gray-400 uppercase mb-2 tracking-widest">Architecture</p>
+                            <h2 class="text-4xl font-black text-indigo-500">NODE</h2>
+                            <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold">Express + File DB</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="view-usage" class="view-section">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900 mb-1">Activity Logs</h1>
-                            <p class="text-gray-500 text-sm">Real-time tracking of API events.</p>
-                        </div>
-                        <button onclick="clearLogs()" class="px-4 py-2 border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg text-xs font-bold transition-colors shadow-sm">Clear Logs</button>
+                <div id="view-logs" class="view-section">
+                    <div class="flex justify-between items-center mb-8">
+                        <h1 class="text-3xl font-extrabold">Activity Logs</h1>
+                        <button onclick="clearLogs()" class="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-xs font-bold hover:bg-red-100">Clear Logs</button>
                     </div>
-                    
-                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                    <div class="border border-gray-100 rounded-2xl overflow-hidden shadow-sm bg-white">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[500px]">
-                                <thead class="bg-gray-50 border-b border-gray-200">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Time</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Action</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Key Name</th>
-                                        <th class="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Time</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Action</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Target</th>
+                                        <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="activityLogBody" class="divide-y divide-gray-100">
-                                    </tbody>
+                                <tbody id="activityLogBody" class="divide-y divide-gray-50"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
+                <div id="view-health" class="view-section">
+                    <h1 class="text-3xl font-extrabold mb-2">System Health</h1>
+                    <p class="text-gray-500 mb-8">Live metrics directly from the Render.com runtime.</p>
+                    <div class="bg-gray-900 text-emerald-400 p-8 rounded-2xl font-mono text-sm shadow-2xl min-h-[300px] overflow-hidden">
+                        <pre id="healthStats">Please enter Admin Secret in Settings to unlock live telemetry.</pre>
+                    </div>
+                    <button onclick="fetchHealth()" class="mt-6 btn-primary px-8 py-3 rounded-xl font-bold text-sm">Refresh Telemetry</button>
+                </div>
+
                 <div id="view-settings" class="view-section">
-                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Server Settings</h1>
-                    <p class="text-gray-500 text-sm mb-6">Configure your connection to the Render backend.</p>
-                    
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-2xl shadow-sm">
-                        <label class="block text-sm font-bold text-gray-700 mb-1">Backend URL Endpoint</label>
-                        <p class="text-xs text-gray-500 mb-4">Make sure this is exactly your Render.com URL (No slash at the end).</p>
-                        
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="configBackendUrl" placeholder="https://your-api.onrender.com" class="flex-1 border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            <button onclick="saveBackendUrl(this)" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-semibold whitespace-nowrap text-center">Save & Test</button>
+                    <h1 class="text-3xl font-extrabold mb-8">Server Config</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Render Backend URL</label>
+                            <input type="text" id="cfgUrl" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" placeholder="https://api.render.com">
+                            <button onclick="saveSettings()" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">Save & Ping Gateway</button>
                         </div>
-                        
-                        <div id="urlTestResult" class="hidden mt-4 text-sm font-medium p-3 rounded-lg"></div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Admin God-Mode Secret</label>
+                            <input type="password" id="cfgAdminSecret" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 mb-4" placeholder="Enter aura-master-key-786">
+                            <button onclick="saveSettings()" class="w-full bg-red-50 text-red-600 border border-red-100 py-3 rounded-xl font-bold text-sm hover:bg-red-100">Authenticate Admin</button>
+                        </div>
                     </div>
                 </div>
 
@@ -244,472 +204,306 @@
     </main>
 
     <div id="keyModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0 transition-opacity opacity-0" id="keyModalOverlay" onclick="closeModal('keyModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 transform transition-all scale-95 opacity-0 duration-200" id="keyModalContent">
-            <h2 class="text-xl font-bold text-gray-900 mb-1">Create secret key</h2>
-            <p class="text-sm text-gray-500 mb-5">Configure permissions and generate a new key.</p>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('keyModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl relative z-10 p-8 transform transition-all scale-95 opacity-0" id="keyModalContent">
+            <h2 class="text-2xl font-bold mb-2">Create secret key</h2>
+            <p class="text-sm text-gray-500 mb-8">Configure permissions for your new key.</p>
             
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Key Name</label>
-            <input type="text" id="keyNameInput" placeholder="e.g. My Web App" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-5">
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Name</label>
+                    <input type="text" id="keyNameInput" placeholder="e.g. My Website Pro" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">Permissions (Scopes)</label>
-            <div class="space-y-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5" checked disabled>
-                    <div>
-                        <p class="text-sm font-bold text-gray-900">Text & Reasoning</p>
-                        <p class="text-xs text-gray-500">Base API access (DeepSeek, Llama, Gemma).</p>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest">Permissions</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center gap-2 text-xs font-medium bg-gray-50 p-3 rounded-xl border border-gray-100"><input type="checkbox" checked disabled> Text</label>
+                        <label class="flex items-center gap-2 text-xs font-medium bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer"><input type="checkbox" id="scVision" checked> Vision</label>
+                        <label class="flex items-center gap-2 text-xs font-medium bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer"><input type="checkbox" id="scImage" checked> Image</label>
+                        <label class="flex items-center gap-2 text-xs font-medium bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer"><input type="checkbox" id="scVideo"> Video</label>
                     </div>
-                </label>
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="vision" checked>
-                    <div>
-                        <p class="text-sm font-bold text-gray-900">Vision & Files</p>
-                        <p class="text-xs text-gray-500">Allow image, .js, .txt, .csv uploads.</p>
-                    </div>
-                </label>
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="image_gen" checked>
-                    <div>
-                        <p class="text-sm font-bold text-gray-900">Image Generation</p>
-                        <p class="text-xs text-gray-500">Access to /image capabilities.</p>
-                    </div>
-                </label>
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" class="custom-checkbox mt-0.5 scope-cb" value="video_gen" checked>
-                    <div>
-                        <p class="text-sm font-bold text-gray-900">Video Generation</p>
-                        <p class="text-xs text-gray-500">Access to /video capabilities.</p>
-                    </div>
-                </label>
-            </div>
+                </div>
 
-            <div id="retryStatusBox" class="hidden mb-4 bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-800 font-medium flex items-center gap-3">
-                <svg class="animate-spin h-5 w-5 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <span>Server is waking up from sleep mode. Please wait up to 50 seconds...</span>
-            </div>
-
-            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
-                <button onclick="closeModal('keyModal')" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors w-full sm:w-auto border border-gray-200 sm:border-transparent">Cancel</button>
-                <button onclick="generateKey()" id="generateBtn" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold w-full sm:w-auto flex justify-center items-center gap-2">
-                    <span id="btnText">Generate key</span>
-                </button>
+                <div class="flex flex-col gap-3 pt-4">
+                    <button id="genBtn" onclick="generateKey()" class="btn-primary w-full py-4 rounded-xl font-bold flex justify-center items-center gap-2">
+                        <span id="btnText">Generate API Key</span>
+                    </button>
+                    <button onclick="closeModal('keyModal')" class="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="successModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0 transition-opacity opacity-0" id="successModalOverlay" onclick="closeModal('successModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-6 sm:p-8 transform transition-all scale-95 opacity-0 duration-200" id="successModalContent">
-            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-md" onclick="closeModal('successModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl relative z-10 p-8 transform transition-all scale-95 opacity-0" id="successModalContent">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Key Generated!</h2>
-            <p class="text-sm text-gray-500 mb-5">
-                Copy this key now. For security reasons, you cannot view it again.
-            </p>
+            <h2 class="text-2xl font-bold mb-2">Key generated!</h2>
+            <p class="text-sm text-gray-500 mb-8 leading-relaxed">Save this key somewhere safe. For security reasons, <b>you won't be able to view it again</b>.</p>
             
-            <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg flex items-center justify-between gap-3 mb-6">
-                <code id="newKeyDisplay" class="text-sm font-mono break-all text-gray-800 px-1 select-all"></code>
-                <button onclick="copyToClipboardFallback('newKeyDisplay', this)" class="p-2 bg-white border border-gray-200 hover:bg-gray-100 rounded-md transition-colors shrink-0 text-gray-600 shadow-sm" title="Copy">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                </button>
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-2xl flex items-center justify-between gap-4 mb-8">
+                <code id="displayKey" class="text-sm font-mono font-bold break-all"></code>
+                <button onclick="copyKey()" class="p-2 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg shadow-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></button>
             </div>
 
-            <button onclick="closeModal('successModal')" class="w-full btn-primary py-2.5 rounded-lg text-sm font-semibold transition-all">Done</button>
+            <button onclick="closeModal('successModal')" class="w-full btn-primary py-4 rounded-xl font-bold">Done</button>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 translate-y-20 opacity-0 bg-gray-900 text-white px-5 py-3 rounded-full shadow-2xl text-sm font-medium z-[200] flex items-center gap-2 transition-all duration-300 pointer-events-none">
-        <span id="toastMsg">Action Successful</span>
+    <div id="wakeOverlay" class="fixed inset-0 z-[120] hidden flex flex-col items-center justify-center bg-gray-900/90 backdrop-blur-sm text-white p-6">
+        <div class="max-w-sm w-full text-center">
+            <div class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+            <h2 class="text-2xl font-bold mb-2">Waking up Engine...</h2>
+            <p class="text-gray-400 text-sm mb-8 leading-relaxed">Render server goes to sleep when idle. Boot sequence initiated. Please wait.</p>
+            <div class="w-full bg-gray-800 rounded-full h-2 mb-2 overflow-hidden border border-gray-700">
+                <div id="progressBar" class="bg-blue-500 h-2 rounded-full progress-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-widest">Time remaining: <span id="timeLeft">50</span>s</p>
+        </div>
     </div>
 
     <script>
-        /**
-         * AURA PLATFORM - BUG-FREE ENTERPRISE DASHBOARD
-         */
+        // --- GLOBAL CONFIG & DB ---
+        let CONFIG = { url: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com", admin: localStorage.getItem('aura_admin') || "" };
+        let myKeys = JSON.parse(localStorage.getItem('aura_keys')) || [];
+        let myLogs = JSON.parse(localStorage.getItem('aura_logs')) || [];
 
-        // 🚨 YOUR RENDER URL 🚨
-        let BACKEND_URL = localStorage.getItem('aura_backend_url') || "https://aura-backend-api-1cnr.onrender.com";
-        
-        let myKeys = [];
-        let activityLogs = [];
-
-        // INIT (Load data safely)
-        window.onload = () => {
-            try { myKeys = JSON.parse(localStorage.getItem('aura_api_keys')) || []; } catch(e) { myKeys = []; }
-            try { activityLogs = JSON.parse(localStorage.getItem('aura_api_logs')) || []; } catch(e) { activityLogs = []; }
-            
-            document.getElementById('configBackendUrl').value = BACKEND_URL;
-            updateAllViews();
-            checkServerStatusSilent();
-            
-            // Welcome Log if empty
-            if(activityLogs.length === 0) logActivity("System Boot", "Admin", "Success");
-        };
-
-        // --- MASTER UPDATE FUNCTION ---
-        function updateAllViews() {
-            renderTable();
-            renderLogs();
-            document.getElementById('statTotalKeys').innerText = myKeys.length;
-            document.getElementById('statTotalLogs').innerText = activityLogs.length;
+        function init() {
+            document.getElementById('cfgUrl').value = CONFIG.url;
+            document.getElementById('cfgAdminSecret').value = CONFIG.admin;
+            updateUI();
+            checkPulseSilent();
         }
 
-        // --- SPA NAVIGATION ---
-        function switchView(viewId, btnElement) {
-            // Update Active Tab UI
+        // --- NAVIGATION ---
+        function switchView(id, btn) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-
-            // Switch Sections
+            if(btn) btn.classList.add('active');
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-
-            // Update Header
-            const titles = { 'view-apikeys': 'API Keys', 'view-dashboard': 'Dashboard', 'view-settings': 'Server Settings', 'view-usage': 'Activity Logs' };
-            document.getElementById('headerTitle').innerText = titles[viewId];
-
-            // Auto-close mobile sidebar (BUG FIXED)
-            if(window.innerWidth < 768) {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('mobileOverlay').classList.add('hidden');
-                document.getElementById('mobileOverlay').classList.remove('opacity-100');
-            }
+            document.getElementById(id).classList.add('active');
+            
+            const titles = {'view-dashboard':'Dashboard Overview','view-apikeys':'API Key Management','view-logs':'Activity Logs','view-health':'System Health','view-settings':'Server Config'};
+            document.getElementById('headerTitle').innerText = titles[id];
+            
+            if(window.innerWidth < 768) toggleSidebar();
         }
 
         function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const ov = document.getElementById('mobileOverlay');
-            
-            if (sb.classList.contains('open')) {
-                sb.classList.remove('open');
-                ov.classList.remove('opacity-100');
-                setTimeout(() => ov.classList.add('hidden'), 300);
-            } else {
-                sb.classList.add('open');
-                ov.classList.remove('hidden');
-                setTimeout(() => ov.classList.add('opacity-100'), 10);
-            }
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('hidden');
         }
 
         // --- DATA RENDERING ---
-        function renderTable() {
-            const tbody = document.getElementById('keyTableBody');
-            const empty = document.getElementById('emptyState');
-            
-            tbody.innerHTML = '';
-            if (myKeys.length === 0) {
-                empty.classList.remove('hidden'); return;
+        function updateUI() {
+            document.getElementById('dashKeyCount').innerText = myKeys.length;
+            document.getElementById('dashLogCount').innerText = myLogs.length;
+
+            // Render Keys
+            const tbodyKeys = document.getElementById('keyTableBody');
+            const emptyKeys = document.getElementById('emptyState');
+            tbodyKeys.innerHTML = '';
+            if(myKeys.length === 0) { emptyKeys.classList.remove('hidden'); } 
+            else {
+                emptyKeys.classList.add('hidden');
+                [...myKeys].reverse().forEach((k) => {
+                    const idx = myKeys.findIndex(orig => orig.key === k.key);
+                    const scopesHtml = k.scopes.map(s => `<span class="px-2 py-0.5 bg-gray-100 text-[9px] font-bold uppercase rounded-md text-gray-500 border border-gray-200 mr-1">${s}</span>`).join('');
+                    tbodyKeys.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm font-bold text-gray-800">${escapeHTML(k.name)}</td>
+                            <td class="px-6 py-4 text-xs font-mono text-gray-400">sk-aura-••••${k.key.slice(-4)}</td>
+                            <td class="px-6 py-4 flex flex-wrap mt-1.5">${scopesHtml}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="deleteKey(${idx})" class="text-gray-300 hover:text-red-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                            </td>
+                        </tr>
+                    `;
+                });
             }
-            empty.classList.add('hidden');
-            
-            const sortedKeys = [...myKeys].reverse();
 
-            sortedKeys.forEach((k) => {
-                const originalIndex = myKeys.findIndex(orig => orig.key === k.key);
-                
-                // Build Scope Badges
-                let badges = `<span class="badge badge-blue">TXT</span>`;
-                if(k.scopes && k.scopes.includes('vision')) badges += `<span class="badge badge-purple">VIS</span>`;
-                if(k.scopes && k.scopes.includes('image_gen')) badges += `<span class="badge badge-green">IMG</span>`;
-                if(k.scopes && k.scopes.includes('video_gen')) badges += `<span class="badge badge-orange">VID</span>`;
-
-                const row = document.createElement('tr');
-                row.className = "hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0";
-                row.innerHTML = `
-                    <td class="px-5 py-4 text-sm font-bold text-gray-900">${escapeHTML(k.name)}</td>
-                    <td class="px-5 py-4 text-sm font-mono text-gray-500">sk-aura-••••••••${k.key.slice(-4)}</td>
-                    <td class="px-5 py-4 flex flex-wrap mt-1">${badges}</td>
-                    <td class="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">${k.date}</td>
-                    <td class="px-5 py-4 text-right">
-                        <button onclick="deleteKey(${originalIndex})" class="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="Revoke Key">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+            // Render Logs
+            const tbodyLogs = document.getElementById('activityLogBody');
+            tbodyLogs.innerHTML = '';
+            if(myLogs.length === 0) {
+                tbodyLogs.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-sm text-gray-400">No logs found.</td></tr>`;
+            } else {
+                myLogs.forEach(log => {
+                    const color = log.status === 'Success' ? 'text-green-600' : 'text-red-600';
+                    tbodyLogs.innerHTML += `
+                        <tr class="hover:bg-gray-50 border-b border-gray-50">
+                            <td class="px-6 py-4 text-xs font-mono text-gray-400">${log.time}</td>
+                            <td class="px-6 py-4 text-sm font-bold text-gray-800">${log.action}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${escapeHTML(log.target)}</td>
+                            <td class="px-6 py-4 text-xs font-bold ${color}">${log.status}</td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
-        // --- ACTIVITY LOGS ---
-        function logActivity(action, keyName, status) {
-            const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
-            activityLogs.unshift({ time, action, keyName, status });
-            if(activityLogs.length > 30) activityLogs.pop(); // Keep last 30
-            localStorage.setItem('aura_api_logs', JSON.stringify(activityLogs));
-            updateAllViews();
-        }
-
-        function renderLogs() {
-            const tbody = document.getElementById('activityLogBody');
-            tbody.innerHTML = '';
-            if(activityLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-sm text-gray-400">No activity recorded yet.</td></tr>`;
-                return;
-            }
-            activityLogs.forEach(log => {
-                const statusColor = log.status === 'Success' ? 'text-green-600 bg-green-50 border-green-200' : 'text-red-600 bg-red-50 border-red-200';
-                const row = document.createElement('tr');
-                row.className = "border-b border-gray-100 hover:bg-gray-50 transition-colors";
-                row.innerHTML = `
-                    <td class="px-5 py-3.5 text-xs text-gray-500 font-mono whitespace-nowrap">${log.time}</td>
-                    <td class="px-5 py-3.5 text-sm font-medium text-gray-900">${escapeHTML(log.action)}</td>
-                    <td class="px-5 py-3.5 text-sm text-gray-600">${escapeHTML(log.keyName)}</td>
-                    <td class="px-5 py-3.5 text-xs font-bold"><span class="px-2.5 py-1 rounded-md border ${statusColor}">${log.status}</span></td>
-                `;
-                tbody.appendChild(row);
-            });
+        function logActivity(action, target, status) {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            myLogs.unshift({ time, action, target, status });
+            if(myLogs.length > 30) myLogs.pop();
+            localStorage.setItem('aura_logs', JSON.stringify(myLogs));
+            updateUI();
         }
 
         function clearLogs() {
-            if(confirm("Clear all local activity logs?")) {
-                activityLogs = [];
-                localStorage.setItem('aura_api_logs', JSON.stringify([]));
-                updateAllViews();
-                showToast("Logs cleared successfully.");
-            }
+            if(confirm("Clear all logs?")) { myLogs = []; localStorage.setItem('aura_logs', JSON.stringify([])); updateUI(); }
         }
 
-        // --- SMART PING & AUTO-RETRY ENGINE (The 1-Minute Sleep Fix) ---
-        
-        async function pingServer() {
-            const badge = document.getElementById('serverStatusBadge');
-            document.getElementById('statusText').innerText = "Pinging...";
-            badge.classList.replace('bg-gray-100', 'bg-blue-50');
-            badge.classList.replace('text-gray-500', 'text-blue-600');
-            
-            await checkServerStatusSilent();
-        }
+        // --- SMART PING & AUTO-RETRY ENGINE ---
+        let isAwake = false;
 
-        async function checkServerStatusSilent() {
+        async function checkPulseSilent() {
             try {
-                // Fetch with a 3 second timeout for quick UI updates
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
-                
-                const res = await fetch(`${BACKEND_URL}/`, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                setServerStatus(res.ok);
-            } catch(e) { setServerStatus(false); }
+                const res = await fetch(CONFIG.url + '/');
+                isAwake = res.ok;
+                updatePulseUI(isAwake);
+            } catch(e) { isAwake = false; updatePulseUI(false); }
         }
 
-        function setServerStatus(isAwake) {
-            const badge = document.getElementById('serverStatusBadge');
-            if(isAwake) {
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="statusText">Server Online</span>`;
-                badge.className = "text-[10px] bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-emerald-200 transition-colors shadow-sm cursor-pointer hover:bg-emerald-100";
-            } else {
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-orange-400"></span> <span id="statusText">Server Asleep</span>`;
-                badge.className = "text-[10px] bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 border border-orange-200 transition-colors shadow-sm cursor-pointer hover:bg-orange-100";
-            }
+        function updatePulseUI(alive) {
+            const badge = document.getElementById('liveStatus');
+            if(alive) badge.innerHTML = `<span class="badge-live px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Gateway Online</span>`;
+            else badge.innerHTML = `<span class="bg-red-50 text-red-600 border border-red-100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Gateway Sleeping</span>`;
         }
 
-        // Bulletproof Fetch that retries until Render wakes up (Max 60 seconds)
-        async function fetchWithRetry(url, options, maxRetries = 12) {
-            for (let i = 0; i < maxRetries; i++) {
+        async function ensureAwake() {
+            if(isAwake) return true;
+            
+            const overlay = document.getElementById('wakeOverlay');
+            overlay.classList.remove('hidden');
+            
+            let time = 50; let width = 0;
+            const text = document.getElementById('timeLeft');
+            const bar = document.getElementById('progressBar');
+            
+            const timer = setInterval(() => {
+                time--; width += 2;
+                text.innerText = time; bar.style.width = width + '%';
+                if(time <= 0) clearInterval(timer);
+            }, 1000);
+
+            for(let i=0; i<15; i++) {
                 try {
-                    // Try fetch, but abort if it takes more than 10 seconds per try (Render 502/504 errors usually hang)
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000);
-                    
-                    const res = await fetch(url, { ...options, signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    // Render specific cold start errors
-                    if (res.status === 502 || res.status === 504) {
-                        throw new Error("Cold Start");
-                    }
-                    return res;
-                } catch (error) {
-                    if (i === maxRetries - 1) throw new Error("Server timeout. It refused to wake up.");
-                    
-                    // Show Wake Up message on first fail
-                    if(i === 0) document.getElementById('retryStatusBox').classList.remove('hidden');
-                    
-                    // Wait 5 seconds before retrying
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                }
+                    const res = await fetch(CONFIG.url + '/');
+                    if(res.ok) { isAwake = true; break; }
+                } catch(e) {}
+                await new Promise(r => setTimeout(r, 3000));
             }
+
+            clearInterval(timer);
+            overlay.classList.add('hidden');
+            bar.style.width = '0%';
+            updatePulseUI(isAwake);
+            return isAwake;
         }
 
-        // --- API KEY GENERATION ---
+        // --- API & ADMIN FUNCTIONS ---
         async function generateKey() {
-            const nameInput = document.getElementById('keyNameInput').value.trim();
-            if (!nameInput) return showToast("Bhai, key ka naam to daalo!");
+            const name = document.getElementById('keyNameInput').value.trim();
+            if(!name) return alert("Please enter a key name.");
 
-            // Get selected scopes
-            const scopes = [];
-            document.querySelectorAll('.scope-cb:checked').forEach(cb => scopes.push(cb.value));
+            const scopes = ["text"];
+            if(document.getElementById('scVision').checked) scopes.push("vision");
+            if(document.getElementById('scImage').checked) scopes.push("image_gen");
+            if(document.getElementById('scVideo').checked) scopes.push("video_gen");
 
-            const genBtn = document.getElementById('generateBtn');
-            const btnText = document.getElementById('btnText');
-            
-            genBtn.disabled = true;
-            btnText.innerText = "Connecting to Server...";
+            const btn = document.getElementById('genBtn');
+            btn.innerHTML = `Generating...`;
+            btn.disabled = true;
+
+            const awake = await ensureAwake();
+            if(!awake) {
+                alert("Gateway Timeout. Check settings.");
+                btn.innerHTML = "Generate API Key"; btn.disabled = false;
+                logActivity("Generate Key", name, "Failed");
+                return;
+            }
 
             try {
-                // Use the Bulletproof Retry Fetch
-                const res = await fetchWithRetry(`${BACKEND_URL}/generate-key`, {
+                // Hitting the Enterprise Endpoint
+                const res = await fetch(CONFIG.url + '/api/auth/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: nameInput, scopes: scopes })
+                    body: JSON.stringify({ name, scopes })
                 });
-
                 const data = await res.json();
-
-                if (data.success) {
-                    const newKeyObj = {
-                        name: nameInput,
-                        key: data.apiKey,
-                        scopes: scopes,
-                        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                    };
-
-                    myKeys.push(newKeyObj);
-                    localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
-                    
-                    document.getElementById('newKeyDisplay').innerText = data.apiKey;
-                    
-                    setServerStatus(true); 
-                    logActivity("Generated Key", nameInput, "Success");
-                    
-                    closeModal('keyModal');
-                    openModal('successModal');
-                    updateAllViews();
+                
+                if(data.success) {
+                    myKeys.push({ name, key: data.apiKey, scopes, date: new Date().toLocaleDateString() });
+                    localStorage.setItem('aura_keys', JSON.stringify(myKeys));
+                    document.getElementById('displayKey').innerText = data.apiKey;
+                    logActivity("Created Key", name, "Success");
+                    closeModal('keyModal'); openModal('successModal'); updateUI();
                 } else {
-                    showToast("Error: " + (data.error || "Unknown Error"));
-                    logActivity("Failed to Generate", nameInput, "Failed");
+                    alert(data.error?.message || "Failed");
+                    logActivity("Created Key", name, "Failed");
                 }
-            } catch (e) {
-                showToast(e.message || "Network Error. Check your Render URL.");
-                setServerStatus(false);
-                logActivity("Connection Error", nameInput, "Failed");
+            } catch(e) {
+                alert("Network Error.");
+                logActivity("Created Key", name, "Failed");
             } finally {
-                // Reset Button state (Bug Fix)
-                genBtn.disabled = false;
-                btnText.innerText = "Generate key";
-                document.getElementById('retryStatusBox').classList.add('hidden');
+                btn.innerHTML = "Generate API Key"; btn.disabled = false;
             }
         }
 
-        function deleteKey(index) {
-            if (confirm("Are you sure? Revoking this key will disable all access for it.")) {
-                const keyName = myKeys[index].name;
-                myKeys.splice(index, 1);
-                localStorage.setItem('aura_api_keys', JSON.stringify(myKeys));
-                logActivity("Revoked Key", keyName, "Success");
-                updateAllViews();
-                showToast("Key Revoked Successfully.");
+        function deleteKey(i) {
+            if(confirm("Revoke this key permanently?")) {
+                const n = myKeys[i].name;
+                myKeys.splice(i, 1);
+                localStorage.setItem('aura_keys', JSON.stringify(myKeys));
+                logActivity("Revoked Key", n, "Success");
+                updateUI();
             }
         }
 
-        // --- SETTINGS ---
-        function saveBackendUrl(btn) {
-            let url = document.getElementById('configBackendUrl').value.trim();
-            if(!url) return showToast("URL cannot be empty");
-            if(url.endsWith('/')) url = url.slice(0, -1);
+        async function fetchHealth() {
+            if(!CONFIG.admin) return alert("Setup Admin Secret in Settings first.");
+            const logBox = document.getElementById('healthStats');
+            logBox.innerText = "Fetching telemetry from Node.js runtime...";
             
-            BACKEND_URL = url;
-            localStorage.setItem('aura_backend_url', BACKEND_URL);
-            
-            setServerStatus(false);
-            
-            btn.innerText = "Testing...";
-            btn.disabled = true;
-            
-            const resultBox = document.getElementById('urlTestResult');
-            resultBox.classList.remove('hidden');
-            resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-blue-50 text-blue-700 animate-pulse";
-            resultBox.innerText = "Pinging server... Please wait.";
+            const awake = await ensureAwake();
+            if(!awake) return logBox.innerText = "ERROR: Server is offline.";
 
-            // Test Connection
-            fetch(`${BACKEND_URL}/`)
-                .then(res => {
-                    if(res.ok) {
-                        resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-green-50 text-green-700 border border-green-200";
-                        resultBox.innerText = "Connection Successful! Server is active.";
-                        setServerStatus(true);
-                    } else {
-                        throw new Error();
-                    }
-                })
-                .catch(e => {
-                    resultBox.className = "mt-4 text-sm font-medium p-3 rounded-lg bg-orange-50 text-orange-700 border border-orange-200";
-                    resultBox.innerText = "URL saved, but server is asleep or unreachable. We will wake it up automatically on next key generation.";
-                })
-                .finally(() => {
-                    btn.innerText = "Save & Test";
-                    btn.disabled = false;
-                    logActivity("Updated Backend URL", "System", "Success");
+            try {
+                const res = await fetch(CONFIG.url + '/api/admin/system-health', {
+                    headers: { 'x-admin-secret': CONFIG.admin }
                 });
+                const data = await res.json();
+                logBox.innerText = JSON.stringify(data, null, 4);
+                logActivity("Health Check", "Admin Panel", "Success");
+            } catch(e) {
+                logBox.innerText = "ACCESS DENIED: Invalid Admin Secret or Network Error.";
+                logActivity("Health Check", "Admin Panel", "Failed");
+            }
         }
 
-        // --- MODAL & UI UTILS ---
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            document.getElementById(id + 'Overlay').classList.remove('opacity-0');
-            setTimeout(() => {
-                document.getElementById(id + 'Content').classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
-
-        function closeModal(id) {
-            document.getElementById(id + 'Content').classList.add('scale-95', 'opacity-0');
-            document.getElementById(id + 'Overlay').classList.add('opacity-0');
-            setTimeout(() => {
-                document.getElementById(id).classList.add('hidden');
-                if(id === 'keyModal') {
-                    document.getElementById('keyNameInput').value = '';
-                    document.getElementById('retryStatusBox').classList.add('hidden');
-                }
-            }, 200);
-        }
-
-        // Bulletproof Copy Fallback
-        function copyToClipboardFallback(elementId, btn) {
-            const text = document.getElementById(elementId).innerText;
+        function saveSettings() {
+            CONFIG.url = document.getElementById('cfgUrl').value.trim();
+            if(CONFIG.url.endsWith('/')) CONFIG.url = CONFIG.url.slice(0, -1);
+            CONFIG.admin = document.getElementById('cfgAdminSecret').value.trim();
             
-            if (navigator.clipboard && window.isSecureContext) {
-                // Navigator clipboard api method
-                navigator.clipboard.writeText(text).then(showCopySuccess).catch(err => fallbackCopyTextToClipboard(text));
-            } else {
-                // Fallback method
-                fallbackCopyTextToClipboard(text);
-            }
+            localStorage.setItem('aura_url', CONFIG.url);
+            localStorage.setItem('aura_admin', CONFIG.admin);
             
-            function showCopySuccess() {
-                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                showToast("Copied to clipboard!");
-                setTimeout(() => {
-                    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`;
-                }, 2000);
-            }
-
-            function fallbackCopyTextToClipboard(text) {
-                var textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed";
-                document.body.appendChild(textArea);
-                textArea.focus(); textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showCopySuccess();
-                } catch (err) {
-                    showToast("Copy failed. Please select and copy manually.");
-                }
-                document.body.removeChild(textArea);
-            }
+            alert("Settings Updated! Verifying connection...");
+            logActivity("Updated Config", "Settings", "Success");
+            checkPulseSilent();
         }
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            t.classList.remove('opacity-0', 'translate-y-20');
-            setTimeout(() => t.classList.add('opacity-0', 'translate-y-20'), 3000);
-        }
+        // --- UTILS ---
+        function openModal(id) { const m=document.getElementById(id); const c=document.getElementById(id+'Content'); m.classList.remove('hidden'); setTimeout(()=>{c.classList.remove('scale-95','opacity-0');}, 10); }
+        function closeModal(id) { const c=document.getElementById(id+'Content'); c.classList.add('scale-95','opacity-0'); setTimeout(()=>{document.getElementById(id).classList.add('hidden');}, 200); }
+        function copyKey() { navigator.clipboard.writeText(document.getElementById('displayKey').innerText); alert("Key Copied!"); }
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, t => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t] || t)); }
 
-        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag)); }
+        window.onload = init;
     </script>
 </body>
 </html>
