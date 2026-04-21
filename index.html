@@ -11,9 +11,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
@@ -155,6 +153,45 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); 
         }
 
+        /* Chat Window Styling */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .chat-user {
+            background-color: #2563eb;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-ai {
+            background-color: #f3f4f6;
+            color: #111827;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        .chat-error {
+            background-color: #fef2f2;
+            color: #dc2626;
+            align-self: center;
+            border: 1px solid #fecaca;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
         /* Ad Slot Container */
         .ad-container { 
             background: #ffffff; 
@@ -205,6 +242,14 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                 Secure API Keys
             </button>
+            
+            <!-- NEW: API Testing Navigation Link -->
+            <button onclick="switchView('view-test', this)" class="nav-item w-full relative overflow-hidden">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                Test API Key (Chat)
+                <span class="absolute top-1/2 -translate-y-1/2 right-2 bg-blue-100 text-blue-600 text-[9px] font-bold px-2 py-0.5 rounded-full">LIVE</span>
+            </button>
+
             <button onclick="switchView('view-docs', this)" class="nav-item w-full">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 API Documentation
@@ -224,6 +269,12 @@
         </nav>
 
         <div class="p-6 border-t border-gray-100 bg-gray-50/50 shrink-0">
+            <!-- NEW: Smartlink Button Added Here -->
+            <a href="https://www.profitablecpmratenetwork.com/nayzxwqaw?key=84986eeecfdbd32b2583004e283172d2" target="_blank" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-3 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                Get Premium Credits
+            </a>
+
             <button onclick="openModal('loginModal')" class="w-full flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors mb-4">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg> 
                 Login / Sync Data
@@ -278,6 +329,16 @@
                     <script async="async" data-cfasync="false" src="https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js"></script>
                     <div id="container-4474729a63899bf107ff1c83aed64247"></div>
                 </div>
+
+                <!-- NEW: High visibility Direct Link Banner in Dashboard -->
+                <a href="https://www.profitablecpmratenetwork.com/nayzxwqaw?key=84986eeecfdbd32b2583004e283172d2" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-700 transition-colors text-white text-center py-4 rounded-2xl mb-8 shadow-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                    <span class="font-bold text-lg flex items-center justify-center gap-2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Click Here to Unlock Unlimited API Tokens Daily!
+                    </span>
+                    <span class="block text-xs text-indigo-200 mt-1">Sponsored by Premium Ad Partners</span>
+                </a>
 
                 <div id="view-dashboard" class="view-section active">
                     <div class="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
@@ -343,6 +404,74 @@
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                             </div>
                             <p class="text-gray-400 font-medium text-sm">No secure keys are synced to this session.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: API Testing View Section -->
+                <div id="view-test" class="view-section">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Test API Connection</h1>
+                        <p class="text-gray-500 text-sm">Send a message to the AI using your generated key to verify if the server is authenticating correctly.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left Col: Config -->
+                        <div class="lg:col-span-1 space-y-6">
+                            <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm">
+                                <h3 class="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    Connection Details
+                                </h3>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Target Server Endpoint</label>
+                                    <input type="text" id="testChatEndpoint" readonly class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-500 font-mono focus:outline-none">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Select Saved Key</label>
+                                    <select id="testApiKeySelect" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none" onchange="toggleManualKeyInput()">
+                                        <option value="">-- Select a Key --</option>
+                                        <option value="manual">Enter manually...</option>
+                                    </select>
+                                </div>
+
+                                <div id="manualKeyDiv" class="hidden mb-4">
+                                    <label class="block text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Manual API Key</label>
+                                    <input type="text" id="testManualKeyInput" placeholder="sk-aura-..." class="w-full bg-blue-50 border border-blue-200 text-blue-900 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Col: Chat Interface -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[500px]">
+                                <!-- Chat Header -->
+                                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
+                                        <span class="text-sm font-bold text-gray-700">Live AI Chatbot</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Model: openrouter/free</span>
+                                </div>
+                                
+                                <!-- Chat Messages Area -->
+                                <div id="testChatWindow" class="flex-1 bg-white p-6 chat-container">
+                                    <div class="chat-bubble chat-ai">
+                                        Hello! I am connected to the Aura Engine. Send a message to test your API key's functionality.
+                                    </div>
+                                </div>
+
+                                <!-- Chat Input -->
+                                <div class="p-4 bg-white border-t border-gray-100 flex gap-2">
+                                    <input type="text" id="testChatInput" placeholder="Type a message to test..." class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" onkeypress="if(event.key === 'Enter') sendTestChatMessage()">
+                                    <button onclick="sendTestChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 shadow-md">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -629,6 +758,7 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
             updateUI();
             updateDocUrls();
             testPing();
+            populateTestKeys(); // Populate dropdown for API chat test
         }
 
         // --- NEW: LOGIN / SYNC LOGIC (API PREPARED) ---
@@ -750,6 +880,7 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
             const titles = {
                 'view-dashboard':'Dashboard Overview',
                 'view-apikeys':'Secure API Keys',
+                'view-test': 'Live API Testing', // ADDED FOR API TEST
                 'view-docs': 'API Documentation', 
                 'view-logs':'Server Logs',
                 'view-health':'System Health',
@@ -1055,6 +1186,7 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
                     // Show Output
                     document.getElementById('displayKey').innerText = data.apiKey;
                     updateUI(); 
+                    populateTestKeys(); // Refresh API test dropdown
                     closeModal('keyModal'); 
                     openModal('successModal');
                 } else {
@@ -1078,6 +1210,7 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
                 
                 logActivity("Revoked API Key", keyName, "Success");
                 updateUI();
+                populateTestKeys(); // Refresh API test dropdown
                 showToast("Key Access Revoked.");
             }
         }
@@ -1123,10 +1256,103 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
             }
         }
 
+        // --- NEW: API TESTING CHAT LOGIC ---
+        function populateTestKeys() {
+            const select = document.getElementById('testApiKeySelect');
+            // Keep default options
+            select.innerHTML = '<option value="">-- Select a Key --</option><option value="manual">Enter manually...</option>';
+            
+            myKeys.forEach(k => {
+                select.innerHTML += `<option value="${k.key}">${k.name} (••••${k.key.slice(-4)})</option>`;
+            });
+            document.getElementById('testChatEndpoint').value = CONFIG.url + '/v1/chat/completions';
+        }
+
+        function toggleManualKeyInput() {
+            const select = document.getElementById('testApiKeySelect');
+            const div = document.getElementById('manualKeyDiv');
+            if(select.value === 'manual') {
+                div.classList.remove('hidden');
+            } else {
+                div.classList.add('hidden');
+            }
+        }
+
+        function createChatBubble(type, text, id = null) {
+            const chatWindow = document.getElementById('testChatWindow');
+            const div = document.createElement('div');
+            div.className = `chat-bubble chat-${type}`;
+            if(id) div.id = id;
+            div.innerText = text;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return div;
+        }
+
+        async function sendTestChatMessage() {
+            const input = document.getElementById('testChatInput');
+            const message = input.value.trim();
+            if(!message) return;
+
+            const select = document.getElementById('testApiKeySelect');
+            let apiKey = select.value;
+            if(apiKey === 'manual') {
+                apiKey = document.getElementById('testManualKeyInput').value.trim();
+            }
+
+            if(!apiKey) {
+                showToast("Please select or enter an API Key to test!");
+                return;
+            }
+
+            // Append User Message
+            createChatBubble('user', message);
+            input.value = '';
+
+            // Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            createChatBubble('ai', 'Sending to Aura Engine...', loadingId);
+
+            const endpoint = document.getElementById('testChatEndpoint').value;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "openrouter/free",
+                        messages: [{ role: "user", content: message }]
+                    })
+                });
+
+                document.getElementById(loadingId).remove();
+                const data = await response.json();
+
+                if(response.ok && data.choices && data.choices[0]) {
+                    createChatBubble('ai', data.choices[0].message.content);
+                    logActivity("API Live Chat Test", "Valid Key Used", "Success");
+                } else {
+                    const errorMsg = data.error?.message || "Invalid Key or Server Error";
+                    createChatBubble('error', "API Error: " + errorMsg);
+                    logActivity("API Live Chat Test", "Authentication Error", "Failed");
+                }
+
+            } catch(e) {
+                document.getElementById(loadingId).remove();
+                createChatBubble('error', "Network Error: Cannot connect to server. Ensure URL is correct and server is awake.");
+                logActivity("API Live Chat Test", "Network Error", "Failed");
+            }
+        }
+        // ------------------------------------
+
         function updateDocUrls() { 
             const displayUrl = CONFIG.url || "https://your-api.onrender.com";
             document.getElementById('docBaseUrlDisplay').innerText = displayUrl + "/v1/chat/completions";
             document.querySelectorAll('.dynamic-url').forEach(e => e.innerText = displayUrl); 
+            document.getElementById('testChatEndpoint').value = displayUrl + '/v1/chat/completions';
         }
 
         function saveSettings() {
