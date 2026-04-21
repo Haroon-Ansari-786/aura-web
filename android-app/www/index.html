@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura AI</title>
+    <script src="cordova.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
+    <style>
+        .message-bubble {
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            position: relative;
+            margin: 8px 0;
+        }
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 12px;
+            height: 12px;
+            background: #ff5f57;
+            border-radius: 50%;
+        }
+        .code-block::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 32px;
+            width: 12px;
+            height: 12px;
+            background: #ffbd2e;
+            border-radius: 50%;
+        }
+        .code-block .code-content {
+            margin-left: 60px;
+            white-space: pre-wrap;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8f8f2;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 80%, 100% { opacity: 0.3; }
+            40% { opacity: 1; }
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .dark .glassmorphism {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar {
+            width: 300px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .file-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4f46e5;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .dark .code-block {
+            background: #0d1117;
+        }
+        .dark .hljs {
+            background: #0d1117;
+        }
+        .search-highlight {
+            background-color: yellow;
+        }
+        .dark .search-highlight {
+            background-color: #ffeb3b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 h-screen flex transition-colors">
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50">
+        <div class="w-full max-w-md mx-4 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">Aura AI</h1>
+                <p class="text-gray-600 dark:text-gray-400">Sign in to your account</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                    <input id="login-email" type="email" placeholder="your@email.com" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <input id="login-password" type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition-colors">Sign In</button>
+            </form>
+            <div class="mt-4 text-center">
+                <button id="register-toggle" class="text-blue-500 hover:text-blue-600 dark:text-blue-400">Don't have an account? Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="register-screen" class="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50 hidden">
+        <div class="w-full max-w-md mx-4 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">Aura AI</h1>
+                <p class="text-gray-600 dark:text-gray-400">Create your account</p>
+            </div>
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                    <input id="register-name" type="text" placeholder="Full Name" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                    <input id="register-email" type="email" placeholder="your@email.com" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <input id="register-password" type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition-colors">Register</button>
+            </form>
+            <div class="mt-4 text-center">
+                <button id="login-toggle" class="text-blue-500 hover:text-blue-600 dark:text-blue-400">Already have an account? Sign In</button>
+            </div>
+        </div>
+    </div>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar bg-white dark:bg-gray-800 shadow-lg flex flex-col hidden">
+        <div class="p-4 border-b dark:border-gray-700">
+            <button id="new-chat-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mb-4">New Chat</button>
+            <div class="flex items-center space-x-2">
+                <img id="user-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTIwIDIwQzIyLjc2MTQgMjAgMjUgMTcuNzYxNCAyNSAxNUMyNSAxMi4yMzg2IDIyLjc2MTQgMTAgMjAgMTBDMTcuMjM4NiAxMCAxNSAxMi4yMzg2IDE1IDE1QzE1IDE3Ljc2MTQgMTcgMjAgMjBaIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=" alt="Avatar" class="w-10 h-10 rounded-full">
+                <div>
+                    <p id="user-name" class="font-semibold text-gray-800 dark:text-white">User</p>
+                    <button id="profile-btn" class="text-sm text-blue-500 hover:text-blue-600">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto">
+            <div id="chat-list" class="p-2">
+                <!-- Chat sessions will be listed here -->
+            </div>
+        </div>
+        <div class="p-4 border-t dark:border-gray-700">
+            <button id="sidebar-toggle" class="w-full text-left text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+                Hide Sidebar
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col hidden">
+        <!-- Top Navigation -->
+        <nav class="bg-white dark:bg-gray-800 shadow-sm px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <button id="sidebar-show" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Aura AI</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="search-btn" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+                <button id="export-btn" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </button>
+                <button id="share-btn" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                    </svg>
+                </button>
+                <button id="settings-btn" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
+                <button id="logout-btn" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Search Bar -->
+        <div id="search-bar" class="bg-white dark:bg-gray-800 px-4 py-2 border-b dark:border-gray-700 hidden">
+            <input id="search-input" type="text" placeholder="Search messages..." class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+        </div>
+
+        <!-- Chat Area -->
+        <div id="chat-area" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            <!-- Messages will be appended here -->
+        </div>
+
+        <!-- Typing Status -->
+        <div id="typing-status" class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hidden">
+            You are typing...
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-white dark:bg-gray-800 px-4 py-3 border-t dark:border-gray-700">
+            <form id="message-form" class="flex items-center space-x-2">
+                <button id="file-upload-btn" type="button" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                    </svg>
+                </button>
+                <input id="file-input" type="file" accept="image/*,.pdf,.doc,.docx,.txt" class="hidden">
+                <input id="message-input" type="text" placeholder="Type your message..." class="flex-1 px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white" required>
+                <button id="voice-btn" type="button" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                    </svg>
+                </button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition-colors">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="glassmorphism rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Settings</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Backend Engine URL</label>
+                    <input id="backend-url" type="url" placeholder="https://api.example.com" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Aura API Key</label>
+                    <input id="api-key" type="password" placeholder="Your API key" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Dark Mode</label>
+                    <input id="dark-mode-toggle" type="checkbox" class="rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Font Size</label>
+                    <select id="font-size" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="14px">Small</option>
+                        <option value="16px" selected>Medium</option>
+                        <option value="18px">Large</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Auto-save</label>
+                    <input id="auto-save-toggle" type="checkbox" checked class="rounded">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 mt-6">
+                <button id="cancel-settings" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">Cancel</button>
+                <button id="save-settings" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="glassmorphism rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Edit Profile</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <img id="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTIwIDIwQzIyLjc2MTQgMjAgMjUgMTcuNzYxNCAyNSAxNUMyNSAxMi4yMzg2IDIyLjc2MTQgMTAgMjAgMTBDMTcuMjM4NiAxMCAxNSAxMi4yMzg2IDE1IDE1QzE1IDE3Ljc2MTQgMTcgMjAgMjBaIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=" alt="Avatar" class="w-16 h-16 rounded-full">
+                    <input id="avatar-input" type="file" accept="image/*" class="hidden">
+                    <button id="change-avatar-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Change Avatar</button>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                    <input id="profile-name" type="text" placeholder="Your name" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 mt-6">
+                <button id="cancel-profile" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">Cancel</button>
+                <button id="save-profile" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="glassmorphism rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Export Chat</h2>
+            <div class="space-y-4">
+                <button id="export-json" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Export as JSON</button>
+                <button id="export-pdf" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">Export as PDF</button>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="close-export" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="glassmorphism rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Share Chat</h2>
+            <div class="space-y-4">
+                <input id="share-link" type="text" readonly class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white">
+                <button id="copy-share-link" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Copy Link</button>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="close-share" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center hidden z-40">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">Welcome to Aura AI</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Please configure your settings to get started.</p>
+            <button id="open-settings" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md">Configure Settings</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const registerScreen = document.getElementById('register-screen');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const registerToggle = document.getElementById('register-toggle');
+        const loginToggle = document.getElementById('login-toggle');
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const registerName = document.getElementById('register-name');
+        const registerEmail = document.getElementById('register-email');
+        const registerPassword = document.getElementById('register-password');
+        const mainContent = document.querySelector('.flex-1.flex.flex-col');
+
+        // Auth System
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('aura-users')) || {};
+        let sessions = JSON.parse(localStorage.getItem('aura-sessions')) || {};
+
+        // Check if user is logged in
+        function checkAuth() {
+            const sessionId = localStorage.getItem('aura-session');
+            if (sessionId && sessions[sessionId]) {
+                currentUser = sessions[sessionId];
+                showMainApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            loginScreen.classList.remove('hidden');
+            registerScreen.classList.add('hidden');
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('hidden');
+        }
+
+        function showRegister() {
+            loginScreen.classList.add('hidden');
+            registerScreen.classList.remove('hidden');
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('hidden');
+        }
+
+        function showMainApp() {
+            loginScreen.classList.add('hidden');
+            registerScreen.classList.add('hidden');
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
+            loadUserData();
+        }
+
+        function login(email, password) {
+            if (users[email] && users[email].password === password) {
+                currentUser = users[email];
+                const sessionId = Date.now().toString();
+                sessions[sessionId] = currentUser;
+                localStorage.setItem('aura-session', sessionId);
+                localStorage.setItem('aura-sessions', JSON.stringify(sessions));
+                showMainApp();
+                return true;
+            }
+            return false;
+        }
+
+        function register(name, email, password) {
+            if (users[email]) {
+                alert('User already exists');
+                return false;
+            }
+            users[email] = { name, email, password, avatar: '', chats: {} };
+            localStorage.setItem('aura-users', JSON.stringify(users));
+            login(email, password);
+            return true;
+        }
+
+        function logout() {
+            const sessionId = localStorage.getItem('aura-session');
+            delete sessions[sessionId];
+            localStorage.removeItem('aura-session');
+            localStorage.setItem('aura-sessions', JSON.stringify(sessions));
+            currentUser = null;
+            showLogin();
+        }
+
+        // Event Listeners for Auth
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (login(loginEmail.value, loginPassword.value)) {
+                // Success
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            register(registerName.value, registerEmail.value, registerPassword.value);
+        });
+
+        registerToggle.addEventListener('click', showRegister);
+        loginToggle.addEventListener('click', showLogin);
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', logout);
+
+        // Load user data
+        function loadUserData() {
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-avatar').src = currentUser.avatar || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTIwIDIwQzIyLjc2MTQgMjAgMjUgMTcuNzYxNCAyNSAxNUMyNSAxMi4yMzg2IDIyLjc2MTQgMTAgMjAgMTBDMTcuMjM4NiAxMCAxNSAxMi4yMzg2IDE1IDE1QzE1IDE3Ljc2MTQgMTcgMjAgMjBaIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=';
+                // Load user chats
+                loadUserChats();
+            }
+        }
+
+        // Initialize
+        checkAuth();
+        const sidebar = document.getElementById('sidebar');
+        const sidebarShow = document.getElementById('sidebar-show');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const chatList = document.getElementById('chat-list');
+        const chatArea = document.getElementById('chat-area');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const fileUploadBtn = document.getElementById('file-upload-btn');
+        const fileInput = document.getElementById('file-input');
+        const voiceBtn = document.getElementById('voice-btn');
+        const typingStatus = document.getElementById('typing-status');
+        const searchBtn = document.getElementById('search-btn');
+        const searchBar = document.getElementById('search-bar');
+        const searchInput = document.getElementById('search-input');
+        const exportBtn = document.getElementById('export-btn');
+        const exportModal = document.getElementById('export-modal');
+        const exportJson = document.getElementById('export-json');
+        const exportPdf = document.getElementById('export-pdf');
+        const closeExport = document.getElementById('close-export');
+        const shareBtn = document.getElementById('share-btn');
+        const shareModal = document.getElementById('share-modal');
+        const shareLink = document.getElementById('share-link');
+        const copyShareLink = document.getElementById('copy-share-link');
+        const closeShare = document.getElementById('close-share');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const cancelSettings = document.getElementById('cancel-settings');
+        const saveSettings = document.getElementById('save-settings');
+        const backendUrlInput = document.getElementById('backend-url');
+        const apiKeyInput = document.getElementById('api-key');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const fontSizeSelect = document.getElementById('font-size');
+        const autoSaveToggle = document.getElementById('auto-save-toggle');
+        const profileBtn = document.getElementById('profile-btn');
+        const profileModal = document.getElementById('profile-modal');
+        const profileAvatar = document.getElementById('profile-avatar');
+        const avatarInput = document.getElementById('avatar-input');
+        const changeAvatarBtn = document.getElementById('change-avatar-btn');
+        const profileName = document.getElementById('profile-name');
+        const cancelProfile = document.getElementById('cancel-profile');
+        const saveProfile = document.getElementById('save-profile');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const openSettings = document.getElementById('open-settings');
+
+        // State
+        let chats = JSON.parse(localStorage.getItem('aura-chats') || '[]');
+        let currentChatId = localStorage.getItem('aura-current-chat') || null;
+        let currentEventSource = null;
+        let currentTypingIndicator = null;
+        let recognition = null;
+        let isRecording = false;
+        let notificationPermission = 'default';
+
+        // Initialize
+        function init() {
+            loadSettings();
+            loadProfile();
+            renderChatList();
+            if (currentChatId) {
+                loadChat(currentChatId);
+            } else {
+                createNewChat();
+            }
+            setupDarkMode();
+            setupFontSize();
+            requestNotificationPermission();
+            setupVoiceRecognition();
+        }
+
+        // Settings
+        function loadSettings() {
+            const backendUrl = localStorage.getItem('aura-backend-url');
+            const apiKey = localStorage.getItem('aura-api-key');
+            const darkMode = localStorage.getItem('aura-dark-mode') === 'true';
+            const fontSize = localStorage.getItem('aura-font-size') || '16px';
+            const autoSave = localStorage.getItem('aura-auto-save') !== 'false';
+
+            if (backendUrl && apiKey) {
+                backendUrlInput.value = backendUrl;
+                apiKeyInput.value = apiKey;
+            } else {
+                welcomeScreen.classList.remove('hidden');
+                return false;
+            }
+
+            darkModeToggle.checked = darkMode;
+            fontSizeSelect.value = fontSize;
+            autoSaveToggle.checked = autoSave;
+            return true;
+        }
+
+        function saveSettings() {
+            localStorage.setItem('aura-backend-url', backendUrlInput.value);
+            localStorage.setItem('aura-api-key', apiKeyInput.value);
+            localStorage.setItem('aura-dark-mode', darkModeToggle.checked);
+            localStorage.setItem('aura-font-size', fontSizeSelect.value);
+            localStorage.setItem('aura-auto-save', autoSaveToggle.checked);
+            setupDarkMode();
+            setupFontSize();
+        }
+
+        // Profile
+        function loadProfile() {
+            const name = localStorage.getItem('aura-user-name') || 'User';
+            const avatar = localStorage.getItem('aura-user-avatar') || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTIwIDIwQzIyLjc2MTQgMjAgMjUgMTcuNzYxNCAyNSAxNUMyNSAxMi4yMzg2IDIyLjc2MTQgMTAgMjAgMTBDMTcuMjM4NiAxMCAxNSAxMi4yMzg2IDE1IDE1QzE1IDE3Ljc2MTQgMTcgMjAgMjBaIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=';
+            userName.textContent = name;
+            userAvatar.src = avatar;
+            profileName.value = name;
+            profileAvatar.src = avatar;
+        }
+
+        function saveProfile() {
+            localStorage.setItem('aura-user-name', profileName.value);
+            localStorage.setItem('aura-user-avatar', profileAvatar.src);
+            loadProfile();
+        }
+
+        // Dark Mode
+        function setupDarkMode() {
+            const isDark = localStorage.getItem('aura-dark-mode') === 'true';
+            document.body.classList.toggle('dark', isDark);
+            const hljsTheme = document.getElementById('hljs-theme');
+            hljsTheme.href = isDark ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css' : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+        }
+
+        // Font Size
+        function setupFontSize() {
+            const fontSize = localStorage.getItem('aura-font-size') || '16px';
+            document.body.style.fontSize = fontSize;
+        }
+
+        // Chat Management
+        function createNewChat() {
+            const chatId = Date.now().toString();
+            const chat = {
+                id: chatId,
+                title: 'New Chat',
+                messages: [],
+                createdAt: new Date().toISOString()
+            };
+            chats.unshift(chat);
+            currentChatId = chatId;
+            saveChats();
+            renderChatList();
+            loadChat(chatId);
+        }
+
+        function loadChat(chatId) {
+            const chat = chats.find(c => c.id === chatId);
+            if (!chat) return;
+            currentChatId = chatId;
+            localStorage.setItem('aura-current-chat', chatId);
+            chatArea.innerHTML = '';
+            chat.messages.forEach(msg => addMessage(msg.content, msg.role === 'user', false));
+            updateChatTitle(chatId, chat.title);
+        }
+
+        function saveCurrentChat() {
+            if (!currentChatId) return;
+            const chat = chats.find(c => c.id === currentChatId);
+            if (chat) {
+                chat.messages = Array.from(chatArea.children).map(div => {
+                    const isUser = div.classList.contains('ml-auto');
+                    return {
+                        role: isUser ? 'user' : 'assistant',
+                        content: isUser ? div.textContent : div.innerHTML.replace(/<[^>]*>/g, '').trim()
+                    };
+                });
+                saveChats();
+            }
+        }
+
+        function saveChats() {
+            localStorage.setItem('aura-chats', JSON.stringify(chats));
+        }
+
+        function renderChatList() {
+            chatList.innerHTML = '';
+            chats.forEach(chat => {
+                const div = document.createElement('div');
+                div.className = `p-2 rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${chat.id === currentChatId ? 'bg-blue-100 dark:bg-blue-900' : ''}`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="truncate">${chat.title}</span>
+                        <div class="flex space-x-1">
+                            <button class="rename-btn text-gray-400 hover:text-gray-600" data-id="${chat.id}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button class="delete-btn text-gray-400 hover:text-red-600" data-id="${chat.id}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                div.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        loadChat(chat.id);
+                    }
+                });
+                chatList.appendChild(div);
+            });
+        }
+
+        function updateChatTitle(chatId, title) {
+            const chat = chats.find(c => c.id === chatId);
+            if (chat) {
+                chat.title = title;
+                saveChats();
+                renderChatList();
+            }
+        }
+
+        function deleteChat(chatId) {
+            chats = chats.filter(c => c.id !== chatId);
+            saveChats();
+            if (currentChatId === chatId) {
+                currentChatId = chats.length > 0 ? chats[0].id : null;
+                if (currentChatId) {
+                    loadChat(currentChatId);
+                } else {
+                    createNewChat();
+                }
+            }
+            renderChatList();
+        }
+
+        // Messages
+        function addMessage(content, isUser = false, save = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-bubble ${isUser ? 'ml-auto bg-gray-200 dark:bg-gray-700' : 'mr-auto bg-white dark:bg-gray-800 shadow-sm'} rounded-lg px-4 py-2`;
+            if (isUser) {
+                messageDiv.textContent = content;
+            } else {
+                messageDiv.innerHTML = marked.parse(content);
+                // Highlight code blocks
+                messageDiv.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                    const pre = block.parentElement;
+                    pre.className = 'code-block';
+                    const codeContent = document.createElement('div');
+                    codeContent.className = 'code-content';
+                    codeContent.textContent = block.textContent;
+                    pre.innerHTML = '';
+                    pre.appendChild(codeContent);
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.textContent = 'Copy';
+                    copyBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(block.textContent).then(() => {
+                            copyBtn.textContent = 'Copied!';
+                            setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+                        });
+                    });
+                    pre.appendChild(copyBtn);
+                });
+            }
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            if (save && localStorage.getItem('aura-auto-save') !== 'false') {
+                saveCurrentChat();
+            }
+        }
+
+        // File Upload
+        function handleFileUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (file.type.startsWith('image/')) {
+                    addMessage(`<img src="${e.target.result}" alt="${file.name}" class="file-preview">`, true);
+                } else {
+                    addMessage(`📎 ${file.name}`, true);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Voice Recognition
+        function setupVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = () => {
+                    isRecording = true;
+                    voiceBtn.classList.add('text-red-500');
+                };
+
+                recognition.onend = () => {
+                    isRecording = false;
+                    voiceBtn.classList.remove('text-red-500');
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    messageInput.value = transcript;
+                    typingStatus.classList.remove('hidden');
+                    setTimeout(() => typingStatus.classList.add('hidden'), 2000);
+                };
+            }
+        }
+
+        // Notifications
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    notificationPermission = permission;
+                });
+            }
+        }
+
+        function showNotification(message) {
+            if (notificationPermission === 'granted' && document.hidden) {
+                new Notification('Aura AI', { body: message });
+            }
+        }
+
+        // Search
+        function searchMessages(query) {
+            const messages = chatArea.querySelectorAll('.message-bubble');
+            messages.forEach(msg => {
+                const text = msg.textContent.toLowerCase();
+                if (query && text.includes(query.toLowerCase())) {
+                    msg.classList.add('search-highlight');
+                } else {
+                    msg.classList.remove('search-highlight');
+                }
+            });
+        }
+
+        // Export
+        function exportAsJson() {
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+            const dataStr = JSON.stringify(chat, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `chat-${chat.title}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportAsPdf() {
+            // Simple PDF export using browser print
+            window.print();
+        }
+
+        // Share
+        function generateShareLink() {
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) return '';
+            const shareId = btoa(JSON.stringify({ id: chat.id, messages: chat.messages }));
+            return `${window.location.origin}${window.location.pathname}?share=${shareId}`;
+        }
+
+        // Typing Status
+        function showTypingStatus() {
+            typingStatus.classList.remove('hidden');
+            setTimeout(() => typingStatus.classList.add('hidden'), 2000);
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            currentTypingIndicator = document.createElement('div');
+            currentTypingIndicator.className = 'message-bubble mr-auto bg-white dark:bg-gray-800 shadow-sm rounded-lg px-4 py-2 typing-indicator';
+            currentTypingIndicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            chatArea.appendChild(currentTypingIndicator);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            if (currentTypingIndicator) {
+                currentTypingIndicator.remove();
+                currentTypingIndicator = null;
+            }
+        }
+
+        // Send message
+        async function sendMessage(message) {
+            const backendUrl = localStorage.getItem('aura-backend-url');
+            const apiKey = localStorage.getItem('aura-api-key');
+
+            if (!backendUrl || !apiKey) {
+                alert('Please configure your settings first.');
+                return;
+            }
+
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+
+            chat.messages.push({ role: 'user', content: message });
+            addMessage(message, true);
+
+            showTypingIndicator();
+
+            try {
+                const response = await fetch(`${backendUrl}/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        messages: chat.messages,
+                        stream: true
+                    })
+                });
+
+                if (!response.ok) {
+                    if (response.status === 502 || response.status === 504) {
+                        hideTypingIndicator();
+                        addMessage('Waking up the server...', false);
+                        setTimeout(() => sendMessage(message), 5000);
+                        return;
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let aiMessage = '';
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6);
+                            if (data === '[DONE]') continue;
+                            try {
+                                const parsed = JSON.parse(data);
+                                const content = parsed.choices[0]?.delta?.content;
+                                if (content) {
+                                    aiMessage += content;
+                                    hideTypingIndicator();
+                                    if (chatArea.lastElementChild && !chatArea.lastElementChild.classList.contains('ml-auto')) {
+                                        chatArea.lastElementChild.innerHTML = marked.parse(aiMessage);
+                                        chatArea.lastElementChild.querySelectorAll('pre code').forEach(block => {
+                                            hljs.highlightElement(block);
+                                        });
+                                    } else {
+                                        addMessage(aiMessage, false);
+                                    }
+                                }
+                            } catch (e) {
+                                // Ignore parsing errors
+                            }
+                        }
+                    }
+                }
+
+                chat.messages.push({ role: 'assistant', content: aiMessage });
+                saveChats();
+                showNotification('New message from Aura AI');
+                updateChatTitle(currentChatId, message.slice(0, 30) + (message.length > 30 ? '...' : ''));
+
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('An error occurred. Please try again.', false);
+                console.error(error);
+            }
+        }
+
+        // Event Listeners
+        sidebarShow.addEventListener('click', () => {
+            sidebar.classList.remove('hidden');
+        });
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.add('hidden');
+        });
+
+        newChatBtn.addEventListener('click', createNewChat);
+
+        chatList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('rename-btn')) {
+                const chatId = e.target.dataset.id;
+                const newTitle = prompt('Enter new title:');
+                if (newTitle) {
+                    updateChatTitle(chatId, newTitle);
+                }
+            } else if (e.target.classList.contains('delete-btn')) {
+                const chatId = e.target.dataset.id;
+                if (confirm('Delete this chat?')) {
+                    deleteChat(chatId);
+                }
+            }
+        });
+
+        messageInput.addEventListener('input', () => {
+            if (messageInput.value.trim()) {
+                typingStatus.classList.remove('hidden');
+            } else {
+                typingStatus.classList.add('hidden');
+            }
+        });
+
+        messageInput.addEventListener('blur', () => {
+            typingStatus.classList.add('hidden');
+        });
+
+        fileUploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileUpload(file);
+            }
+        });
+
+        voiceBtn.addEventListener('click', () => {
+            if (recognition && !isRecording) {
+                recognition.start();
+            }
+        });
+
+        searchBtn.addEventListener('click', () => {
+            searchBar.classList.toggle('hidden');
+            if (!searchBar.classList.contains('hidden')) {
+                searchInput.focus();
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            searchMessages(e.target.value);
+        });
+
+        exportBtn.addEventListener('click', () => {
+            exportModal.classList.remove('hidden');
+        });
+
+        exportJson.addEventListener('click', () => {
+            exportAsJson();
+            exportModal.classList.add('hidden');
+        });
+
+        exportPdf.addEventListener('click', () => {
+            exportAsPdf();
+            exportModal.classList.add('hidden');
+        });
+
+        closeExport.addEventListener('click', () => {
+            exportModal.classList.add('hidden');
+        });
+
+        shareBtn.addEventListener('click', () => {
+            shareLink.value = generateShareLink();
+            shareModal.classList.remove('hidden');
+        });
+
+        copyShareLink.addEventListener('click', () => {
+            shareLink.select();
+            document.execCommand('copy');
+            copyShareLink.textContent = 'Copied!';
+            setTimeout(() => copyShareLink.textContent = 'Copy Link', 2000);
+        });
+
+        closeShare.addEventListener('click', () => {
+            shareModal.classList.add('hidden');
+        });
+
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+        });
+
+        cancelSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            loadSettings();
+        });
+
+        saveSettings.addEventListener('click', () => {
+            if (backendUrlInput.value && apiKeyInput.value) {
+                saveSettings();
+                settingsModal.classList.add('hidden');
+                welcomeScreen.classList.add('hidden');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+
+        profileBtn.addEventListener('click', () => {
+            profileModal.classList.remove('hidden');
+        });
+
+        changeAvatarBtn.addEventListener('click', () => {
+            avatarInput.click();
+        });
+
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profileAvatar.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        cancelProfile.addEventListener('click', () => {
+            profileModal.classList.add('hidden');
+            loadProfile();
+        });
+
+        saveProfile.addEventListener('click', () => {
+            saveProfile();
+            profileModal.classList.add('hidden');
+        });
+
+        openSettings.addEventListener('click', () => {
+            welcomeScreen.classList.add('hidden');
+            settingsModal.classList.remove('hidden');
+        });
+
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                sendMessage(message);
+                messageInput.value = '';
+                typingStatus.classList.add('hidden');
+            }
+        });
+
+        // Handle shared chat
+        const urlParams = new URLSearchParams(window.location.search);
+        const shareParam = urlParams.get('share');
+        if (shareParam) {
+            try {
+                const sharedData = JSON.parse(atob(shareParam));
+                const sharedChat = {
+                    id: sharedData.id,
+                    title: 'Shared Chat',
+                    messages: sharedData.messages,
+                    createdAt: new Date().toISOString()
+                };
+                chats.unshift(sharedChat);
+                currentChatId = sharedData.id;
+                saveChats();
+                renderChatList();
+                loadChat(sharedData.id);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (e) {
+                console.error('Invalid share link');
+            }
+        }
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
