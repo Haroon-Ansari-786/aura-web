@@ -42,6 +42,9 @@
             .sidebar.open { transform: translateX(0); }
         }
     </style>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6307970151642220" crossorigin="anonymous"></script>
+
 </head>
 <body class="flex h-screen overflow-hidden">
 
@@ -77,7 +80,7 @@
                 System Health
             </button>
             <button onclick="switchView('view-settings', this)" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 Settings
             </button>
         </nav>
@@ -113,9 +116,18 @@
             <div class="max-w-5xl mx-auto">
 
                 <div class="ad-container bg-blue-50/30 border-blue-200">
-                    <div>
+                    <div class="w-full">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sponsored Advertisement</p>
-                        </div>
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6307970151642220"
+                             data-ad-slot="auto"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>
+                             (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
                 </div>
 
                 <div id="view-dashboard" class="view-section active">
@@ -199,6 +211,8 @@
                             </div>
                         </div>
 
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">2. Code Integration Examples</h3>
+
                         <div class="mb-8">
                             <div class="mac-header flex items-center justify-between">
                                 <div class="flex gap-2">
@@ -266,12 +280,44 @@ response = requests.<span class="text-yellow-200">post</span>(url, headers=heade
                             </div>
                         </div>
 
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Expected JSON Response
+                            </h3>
+                            <div class="mac-body rounded-xl border border-gray-700 bg-gray-900">
+<pre class="font-mono text-[13px] leading-relaxed text-gray-300">
+{
+  <span class="text-blue-300">"id"</span>: <span class="text-green-300">"gen-123abc456def"</span>,
+  <span class="text-blue-300">"model"</span>: <span class="text-green-300">"openrouter/free"</span>,
+  <span class="text-blue-300">"choices"</span>: [
+    {
+      <span class="text-blue-300">"message"</span>: {
+        <span class="text-blue-300">"role"</span>: <span class="text-green-300">"assistant"</span>,
+        <span class="text-blue-300">"content"</span>: <span class="text-green-300">"Hello! I am Aura AI. How can I help you today?"</span>
+      }
+    }
+  ]
+}
+</pre>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="ad-container bg-gray-50 border-gray-200">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Ad Slot</p>
-                            </div>
+                        <div class="w-full">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Advertisement</p>
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-6307970151642220"
+                                 data-ad-slot="auto"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                            <script>
+                                 (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                        </div>
                     </div>
 
                 </div>
@@ -338,7 +384,7 @@ Go to Settings and enter your Admin Secret.</pre>
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="keyModalOverlay" onclick="closeModal('keyModal')"></div>
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl relative z-10 p-8 transform transition-all scale-95 opacity-0" id="keyModalContent">
             <h2 class="text-2xl font-bold mb-2">Create secret key</h2>
-            <p class="text-sm text-gray-500 mb-6">Keys identify your application.</p>
+            <p class="text-sm text-gray-500 mb-6">Keys are used to identify your application.</p>
             
             <div class="space-y-5">
                 <div>
