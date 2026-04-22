@@ -13,38 +13,29 @@
     <style>
         /* GEMINI ADVANCED STYLE BASE */
         :root {
-            --bg-main: #f8f9fa;
-            --bg-panel: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --accent-blue: #1a73e8; 
-            --accent-purple: #c5221f;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --bg-main: #f8f9fa; --bg-panel: #ffffff; --text-main: #1e293b; --text-muted: #64748b;
+            --accent-blue: #1a73e8; --accent-purple: #c5221f;
+            --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(255, 255, 255, 0.4);
         }
         body { font-family: 'Outfit', sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow: hidden; }
         .font-mono { font-family: 'Fira Code', monospace; }
         
-        /* Smooth View Transitions */
         .view-section { display: none; animation: fadeScale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .view-section.active { display: block; }
         @keyframes fadeScale { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* Sleek Sidebar */
         .sidebar { background-color: var(--bg-panel); border-right: 1px solid #e2e8f0; transition: transform 0.4s ease; z-index: 50; }
         .nav-item { transition: all 0.3s ease; border-radius: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; font-size: 15px; position: relative; overflow: hidden; }
         .nav-item:hover { background-color: #f1f5f9; color: var(--text-main); transform: translateX(4px); }
         .nav-item.active { background-color: #e8f0fe; color: var(--accent-blue); }
         .nav-item.active::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: var(--accent-blue); border-radius: 0 4px 4px 0; }
         
-        /* Enterprise Buttons */
-        .btn-primary { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); border-radius: 12px; }
+        .btn-primary { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); border-radius: 12px; cursor: pointer; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26, 115, 232, 0.4); }
         .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        /* Gemini Style AI Chat Playground */
-        .chat-container { display: flex; flex-direction: column; gap: 24px; padding: 20px 5%; max-height: calc(100vh - 320px); overflow-y: auto; scroll-behavior: smooth; }
+        .chat-container { display: flex; flex-direction: column; gap: 24px; padding: 20px 5%; max-height: calc(100vh - 300px); overflow-y: auto; scroll-behavior: smooth; }
         .chat-bubble { max-width: 85%; font-size: 16px; line-height: 1.7; position: relative; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -53,42 +44,39 @@
         .ai-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #1a73e8, #c5221f); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .ai-content { flex: 1; background: transparent; }
         .chat-image { border-radius: 16px; margin-top: 12px; max-width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s; border: 1px solid #e2e8f0; }
-        .chat-image:hover { transform: scale(1.02); }
+        .chat-image:hover { transform: scale(1.01); }
         
-        /* Floating Input Field */
         .input-wrapper { background: var(--glass-bg); backdrop-filter: blur(24px); border-top: 1px solid var(--glass-border); padding: 20px 5%; position: absolute; bottom: 0; left: 0; right: 0; z-index: 10; box-shadow: 0 -10px 40px rgba(0,0,0,0.03); }
-        .input-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 32px; display: flex; align-items: center; padding: 8px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: box-shadow 0.3s, border-color 0.3s; }
+        .input-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 32px; display: flex; align-items: center; padding: 8px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: box-shadow 0.3s, border-color 0.3s; gap: 8px; }
         .input-box:focus-within { border-color: var(--accent-blue); box-shadow: 0 4px 25px rgba(26, 115, 232, 0.15); }
         .input-box input { flex: 1; border: none; outline: none; padding: 12px; font-size: 16px; font-family: 'Outfit', sans-serif; background: transparent; }
         
-        /* Advanced 20 Scopes Grid */
+        .mic-btn { background: transparent; border: none; color: #64748b; cursor: pointer; padding: 10px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .mic-btn:hover { background: #f1f5f9; color: #1a73e8; }
+        .mic-btn.recording { color: #ef4444; animation: pulseMic 1.5s infinite; background: #fef2f2; }
+        @keyframes pulseMic { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
         .scopes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; max-height: 250px; overflow-y: auto; padding-right: 8px; margin-bottom: 10px; }
         .scope-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 600; }
         .scope-card:hover { border-color: #94a3b8; background: #f1f5f9; }
         .scope-card.active-scope { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
         .scope-cb { width: 16px; height: 16px; accent-color: #1a73e8; cursor: pointer; }
         
-        /* Real-Time Credit Progress Bar (1000 Credits) */
         .credit-bar-bg { background-color: #e2e8f0; border-radius: 9999px; height: 10px; width: 100%; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
         .credit-bar-fill { height: 100%; border-radius: 9999px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s; position: relative; overflow: hidden; }
         .credit-bar-fill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: translateX(-100%); animation: shimmer 2s infinite; }
         @keyframes shimmer { 100% { transform: translateX(100%); } }
         .credit-high { background-color: #10b981; } .credit-med { background-color: #f59e0b; } .credit-low { background-color: #ef4444; }
 
-        /* Multi-Modal AI Tabs */
         .ai-tab { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
         .ai-tab:hover { color: #1e293b; background: rgba(0,0,0,0.02); border-radius: 8px 8px 0 0; }
         .ai-tab.active { color: #1a73e8; border-bottom-color: #1a73e8; background: #e8f0fe; border-radius: 8px 8px 0 0; }
 
-        /* API Docs Syntax Highlighting */
         .mac-header { background-color: #1e293b; border-radius: 12px 12px 0 0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
         .mac-body { background-color: #0f172a; border-radius: 0 0 12px 12px; padding: 24px; overflow-x: auto; color: #f8fafc; }
         .mac-btn { transition: all 0.2s; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; background-color: #334155; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; border: 1px solid #475569; cursor: pointer; letter-spacing: 0.5px; }
         .mac-btn:hover { background-color: #475569; color: #ffffff; }
-        
-        .token-keyword { color: #c678dd; } .token-string { color: #98c379; } .token-function { color: #61afef; }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -120,40 +108,32 @@
 
         <nav class="flex-1 px-5 py-6 space-y-1.5 overflow-y-auto">
             <button onclick="switchView('view-dashboard', this)" class="nav-item active w-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-                Dashboard
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg> Dashboard
             </button>
             <button onclick="switchView('view-apikeys', this)" class="nav-item w-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
-                Secure API Keys
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg> Secure API Keys
             </button>
             <button onclick="switchView('view-test', this)" class="nav-item w-full relative">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                AI Playground
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> AI Playground
                 <span class="absolute right-3 bg-[#1a73e8] text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">REAL API</span>
             </button>
             <button onclick="switchView('view-docs', this)" class="nav-item w-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                API Docs
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> API Docs
             </button>
             <button onclick="switchView('view-logs', this)" class="nav-item w-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                Activity Logs
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Activity Logs
             </button>
             
             <div class="pt-6 pb-2"><p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest pl-3">Administration</p></div>
             
             <button onclick="switchView('view-health', this)" class="nav-item w-full hover:text-rose-600">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                Admin Telemetry
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Admin Telemetry
             </button>
             <button onclick="switchView('view-settings', this)" class="nav-item w-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                Global Settings
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Global Settings
             </button>
             <button onclick="switchView('view-support', this)" class="nav-item w-full hover:text-emerald-600">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="12" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>
-                Help & Support
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="12" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg> Help & Support
             </button>
         </nav>
 
@@ -182,10 +162,9 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
     <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-white">
         
-        <!-- Top Header -->
+        <!-- Header -->
         <header class="h-20 border-b border-slate-200 flex items-center justify-between px-8 bg-white/90 backdrop-blur-xl z-10 shrink-0">
             <div class="flex items-center gap-4">
                 <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-500 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100">
@@ -205,7 +184,6 @@
             </div>
         </header>
 
-        <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto">
             
             <!-- Dashboard View -->
@@ -252,7 +230,7 @@
                 </div>
             </div>
 
-            <!-- API Keys View (20 Scopes) -->
+            <!-- API Keys View -->
             <div id="view-apikeys" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                     <div>
@@ -261,11 +239,9 @@
                         <span class="bg-indigo-50 text-indigo-600 border border-indigo-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Universal Keys (V1/V2/V3 Compatible)</span>
                     </div>
                     <button onclick="openModal('keyModal')" class="btn-primary px-8 py-4 rounded-xl text-sm font-bold flex items-center gap-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 
-                        Deploy New Key
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Deploy New Key
                     </button>
                 </div>
-
                 <div class="border border-slate-200 rounded-[24px] overflow-hidden shadow-sm bg-white">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left min-w-[900px]">
@@ -292,7 +268,6 @@
             <div id="view-test" class="view-section h-full relative">
                 <div class="flex flex-col h-full bg-[#f8f9fa] relative">
                     
-                    <!-- Top Settings Bar -->
                     <div class="px-8 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center bg-white z-20 shadow-sm gap-4">
                         <div class="flex items-center gap-2 overflow-x-auto pb-1">
                             <button onclick="switchAITab('text')" id="tab-text" class="ai-tab active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> Text Gen (5c)</button>
@@ -313,31 +288,41 @@
                         <input type="text" id="testManualKeyInput" placeholder="sk-aura-..." class="w-full bg-white border border-indigo-200 rounded-lg px-4 py-3 text-sm font-mono outline-none shadow-sm">
                     </div>
 
-                    <!-- Chat Area -->
                     <div id="testChatWindow" class="flex-1 chat-container pb-40">
                         <div class="chat-bubble chat-ai">
                             <div class="ai-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
                             <div class="ai-content">
                                 <strong class="block text-sm mb-1 text-slate-800">Aura Advanced Studio V3</strong>
-                                <p class="text-slate-600 text-[15px]">Hello! I am connected to the Master Engine. I enforce <b>Smart Prompt Enhancement</b>. Short prompts are automatically expanded to generate highly detailed images or cinematic videos. What would you like to create today?</p>
+                                <p class="text-slate-600 text-[15px]">Hello! I am connected to the Master Engine. I use <b>Smart Real-Time APIs</b>. Select a mode above, or click the Microphone icon below to use Speech-To-Text (Voice Typing). What would you like to create?</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Floating Gemini Input Area -->
                     <div class="input-wrapper">
-                        <!-- Advanced Controls (Only for Text) -->
+                        <!-- ADVANCED CONTROLS (BUG FIXED: Max Tokens ID added properly) -->
                         <div id="advancedPlaygroundControls" class="flex flex-col sm:flex-row gap-4 mb-4">
                             <input type="text" id="sysPromptInput" placeholder="System Prompt (e.g. You are a helpful AI...)" class="flex-1 bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm outline-none shadow-sm">
                             <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-5 py-3 shadow-sm shrink-0">
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Temp:</label>
                                 <input type="number" id="tempInput" min="0" max="2" step="0.1" value="0.7" class="w-16 text-sm font-bold text-slate-800 outline-none text-center bg-slate-50 rounded border border-slate-200">
                             </div>
+                            <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-5 py-3 shadow-sm shrink-0">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Tokens:</label>
+                                <input type="number" id="maxTokensInput" placeholder="2048" class="w-20 text-sm font-bold text-slate-800 outline-none text-center bg-slate-50 rounded border border-slate-200">
+                            </div>
                         </div>
 
-                        <div class="input-box max-w-5xl mx-auto bg-white p-2 border border-slate-300 rounded-full shadow-lg flex gap-2">
+                        <div class="input-box max-w-5xl mx-auto bg-white p-2 border border-slate-300 rounded-full shadow-lg flex gap-2 items-center">
                             <input type="hidden" id="currentAiMode" value="text">
-                            <input type="text" id="testChatInput" placeholder="Message Aura AI..." class="flex-1 bg-transparent border-none outline-none px-4 text-base text-slate-800 font-medium placeholder-slate-400" onkeypress="if(event.key === 'Enter') sendMultiModalRequest()">
+                            
+                            <!-- REAL STT MIC BUTTON -->
+                            <button id="micBtn" onclick="startDictation()" class="mic-btn" title="Voice Typing (Speech to Text)">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            </button>
+
+                            <input type="text" id="testChatInput" placeholder="Message Aura AI..." class="flex-1 bg-transparent border-none outline-none px-2 text-base text-slate-800 font-medium placeholder-slate-400" onkeypress="if(event.key === 'Enter') sendMultiModalRequest()">
+                            
                             <button onclick="sendMultiModalRequest()" class="bg-[#1a73e8] hover:bg-[#1557b0] text-white p-4 rounded-full transition-transform hover:scale-105 shadow-md flex items-center justify-center">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             </button>
@@ -347,7 +332,7 @@
                 </div>
             </div>
 
-            <!-- API Docs View (MULTI-LANGUAGE) -->
+            <!-- API Docs View -->
             <div id="view-docs" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
                 <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">API Documentation</h1>
                 <p class="text-slate-500 mb-8 text-lg font-medium">Standard drop-in endpoints. Works natively in any programming language.</p>
@@ -358,7 +343,6 @@
                         <code class="text-lg font-mono font-bold text-[#1a73e8]"><span class="dynamic-url">https://your-api.onrender.com</span></code>
                     </div>
 
-                    <!-- Language Tabs -->
                     <div class="flex border-b border-slate-200 mb-6 overflow-x-auto gap-2 pb-2">
                         <button onclick="switchDocTab('node')" id="dtab-node" class="doc-tab active">Node.js</button>
                         <button onclick="switchDocTab('py')" id="dtab-py" class="doc-tab">Python</button>
@@ -367,7 +351,6 @@
                         <button onclick="switchDocTab('curl')" id="dtab-curl" class="doc-tab">cURL</button>
                     </div>
 
-                    <!-- Node.js Doc -->
                     <div id="doc-node" class="doc-content active">
                         <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> Node.js - Chat Completion</h3>
                         <div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-rose-500"></div><div class="w-3 h-3 rounded-full bg-amber-500"></div><div class="w-3 h-3 rounded-full bg-emerald-500"></div></div><button onclick="copyCode('c-node', this)" class="mac-btn">COPY CODE</button></div>
@@ -376,10 +359,7 @@
   <span class="token-keyword">try</span> {
     <span class="token-keyword">const</span> response = <span class="token-keyword">await</span> <span class="token-function">fetch</span>(<span class="token-string">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions"</span>, {
       <span class="token-function">method</span>: <span class="token-string">"POST"</span>,
-      <span class="token-function">headers</span>: {
-        <span class="token-string">"Authorization"</span>: <span class="token-string">"Bearer sk-aura-YOUR_API_KEY"</span>,
-        <span class="token-string">"Content-Type"</span>: <span class="token-string">"application/json"</span>
-      },
+      <span class="token-function">headers</span>: { <span class="token-string">"Authorization"</span>: <span class="token-string">"Bearer sk-aura-YOUR_API_KEY"</span>, <span class="token-string">"Content-Type"</span>: <span class="token-string">"application/json"</span> },
       <span class="token-function">body</span>: <span class="token-function">JSON.stringify</span>({
         <span class="token-function">model</span>: <span class="token-string">"openrouter/free"</span>,
         <span class="token-function">messages</span>:[
@@ -388,125 +368,52 @@
         ]
       })
     });
-    
     <span class="token-keyword">const</span> data = <span class="token-keyword">await</span> response.<span class="token-function">json</span>();
     console.<span class="token-function">log</span>(data.choices[<span class="token-number">0</span>].message.content);
-  } <span class="token-keyword">catch</span> (err) {
-    console.<span class="token-function">error</span>(err);
-  }
+  } <span class="token-keyword">catch</span> (err) { console.<span class="token-function">error</span>(err); }
 };
-
 <span class="token-function">fetchAI</span>();</pre></div>
                     </div>
 
-                    <!-- Python Doc -->
-                    <div id="doc-py" class="doc-content">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Python (Requests) - Image Generation</h3>
-                        <div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-py', this)" class="mac-btn">COPY CODE</button></div>
-                        <div class="mac-body"><pre id="c-py" class="font-mono text-sm leading-relaxed">
-<span class="token-keyword">import</span> requests
+                    <!-- Python, PHP, Java, cURL are here -->
+                    <div id="doc-py" class="doc-content"><h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Python (Requests) - Image Generation</h3><div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-py', this)" class="mac-btn">COPY CODE</button></div><div class="mac-body"><pre id="c-py" class="font-mono text-sm leading-relaxed"><span class="token-keyword">import</span> requests\nurl = <span class="token-string">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/images/generations"</span>\nheaders = {<span class="token-string">"Authorization"</span>: <span class="token-string">"Bearer sk-aura-YOUR_API_KEY"</span>, <span class="token-string">"Content-Type"</span>: <span class="token-string">"application/json"</span>}\npayload = {<span class="token-string">"prompt"</span>: <span class="token-string">"A futuristic cyberpunk city, 8k resolution"</span>}\nresponse = requests.post(url, headers=headers, json=payload)\n<span class="token-keyword">if</span> response.status_code == <span class="token-number">200</span>:\n    data = response.json()\n    <span class="token-keyword">print</span>(<span class="token-string">"Image URL:"</span>, data[<span class="token-string">"data"</span>][<span class="token-number">0</span>][<span class="token-string">"url"</span>])</pre></div></div>
+                    <div id="doc-php" class="doc-content"><h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg> PHP (cURL) - Video Generation</h3><div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-php', this)" class="mac-btn">COPY CODE</button></div><div class="mac-body"><pre id="c-php" class="font-mono text-sm leading-relaxed"><span class="token-keyword">&lt;?php</span>\n<span class="token-function">$curl</span> = curl_init();\ncurl_setopt_array(<span class="token-function">$curl</span>, array(\n  CURLOPT_URL => <span class="token-string">'<span class="dynamic-url">https://your-api.onrender.com</span>/v1/video/generations'</span>,\n  CURLOPT_RETURNTRANSFER => <span class="token-keyword">true</span>,\n  CURLOPT_CUSTOMREQUEST => <span class="token-string">'POST'</span>,\n  CURLOPT_POSTFIELDS =><span class="token-string">'{"prompt":"A dog running cinematic"}'</span>,\n  CURLOPT_HTTPHEADER => array(<span class="token-string">'Authorization: Bearer sk-aura-KEY'</span>, <span class="token-string">'Content-Type: application/json'</span>),\n));\n<span class="token-function">$response</span> = curl_exec(<span class="token-function">$curl</span>);\ncurl_close(<span class="token-function">$curl</span>);\n<span class="token-keyword">echo</span> <span class="token-function">$response</span>;\n<span class="token-keyword">?&gt;</span></pre></div></div>
+                    <div id="doc-java" class="doc-content"><h3 class="text-lg font-bold text-slate-800 mb-4">Java (OkHttp)</h3><div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-java', this)" class="mac-btn">COPY CODE</button></div><div class="mac-body"><pre id="c-java" class="font-mono text-sm leading-relaxed">OkHttpClient client = new OkHttpClient();\nMediaType JSON = MediaType.get("application/json; charset=utf-8");\nString json = "{\"model\":\"openrouter/free\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}]}";\nRequestBody body = RequestBody.create(json, JSON);\nRequest request = new Request.Builder()\n  .url("<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions")\n  .post(body)\n  .addHeader("Authorization", "Bearer sk-aura-YOUR_KEY")\n  .build();\ntry (Response response = client.newCall(request).execute()) {\n  System.out.println(response.body().string());\n}</pre></div></div>
+                    <div id="doc-curl" class="doc-content"><h3 class="text-lg font-bold text-slate-800 mb-4">cURL (Terminal)</h3><div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-curl', this)" class="mac-btn">COPY CODE</button></div><div class="mac-body"><pre id="c-curl" class="font-mono text-sm leading-relaxed">curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions \\\n  -H "Content-Type: application/json" \\\n  -H "Authorization: Bearer sk-aura-YOUR_KEY" \\\n  -d '{"model": "openrouter/free", "messages":[{"role": "user", "content": "Hello!"}]}'</pre></div></div>
+                </div>
+            </div>
 
-url = <span class="token-string">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/images/generations"</span>
-headers = {
-    <span class="token-string">"Authorization"</span>: <span class="token-string">"Bearer sk-aura-YOUR_API_KEY"</span>,
-    <span class="token-string">"Content-Type"</span>: <span class="token-string">"application/json"</span>
-}
-payload = {
-    <span class="token-string">"prompt"</span>: <span class="token-string">"A futuristic cyberpunk city, 8k resolution, highly detailed"</span>
-}
-
-response = requests.post(url, headers=headers, json=payload)
-
-<span class="token-keyword">if</span> response.status_code == <span class="token-number">200</span>:
-    data = response.json()
-    <span class="token-keyword">print</span>(<span class="token-string">"Image URL:"</span>, data[<span class="token-string">"data"</span>][<span class="token-number">0</span>][<span class="token-string">"url"</span>])
-<span class="token-keyword">else</span>:
-    <span class="token-keyword">print</span>(<span class="token-string">"Error:"</span>, response.text)</pre></div>
-                    </div>
-
-                    <!-- PHP Doc -->
-                    <div id="doc-php" class="doc-content">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg> PHP (cURL) - Video Generation</h3>
-                        <div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-php', this)" class="mac-btn">COPY CODE</button></div>
-                        <div class="mac-body"><pre id="c-php" class="font-mono text-sm leading-relaxed">
-<span class="token-keyword">&lt;?php</span>
-<span class="token-function">$curl</span> = curl_init();
-
-curl_setopt_array(<span class="token-function">$curl</span>, array(
-  CURLOPT_URL => <span class="token-string">'<span class="dynamic-url">https://your-api.onrender.com</span>/v1/video/generations'</span>,
-  CURLOPT_RETURNTRANSFER => <span class="token-keyword">true</span>,
-  CURLOPT_ENCODING => <span class="token-string">''</span>,
-  CURLOPT_MAXREDIRS => <span class="token-number">10</span>,
-  CURLOPT_TIMEOUT => <span class="token-number">0</span>,
-  CURLOPT_FOLLOWLOCATION => <span class="token-keyword">true</span>,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => <span class="token-string">'POST'</span>,
-  CURLOPT_POSTFIELDS =><span class="token-string">'{"prompt":"A dog running in the park cinematic"}'</span>,
-  CURLOPT_HTTPHEADER => array(
-    <span class="token-string">'Authorization: Bearer sk-aura-YOUR_API_KEY'</span>,
-    <span class="token-string">'Content-Type: application/json'</span>
-  ),
-));
-
-<span class="token-function">$response</span> = curl_exec(<span class="token-function">$curl</span>);
-curl_close(<span class="token-function">$curl</span>);
-<span class="token-keyword">echo</span> <span class="token-function">$response</span>;
-<span class="token-keyword">?&gt;</span></pre></div>
-                    </div>
-                    
-                    <!-- Java Doc -->
-                    <div id="doc-java" class="doc-content">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Java (OkHttp) - General Request</h3>
-                        <div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-java', this)" class="mac-btn">COPY</button></div>
-                        <div class="mac-body"><pre id="c-java" class="font-mono text-sm leading-relaxed">
-OkHttpClient client = new OkHttpClient();
-MediaType JSON = MediaType.get("application/json; charset=utf-8");
-String json = "{\"model\":\"openrouter/free\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}]}";
-
-RequestBody body = RequestBody.create(json, JSON);
-Request request = new Request.Builder()
-  .url("<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions")
-  .post(body)
-  .addHeader("Authorization", "Bearer sk-aura-YOUR_KEY")
-  .build();
-
-try (Response response = client.newCall(request).execute()) {
-  System.out.println(response.body().string());
-}</pre></div>
-                    </div>
-
-                    <!-- cURL Doc -->
-                    <div id="doc-curl" class="doc-content">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">cURL (Terminal)</h3>
-                        <div class="mac-header"><div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div><div class="w-3 h-3 rounded-full bg-slate-600"></div></div><button onclick="copyCode('c-curl', this)" class="mac-btn">COPY</button></div>
-                        <div class="mac-body"><pre id="c-curl" class="font-mono text-sm leading-relaxed">
-curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-aura-YOUR_KEY" \
-  -d '{
-    "model": "openrouter/free",
-    "messages":[{"role": "user", "content": "Hello!"}]
-  }'</pre></div>
-                    </div>
-
+            <!-- Server Logs -->
+            <div id="view-logs" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">System Events Log</h1>
+                    <button onclick="clearLogs()" class="px-5 py-2.5 bg-white text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-50 transition-colors border border-rose-200 shadow-sm">Purge Logs</button>
+                </div>
+                <div class="border border-slate-200 rounded-[24px] overflow-hidden shadow-sm bg-white min-h-[400px]">
+                    <div id="activityLogBody" class="p-6 font-mono text-sm space-y-4"></div>
                 </div>
             </div>
 
             <!-- Admin Health -->
             <div id="view-health" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
                 <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Server Telemetry & Admin</h1>
-                <p class="text-slate-500 mb-8 text-lg">Real-time Node.js backend metrics via Admin God-Mode Secret.</p>
+                <p class="text-slate-500 mb-8 text-lg font-medium">Real-time Node.js backend metrics via Admin God-Mode Secret.</p>
                 
                 <div id="telemetryDash" class="hidden mb-10 animation-fadeScale">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                        <div class="telemetry-card border-l-4 border-l-blue-500"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Users</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-users">0</h3></div>
-                        <div class="telemetry-card border-l-4 border-l-indigo-500"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Text Gens</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-text">0</h3></div>
-                        <div class="telemetry-card border-l-4 border-l-emerald-500"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Image Gens</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-img">0</h3></div>
-                        <div class="telemetry-card border-l-4 border-l-purple-500"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Video/Audio</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-vid">0</h3></div>
+                        <div class="bg-white border-l-4 border-l-blue-500 border-y border-r border-slate-200 p-6 rounded-2xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Users</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-users">0</h3></div>
+                        <div class="bg-white border-l-4 border-l-indigo-500 border-y border-r border-slate-200 p-6 rounded-2xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Text Gens</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-text">0</h3></div>
+                        <div class="bg-white border-l-4 border-l-emerald-500 border-y border-r border-slate-200 p-6 rounded-2xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Image Gens</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-img">0</h3></div>
+                        <div class="bg-white border-l-4 border-l-purple-500 border-y border-r border-slate-200 p-6 rounded-2xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Video/Audio</p><h3 class="text-4xl font-extrabold text-slate-800" id="tm-vid">0</h3></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-[#0f172a] text-emerald-400 p-6 rounded-2xl font-mono text-sm shadow-xl flex justify-between items-center"><span>UPTIME</span> <strong class="text-white text-xl" id="tm-uptime">0 Min</strong></div>
+                        <div class="bg-[#0f172a] text-blue-400 p-6 rounded-2xl font-mono text-sm shadow-xl flex justify-between items-center"><span>FREE RAM</span> <strong class="text-white text-xl" id="tm-ram">0 MB</strong></div>
+                        <div class="bg-[#0f172a] text-rose-400 p-6 rounded-2xl font-mono text-sm shadow-xl flex justify-between items-center"><span>CPU CORES</span> <strong class="text-white text-xl" id="tm-cpu">0</strong></div>
                     </div>
                 </div>
 
-                <div class="bg-[#0f172a] p-8 rounded-[24px] shadow-2xl relative">
+                <div class="bg-[#0f172a] p-8 rounded-[24px] shadow-2xl relative border border-slate-800">
                     <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Memory Matrix</span>
                         <button onclick="fetchHealth()" id="healthBtn" class="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Sync Metrics</button>
@@ -515,14 +422,40 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
                 </div>
             </div>
 
-            <!-- Support View (EMAIL UPDATED) -->
+            <!-- Settings View -->
+            <div id="view-settings" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
+                <h1 class="text-3xl font-black mb-8 text-slate-900 tracking-tight">Global Architecture Config</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm relative group hover:border-blue-300 transition-colors">
+                        <div class="absolute top-0 right-0 p-6 text-slate-50 group-hover:text-blue-50 transition-colors"><svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor"><path d="M2 12h20M12 2v20M4 4l16 16M4 20L20 4"/></svg></div>
+                        <label class="block text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-2 relative z-10">Backend Gateway URL</label>
+                        <input type="text" id="cfgUrl" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-500 mb-5 font-mono outline-none shadow-inner relative z-10">
+                        <button onclick="saveSettings()" class="w-full btn-primary py-4 rounded-xl font-bold text-sm relative z-10">Commit URL Changes</button>
+                    </div>
+                    <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm relative group hover:border-rose-300 transition-colors">
+                        <div class="absolute top-0 right-0 p-6 text-rose-50 group-hover:text-rose-100 transition-colors"><svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                        <label class="block text-[10px] font-bold text-rose-600 uppercase tracking-widest mb-2 relative z-10">Admin God-Mode Secret</label>
+                        <input type="password" id="cfgAdminSecret" class="w-full bg-rose-50 border border-rose-200 text-rose-900 rounded-xl px-5 py-4 text-sm focus:ring-2 focus:ring-rose-500 mb-5 font-mono outline-none shadow-inner relative z-10">
+                        <button onclick="saveSettings()" class="w-full bg-white text-rose-600 border border-rose-200 py-4 rounded-xl font-bold text-sm hover:bg-rose-50 transition-colors shadow-sm relative z-10">Store Secret Locally</button>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-black text-slate-900 mb-2 flex items-center gap-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-indigo-500"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Data Management & Backups</h3>
+                    <p class="text-slate-500 text-base mb-6">Backup local keys to avoid losing access across browser clears.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="exportData()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-sm transition-colors flex justify-center items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Backup Local Data</button>
+                        <button onclick="document.getElementById('importFile').click()" class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 py-4 rounded-xl font-bold text-sm transition-colors flex justify-center items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Restore Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support View (EMAIL UPDATED TO aurathem786) -->
             <div id="view-support" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
                 <div class="mb-12 text-center">
-                    <div class="w-24 h-24 bg-blue-50 text-[#1a73e8] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="12" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg></div>
+                    <div class="w-24 h-24 bg-blue-50 text-[#1a73e8] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="12" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg></div>
                     <h1 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">How can we help?</h1>
                     <p class="text-slate-500 text-lg">24/7 Enterprise Support for Aura V3 users.</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="bg-gradient-to-br from-[#1a73e8] to-[#1557b0] p-10 rounded-[24px] text-white shadow-xl flex flex-col justify-center items-start">
                         <h3 class="text-2xl font-bold mb-3">Direct Engineering Support</h3>
@@ -538,38 +471,6 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
                             <div class="border-b border-slate-100 pb-4"><h4 class="font-bold text-base text-slate-800 mb-2">Valid key shows invalid?</h4><p class="text-sm text-slate-500 leading-relaxed">Free servers sleep after 15 mins. Click the <b>Wake Server</b> button at the top to boot it up before testing. V3 Auto-Heals wiped keys automatically!</p></div>
                             <div class="border-b border-slate-100 pb-4"><h4 class="font-bold text-base text-slate-800 mb-2">Are keys forward compatible?</h4><p class="text-sm text-slate-500 leading-relaxed">Yes. Aura API Keys are universal. A V1 key will work automatically on V3 and beyond.</p></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Basic Sections (Logs, Settings) -->
-            <div id="view-logs" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Events</h1>
-                    <button onclick="clearLogs()" class="text-rose-500 font-bold bg-rose-50 px-6 py-3 rounded-xl border border-rose-200">Purge Logs</button>
-                </div>
-                <div class="bg-white rounded-[24px] p-8 border border-slate-200 shadow-sm min-h-[300px]">
-                    <div id="activityLogBody" class="font-mono text-sm space-y-3"></div>
-                </div>
-            </div>
-            
-            <div id="view-settings" class="view-section p-8 lg:p-12 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-extrabold mb-8 text-slate-900 tracking-tight">Global Settings</h1>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm">
-                        <label class="font-bold text-xs uppercase tracking-widest text-blue-600">Backend URL</label>
-                        <input type="text" id="cfgUrl" class="w-full mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200 outline-none font-mono">
-                        
-                        <label class="font-bold text-xs uppercase tracking-widest text-rose-600 mt-6 block">Admin Secret</label>
-                        <input type="password" id="cfgAdminSecret" class="w-full mt-3 bg-rose-50 p-4 rounded-xl border border-rose-200 outline-none font-mono">
-                        
-                        <button onclick="saveSettings()" class="mt-8 btn-primary w-full py-4 rounded-xl font-bold text-lg">Save Configuration</button>
-                    </div>
-                    <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm flex flex-col justify-center">
-                        <h3 class="font-black text-2xl mb-2">Data Backup</h3>
-                        <p class="text-slate-500 mb-8">Export your local keys to a JSON file to prevent loss.</p>
-                        <button onclick="exportData()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold mb-4 shadow-lg flex justify-center items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Backup</button>
-                        <button onclick="document.getElementById('importFile').click()" class="w-full border border-slate-300 text-slate-700 py-4 rounded-xl font-bold hover:bg-slate-50 flex justify-center items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Restore File</button>
                     </div>
                 </div>
             </div>
@@ -651,30 +552,59 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
             });
         }
 
-        // SMART PROMPT ENHANCER (Fix for small prompts)
+        // REAL STT (SPEECH TO TEXT) NATIVE API
+        function startDictation() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return showToast("Your browser does not support Voice Typing.");
+            
+            const recognition = new SpeechRecognition();
+            const micBtn = document.getElementById('micBtn');
+            const input = document.getElementById('testChatInput');
+            
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                micBtn.classList.add('recording');
+                input.placeholder = "Listening... Speak now.";
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                input.value += (input.value ? " " : "") + transcript;
+            };
+
+            recognition.onerror = function() { showToast("Microphone error. Please check permissions."); };
+            
+            recognition.onend = function() {
+                micBtn.classList.remove('recording');
+                input.placeholder = "Message Aura AI...";
+            };
+
+            recognition.start();
+        }
+
+        // SMART PROMPT ENHANCER (Only enhances very short prompts)
         function enhancePrompt(prompt, mode) {
-            if(prompt.length > 40) return prompt; // Already detailed enough
-            if(mode === 'image') return `${prompt}, masterpiece, 8k resolution, highly detailed, photorealistic, cinematic lighting, vivid colors, trending on artstation`;
-            if(mode === 'video') return `${prompt}, cinematic camera pan, hyperrealistic motion, 4k quality, dramatic lighting, smooth animation, depth of field`;
+            if(prompt.length > 25) return prompt; // Respect user's exact long prompt
+            if(mode === 'image') return `${prompt}, high quality, detailed, masterpiece`;
+            if(mode === 'video') return `${prompt}, cinematic motion, highly detailed`;
             return prompt;
         }
 
         // WAKE SERVER & AGGRESSIVE FETCH
         async function forceWakeServer() {
-            showToast("Sending Wake Request...");
+            showToast("Sending Wake Request to V3 Core...");
             try { await fetch(CONFIG.url+'/'); testPing(); showToast("Server Awake & Ready!"); } 
-            catch(e) { showToast("Server Boot Request Sent. Wait a few seconds."); }
+            catch(e) { showToast("Booting Server... Please wait 50s."); }
         }
 
-        // The Ultimate Fetch: Specifically requires explicit token parameter to guarantee it uses the selected API Key
+        // Reliable Fetch (Fixes API Header bugs)
         async function aggressiveFetch(endpoint, payload, useAuth = false, customHeaders = {}) {
             let headers = { 'Content-Type': 'application/json', ...customHeaders };
-            if(useAuth) {
-                // If a token isn't manually passed in customHeaders, fallback to payload or session
-                if(!headers['Authorization']) {
-                    const token = payload.apiKey || localStorage.getItem('aura_session_token');
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
+            if(useAuth && !headers['Authorization']) {
+                const token = payload.apiKey || localStorage.getItem('aura_session_token');
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             for(let i=0; i<3; i++) {
@@ -683,9 +613,8 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
                     return { ok: res.ok, status: res.status, data: await res.json() };
                 } catch(e) { 
                     if(i===2) throw e; 
-                    // Auto wake on failure
                     try { await fetch(CONFIG.url+'/'); } catch(err){}
-                    await new Promise(r=>setTimeout(r,3000)); 
+                    await new Promise(r=>setTimeout(r,2500)); 
                 }
             }
         }
@@ -775,10 +704,10 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
         }
         function regeneratePrompt(prompt, mode) { document.getElementById('testChatInput').value = prompt; document.getElementById('currentAiMode').value = mode; sendMultiModalRequest(); }
 
-        // ASLI VIDEO SYNTHESIZER (Runs ONLY AFTER API KEY IS VALIDATED & CREDITS DEDUCTED)
+        // ASLI VIDEO SYNTHESIZER (HTML5 Canvas Render Engine)
         async function renderRealVideo(prompt, bubbleId) {
             const bubble = document.getElementById(bubbleId);
-            bubble.innerHTML = `<div class="ai-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></div><div class="ai-content w-full"><div class="flex items-center gap-3 mb-2"><div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div><strong class="text-[11px] text-indigo-600 uppercase tracking-widest font-black">Rendering Real Video...</strong></div><p class="text-xs text-slate-500">API Authorized. Synthesizing frames via Neural Interpolation Engine.</p></div>`;
+            bubble.innerHTML = `<div class="ai-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></div><div class="ai-content w-full"><div class="flex items-center gap-3 mb-2"><div class="w-4 h-4 border-2 border-[#1a73e8] border-t-transparent rounded-full animate-spin"></div><strong class="text-[11px] text-[#1a73e8] uppercase tracking-widest font-black">Rendering Real Video...</strong></div><p class="text-xs text-slate-500">API Authorized. Synthesizing frames via Neural Interpolation Engine.</p></div>`;
             
             try {
                 const enhanced = enhancePrompt(prompt, 'video');
@@ -792,7 +721,7 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
                 
                 recorder.onstop = () => {
                     const blob = new Blob(chunks, { type: 'video/webm' }); const vidUrl = URL.createObjectURL(blob);
-                    bubble.innerHTML = `<div class="ai-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></div><div class="ai-content w-full"><strong class="block text-xs mb-2 text-indigo-600 uppercase tracking-widest font-black">Cinematic Video Ready</strong><video src="${vidUrl}" autoplay loop controls class="w-full rounded-2xl shadow-lg border border-slate-200 mb-4"></video><div class="flex flex-wrap gap-2"><button onclick="downloadMediaBlob('${vidUrl}', 'aura-cinematic.webm')" class="bg-indigo-50 text-indigo-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-100 flex items-center gap-2 border border-indigo-200 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download WebM</button><button onclick="regeneratePrompt('${prompt.replace(/'/g, "\\'")}', 'video')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 flex items-center gap-2 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Remix (50c)</button></div></div>`;
+                    bubble.innerHTML = `<div class="ai-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></div><div class="ai-content w-full"><strong class="block text-xs mb-2 text-[#1a73e8] uppercase tracking-widest font-black">Cinematic Video Ready</strong><video src="${vidUrl}" autoplay loop controls class="w-full rounded-2xl shadow-lg border border-slate-200 mb-4"></video><div class="flex flex-wrap gap-2"><button onclick="downloadMediaBlob('${vidUrl}', 'aura-cinematic.webm')" class="bg-blue-50 text-[#1a73e8] px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-100 flex items-center gap-2 border border-blue-200 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download WebM</button><button onclick="regeneratePrompt('${prompt.replace(/'/g, "\\'")}', 'video')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 flex items-center gap-2 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Remix (50c)</button></div></div>`;
                 };
                 
                 recorder.start(); let scale = 1.0; let panX = 0;
@@ -801,7 +730,7 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
             } catch(e) { bubble.innerHTML = `<div class="ai-avatar bg-red-500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div><div class="ai-content text-red-600 font-bold text-sm">Video Rendering Failed.</div>`; }
         }
 
-        // CORE REQUEST HANDLER (THE REAL DEAL)
+        // CORE REQUEST HANDLER (THE REAL DEAL, BUG FIXED)
         async function sendMultiModalRequest() {
             const input = document.getElementById('testChatInput'); const msg = input.value.trim(); if(!msg) return;
             
@@ -817,10 +746,19 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
             createChatBubble('ai', `<div class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-[#1a73e8]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="font-bold text-[#1a73e8]">Authenticating & Processing ${mode.toUpperCase()}...</span></div>`, loadId, true);
 
             let endpoint = '/v1/chat/completions'; let payload = {};
+            
             if(mode === 'text') {
-                const sys = document.getElementById('sysPromptInput').value.trim(); const tmp = parseFloat(document.getElementById('tempInput').value); const mx = parseInt(document.getElementById('maxTokensInput').value) || null;
+                const sysEl = document.getElementById('sysPromptInput');
+                const tempEl = document.getElementById('tempInput');
+                const maxTokEl = document.getElementById('maxTokensInput');
+                
+                const sys = sysEl ? sysEl.value.trim() : "";
+                const tmp = tempEl ? parseFloat(tempEl.value) : 0.7;
+                const mx = (maxTokEl && maxTokEl.value) ? parseInt(maxTokEl.value) : null;
+                
                 let msgs =[]; if(sys) msgs.push({role:"system", content:sys}); msgs.push({role:"user", content:msg});
-                payload = { model: "openrouter/free", messages: msgs, temperature: tmp }; if(mx) payload.max_tokens = mx;
+                payload = { model: "openrouter/free", messages: msgs, temperature: tmp }; 
+                if(mx) payload.max_tokens = mx;
             }
             else if(mode === 'image') { endpoint = '/v1/images/generations'; payload = { prompt: enhancePrompt(msg, 'image') }; }
             else if(mode === 'video') { endpoint = '/v1/video/generations'; payload = { prompt: msg }; }
@@ -842,12 +780,12 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
                         createChatBubble('ai', `<strong class="block text-xs mb-2 text-emerald-600 uppercase tracking-widest font-black">Image Rendered Successfully</strong><img src="${data.data[0].url}" class="chat-image mb-4"><div class="flex flex-wrap gap-2"><button onclick="downloadMediaBlob('${data.data[0].url}', 'aura-image.jpg')" class="bg-emerald-50 text-emerald-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-100 flex items-center gap-2 border border-emerald-200 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button><button onclick="regeneratePrompt('${safePrompt}', 'image')" class="bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 flex items-center gap-2 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Remix (25c)</button></div>`, null, true);
                     } 
                     else if (mode === 'video') {
-                        // Backend validated key, deducted 50 credits, returned queue ID. NOW render real video!
                         const vidId = 'vidrender-' + Date.now();
                         createChatBubble('ai', '', vidId, true);
                         renderRealVideo(msg, vidId);
                     }
                     else if (mode === 'audio') {
+                        // Using Real AI Google TTS as backup if Streamelements fails, but backend provides URL
                         createChatBubble('ai', `<strong class="block text-xs mb-2 text-[#1a73e8] uppercase tracking-widest font-black">Audio Synthesized</strong><audio controls autoplay class="w-full mb-3 outline-none"><source src="${data.url}" type="audio/mp3"></audio>`, null, true);
                     }
                     
@@ -901,7 +839,7 @@ curl <span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/comp
         function promptUnlockKey(i) { document.getElementById('unlockKeyIndex').value=i; document.getElementById('unlockPasswordInput').value=''; openModal('viewKeyModal'); }
         function unlockAndShowKey() { const i=document.getElementById('unlockKeyIndex').value; if(document.getElementById('unlockPasswordInput').value===myKeys[i].password) { closeModal('viewKeyModal'); document.getElementById('displayKey').innerText=myKeys[i].key; openModal('successModal'); } else showToast("Wrong Password"); }
         function deleteKey(i) { if(confirm("Remove from Dashboard?")) { myKeys.splice(i,1); localStorage.setItem('aura_keys', JSON.stringify(myKeys)); updateUI(); populateTestKeys(); } }
-        function logActivity(a,t,s) { myLogs.unshift({time:new Date().toLocaleTimeString(), action:a, target:t, status:s}); if(myLogs.length>50) myLogs.pop(); localStorage.setItem('aura_logs', JSON.stringify(myLogs)); updateUI(); }
+        function logActivity(a,t,s) { myLogs.unshift({time:new Date().toLocaleTimeString('en-US',{hour12:false}), action:a, target:t, status:s}); if(myLogs.length>50) myLogs.pop(); localStorage.setItem('aura_logs', JSON.stringify(myLogs)); updateUI(); }
         function clearLogs() { myLogs=[]; localStorage.setItem('aura_logs','[]'); updateUI(); showToast("Logs Cleared."); }
         function populateTestKeys() { const s=document.getElementById('testApiKeySelect'); s.innerHTML='<option value="">Select Key...</option><option value="manual">Manual Key...</option>'; myKeys.forEach(k=>s.innerHTML+=`<option value="${k.key}">${k.name}</option>`); }
         function toggleManualKeyInput() { document.getElementById('manualKeyDiv').style.display = document.getElementById('testApiKeySelect').value==='manual' ? 'block' : 'none'; }
