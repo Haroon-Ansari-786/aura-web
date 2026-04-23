@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Aura Platform - Access Denied</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            background-color: #f0f4f8;
+            background-image: radial-gradient(circle at 50% 0%, #fff1f2 0%, #f0f4f8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .error-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.1);
+            padding: 40px;
+            text-align: center;
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .btn-retry {
+            background: #ffffff;
+            color: #e11d48;
+            border: 1px solid #fda4af;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.05);
+        }
+
+        .btn-retry:hover {
+            background: #fff1f2;
+            border-color: #f43f5e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(225, 29, 72, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-card">
+        <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        
+        <h1 class="text-3xl font-black text-slate-900 mb-2 tracking-tight">Access Denied</h1>
+        <p class="text-slate-500 text-base mb-2">Authentication protocol failed.</p>
+        
+        <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 mb-8 text-left">
+            <p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-1">System Output</p>
+            <p class="text-sm font-mono text-rose-700" id="errorReasonDisplay">Invalid credentials or server timeout.</p>
+        </div>
+
+        <button onclick="goBackToLogin()" class="btn-retry">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Return to Login
+        </button>
+        
+        <p class="mt-6 text-xs text-slate-400 font-bold uppercase tracking-widest">Aura Security Matrix</p>
+    </div>
+
+    <script>
+        // Read the error reason from localStorage if it exists
+        window.onload = function() {
+            const lastError = localStorage.getItem('aura_last_error');
+            if (lastError !== null && lastError !== "") {
+                const errorDisplay = document.getElementById('errorReasonDisplay');
+                if (errorDisplay !== null) {
+                    errorDisplay.innerText = lastError;
+                }
+                // Clear it so it doesn't show up again randomly
+                localStorage.removeItem('aura_last_error');
+            }
+        };
+
+        function goBackToLogin() {
+            // Redirect back to the auth portal
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
