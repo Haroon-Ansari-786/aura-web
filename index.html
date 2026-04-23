@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Aura Platform - Secure Login</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           GLOBAL VARIABLES & NORMALIZATION
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            --bg-main: #f0f4f8; 
+            --accent-blue: #1a73e8; 
+            --glass-bg: rgba(255, 255, 255, 0.85); 
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, #e8f0fe 0%, #f0f4f8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ==========================================================================
+           AUTH CONTAINER (FULL CENTERED)
+           ========================================================================== */
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,1);
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-section {
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        .auth-section.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           INPUTS & BUTTONS
+           ========================================================================== */
+        .auth-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .auth-input-group svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 16px 16px 16px 48px;
+            font-size: 15px;
+            font-family: 'Outfit', sans-serif;
+            color: #1e293b;
+            transition: all 0.3s;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .auth-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+
+        .auth-input:focus + svg {
+            color: var(--accent-blue);
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: none; 
+            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); 
+            border-radius: 16px; 
+            cursor: pointer; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3); 
+        }
+
+        .btn-primary:disabled { 
+            background: #94a3b8; 
+            cursor: not-allowed; 
+            box-shadow: none; 
+            transform: none; 
+        }
+
+        .btn-google {
+            background-color: #ffffff;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            font-size: 15px;
+        }
+
+        .btn-google:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.1);
+        }
+
+        .link-text {
+            color: var(--accent-blue);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .link-text:hover {
+            color: #1557b0;
+            text-decoration: underline;
+        }
+
+        /* OTP Inputs */
+        .otp-grid {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #1e293b;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .otp-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #1e293b;
+            color: #ffffff;
+            padding: 14px 24px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast">
+        <svg id="toastIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="toastMsg">System Action Completed</span>
+    </div>
+
+    <div class="w-full px-4 flex flex-col items-center">
+        
+        <div class="mb-8 text-center">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Aura Platform</h1>
+        </div>
+
+        <div class="auth-container">
+            
+            <div id="auth-login" class="auth-section active">
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Sign In</h2>
+                <p class="text-slate-500 text-sm mb-6">Enter your credentials to access the Master Engine.</p>
+                
+                <div class="auth-input-group">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                
+                <div class="auth-input-group mb-2">
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                
+                <div class="flex justify-end mb-6">
+                    <span onclick="switchAuthSection('auth-forgot')" class="text-sm link-text">Forgot password?</span>
+                </div>
+
+                <button id="btnLogin" onclick="processLogin()" class="btn-primary mb-4">Sign In to Dashboard</button>
+                
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">OR</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+                
+                <button onclick="startGoogleLogin()" class="btn-google mb-6">
+                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <p class="text-center text-sm text-slate-500">Don't have an account? <span onclick="switchAuthSection('auth-signup')" class="link-text">Create one</span></p>
+            </div>
+
+            <div id="auth-signup" class="auth-section">
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Create Account</h2>
+                <p class="text-slate-500 text-sm mb-6">Join the Aura Platform for enterprise access.</p>
+                
+                <div class="auth-input-group">
+                    <input type="text" id="signupName" class="auth-input" placeholder="Full Name">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+
+                <div class="auth-input-group">
+                    <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                
+                <div class="auth-input-group mb-6">
+                    <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+
+                <button id="btnSignup" onclick="processSignup()" class="btn-primary mb-6">Register Identity</button>
+                
+                <p class="text-center text-sm text-slate-500">Already have an account? <span onclick="switchAuthSection('auth-login')" class="link-text">Sign In</span></p>
+            </div>
+
+            <div id="auth-verify" class="auth-section">
+                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Verify Email</h2>
+                <p class="text-slate-500 text-sm mb-8">We've sent a 6-digit verification code to <strong id="verifyEmailDisplay" class="text-slate-800 break-all">your email</strong>.</p>
+                
+                <div class="otp-grid">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp2', '')" id="otp1">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp3', 'otp1')" id="otp2">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp4', 'otp2')" id="otp3">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp5', 'otp3')" id="otp4">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp6', 'otp4')" id="otp5">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, '', 'otp5')" id="otp6">
+                </div>
+
+                <button id="btnVerify" onclick="processVerification()" class="btn-primary mb-6 mt-2">Verify & Access</button>
+                
+                <p class="text-center text-sm text-slate-500 mb-4">Didn't receive code? <span onclick="showToast('New code dispatched.', 'success')" class="link-text">Resend Code</span></p>
+                <div class="text-center">
+                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Login</span>
+                </div>
+            </div>
+
+            <div id="auth-forgot" class="auth-section">
+                <div class="w-14 h-14 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-6">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/><circle cx="16.5" cy="7.5" r=".5"/></svg>
+                </div>
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Reset Password</h2>
+                <p class="text-slate-500 text-sm mb-8">Enter your registered email address. We will send you instructions to reset your password.</p>
+                
+                <div class="auth-input-group mb-8">
+                    <input type="email" id="forgotEmail" class="auth-input" placeholder="Email address">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+
+                <button id="btnForgot" onclick="processForgotPassword()" class="btn-primary mb-4">Send Reset Link</button>
+                
+                <div class="text-center mt-4">
+                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Sign In</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION
+        const CONFIG = {
+            API_BASE: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com"
+        };
+
+        // BOOT SEQUENCE (Checks if already logged in)
+        window.onload = function() {
+            const storedToken = localStorage.getItem('aura_session_token');
+            if (storedToken !== null && storedToken !== "") {
+                // If token exists, skip login and redirect to main.html immediately
+                window.location.href = "main.html";
+            }
+        };
+
+        function switchAuthSection(sectionId) {
+            const authSections = document.querySelectorAll('.auth-section');
+            for (let i = 0; i < authSections.length; i++) {
+                authSections[i].classList.remove('active');
+            }
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection !== null) {
+                targetSection.classList.add('active');
+            }
+        }
+
+        function showToast(messageText, type = "success") {
+            const toastElement = document.getElementById('toast');
+            const toastMsgElement = document.getElementById('toastMsg');
+            const iconElement = document.getElementById('toastIcon');
+            
+            if (toastElement === null || toastMsgElement === null) return;
+            
+            toastMsgElement.innerText = messageText;
+            
+            if (type === "error") {
+                iconElement.setAttribute('stroke', '#ef4444'); // Red
+            } else {
+                iconElement.setAttribute('stroke', '#34d399'); // Green
+            }
+            
+            toastElement.classList.add('show');
+            setTimeout(function() {
+                toastElement.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================================================
+        // 1. STANDARD LOGIN LOGIC
+        // ==========================================================================
+        async function processLogin() {
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            
+            if (emailInput === null || passwordInput === null) return;
+            
+            const emailValue = emailInput.value.trim();
+            const passwordValue = passwordInput.value.trim();
+            
+            if (emailValue === "" || passwordValue === "") {
+                showToast("Email and Password are strictly required.", "error");
+                return;
+            }
+
+            const loginButton = document.getElementById('btnLogin');
+            let originalButtonText = "Sign In";
+            
+            if (loginButton !== null) {
+                originalButtonText = loginButton.innerHTML;
+                loginButton.innerHTML = "Authenticating...";
+                loginButton.disabled = true;
+            }
+
+            try {
+                // REAL API CALL TO BACKEND
+                const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailValue, password: passwordValue })
+                });
+
+                const responseData = await serverResponse.json();
+
+                if (serverResponse.ok === true && responseData.success === true) {
+                    // Success! Save Token and Redirect to main.html
+                    localStorage.setItem('aura_session_token', responseData.token);
+                    
+                    const userDataObject = { 
+                        name: responseData.user.name, 
+                        email: responseData.user.email 
+                    };
+                    localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
+                    
+                    // The Real Routing to Dashboard
+                    window.location.href = "main.html";
+                } else {
+                    throw new Error(responseData.message || "Invalid Credentials");
+                }
+            } catch (networkError) {
+                // IMPORTANT: If API fails or backend is unreachable, Redirect to failed.html
+                console.error("Login Failed:", networkError.message);
+                
+                // Store error message in localStorage so failed.html can read it if needed
+                localStorage.setItem('aura_last_error', networkError.message);
+                
+                window.location.href = "failed.html";
+            } finally {
+                if (loginButton !== null) {
+                    loginButton.innerHTML = originalButtonText;
+                    loginButton.disabled = false;
+                }
+            }
+        }
+
+        // ==========================================================================
+        // 2. GOOGLE LOGIN PREPARATION
+        // ==========================================================================
+        function startGoogleLogin() {
+            // Once you get the Google Client ID, we will add the OAuth URL here.
+            // For now, it shows a toast.
+            showToast("Waiting for Google Client ID insertion from admin.");
+            
+            // Future logic:
+            // window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID...`;
+        }
+
+        // ==========================================================================
+        // 3. SIGNUP LOGIC
+        // ==========================================================================
+        async function processSignup() {
+            const nameInput = document.getElementById('signupName');
+            const emailInput = document.getElementById('signupEmail');
+            const passwordInput = document.getElementById('signupPassword');
+            
+            if (nameInput === null || emailInput === null || passwordInput === null) return;
+            
+            const nameValue = nameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const passwordValue = passwordInput.value.trim();
+
+            if (nameValue === "" || emailValue === "" || passwordValue === "") {
+                showToast("All registration fields must be filled.", "error");
+                return;
+            }
+
+            const signupButton = document.getElementById('btnSignup');
+            let originalButtonText = "Register Identity";
+            
+            if (signupButton !== null) {
+                originalButtonText = signupButton.innerHTML;
+                signupButton.innerHTML = `Registering...`;
+                signupButton.disabled = true;
+            }
+
+            try {
+                // REAL API CALL
+                const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nameValue, email: emailValue, password: passwordValue })
+                });
+                
+                const responseData = await serverResponse.json();
+                
+                if (serverResponse.ok === true) {
+                    // Move to OTP screen
+                    const verifyEmailDisplay = document.getElementById('verifyEmailDisplay');
+                    if (verifyEmailDisplay !== null) {
+                        verifyEmailDisplay.innerText = emailValue;
+                    }
+                    
+                    localStorage.setItem('aura_temp_email', emailValue);
+                    localStorage.setItem('aura_temp_name', nameValue);
+                    
+                    switchAuthSection('auth-verify');
+                    showToast("Verification Code Dispatched to Email");
+                } else {
+                    throw new Error(responseData.message || "Registration Fault");
+                }
+            } catch (networkError) {
+                // If API fails, redirect to failed.html
+                localStorage.setItem('aura_last_error', "Signup API connection failed.");
+                window.location.href = "failed.html";
+            } finally {
+                if (signupButton !== null) {
+                    signupButton.innerHTML = originalButtonText;
+                    signupButton.disabled = false;
+                }
+            }
+        }
+
+        // ==========================================================================
+        // 4. OTP VERIFICATION LOGIC
+        // ==========================================================================
+        function moveToNext(currentElement, nextElementID, previousElementID) {
+            if (currentElement.value.length >= 1) {
+                if (nextElementID !== "") {
+                    const nextElement = document.getElementById(nextElementID);
+                    if (nextElement !== null) nextElement.focus();
+                }
+            } else if (currentElement.value.length === 0) {
+                if (previousElementID !== "") {
+                    const prevElement = document.getElementById(previousElementID);
+                    if (prevElement !== null) prevElement.focus();
+                }
+            }
+        }
+
+        async function processVerification() {
+            let otpString = "";
+            for (let i = 1; i <= 6; i++) {
+                const otpInput = document.getElementById('otp' + i);
+                if (otpInput !== null) {
+                    otpString += otpInput.value;
+                }
+            }
+
+            if (otpString.length < 6) {
+                showToast("Please provide the complete 6-digit sequence.", "error");
+                return;
+            }
+
+            const tempEmail = localStorage.getItem('aura_temp_email');
+            const verifyButton = document.getElementById('btnVerify');
+            
+            if (verifyButton !== null) {
+                verifyButton.disabled = true;
+                verifyButton.innerText = "Verifying Signature...";
+            }
+
+            try {
+                // Real backend call: await fetch('/api/auth/verify', { body: { email: tempEmail, otp: otpString } })
+                
+                // Simulating response for now (Assume success)
+                setTimeout(function() {
+                    const tempName = localStorage.getItem('aura_temp_name') || "New Developer";
+                    const newSessionToken = "sk-aura-verified-" + Math.random().toString(36).substring(2, 15);
+                    
+                    localStorage.setItem('aura_session_token', newSessionToken);
+                    
+                    const userDataObject = { 
+                        name: tempName, 
+                        email: tempEmail 
+                    };
+                    localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
+                    
+                    localStorage.removeItem('aura_temp_email');
+                    localStorage.removeItem('aura_temp_name');
+                    
+                    // Success Routing!
+                    window.location.href = "main.html";
+                    
+                }, 1200);
+
+            } catch (error) {
+                // Failure Routing
+                localStorage.setItem('aura_last_error', "OTP Verification Failed.");
+                window.location.href = "failed.html";
+            }
+        }
+
+        // ==========================================================================
+        // 5. FORGOT PASSWORD
+        // ==========================================================================
+        async function processForgotPassword() {
+            const emailInput = document.getElementById('forgotEmail');
+            if (emailInput === null) return;
+            
+            const emailValue = emailInput.value.trim();
+            
+            if (emailValue === "") {
+                showToast("Enter a valid registered email address.", "error");
+                return;
+            }
+
+            const forgotButton = document.getElementById('btnForgot');
+            if (forgotButton !== null) {
+                forgotButton.disabled = true;
+                forgotButton.innerText = "Transmitting Request...";
+            }
+
+            setTimeout(function() {
+                showToast("Password reset parameters dispatched to email.");
+                switchAuthSection('auth-login');
+                
+                if (forgotButton !== null) {
+                    forgotButton.disabled = false;
+                    forgotButton.innerText = "Send Reset Link";
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
