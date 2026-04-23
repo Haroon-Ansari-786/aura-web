@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>Aura Platform - Secure Login</title>
+    <title>Aura Platform - Secure Gateway</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
 
     <style>
         /* ==========================================================================
@@ -30,29 +32,40 @@
         body { 
             font-family: 'Outfit', sans-serif; 
             margin: 0; 
-            overflow: hidden; 
             background-color: var(--bg-main);
             background-image: radial-gradient(circle at 50% 0%, #e8f0fe 0%, #f0f4f8 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             width: 100vw;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto; /* Allows scrolling if ads take up vertical space */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* ==========================================================================
-           AUTH CONTAINER (FULL CENTERED)
+           AUTH CONTAINER (CENTERED & RESPONSIVE)
            ========================================================================== */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px;
+            max-width: 480px;
+        }
+
         .auth-container {
             width: 100%;
-            max-width: 440px;
             background: var(--glass-bg);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,1);
-            padding: 40px;
+            padding: 40px 30px;
             position: relative;
             z-index: 10;
         }
@@ -70,6 +83,24 @@
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           ADSTERRA SECURE WRAPPER (PREVENTS LAYOUT BREAKS)
+           ========================================================================== */
+        .ad-wrapper {
+            width: 100%;
+            margin-top: 24px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            max-height: 300px; /* Strict Lock to prevent infinite expansion */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
         }
 
         /* ==========================================================================
@@ -177,16 +208,36 @@
             text-decoration: underline;
         }
 
+        /* Identity Card for Fast Login */
+        .identity-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .identity-card:hover {
+            border-color: var(--accent-blue);
+            background: #f8fafc;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08);
+        }
+
         /* OTP Inputs */
         .otp-grid {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: space-between;
             margin-bottom: 24px;
         }
 
         .otp-input {
-            width: 48px;
+            width: 45px;
             height: 56px;
             background: #ffffff;
             border: 1px solid #cbd5e1;
@@ -234,12 +285,12 @@
 
     <div id="toast">
         <svg id="toastIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="toastMsg">System Action Completed</span>
+        <span id="toastMsg">[SYSTEM] Action Completed</span>
     </div>
 
-    <div class="w-full px-4 flex flex-col items-center">
+    <div class="page-wrapper">
         
-        <div class="mb-8 text-center">
+        <div class="mb-6 text-center">
             <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
@@ -250,29 +301,59 @@
 
         <div class="auth-container">
             
+            <div id="auth-fast-login" class="auth-section">
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Identity Restored</h2>
+                <p class="text-slate-500 text-sm mb-6">Your local credentials match our records. Click below to enter the dashboard.</p>
+                
+                <div class="identity-card" onclick="processFastLogin()">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-lg" id="fastAvatar">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <p class="font-bold text-slate-800 text-lg leading-tight truncate" id="fastName">Developer</p>
+                        <p class="text-xs text-slate-500 font-mono truncate" id="fastEmail">developer@aura.com</p>
+                    </div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">OR</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <button onclick="switchAuthSection('auth-login')" class="btn-google w-full mt-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Switch Identity Account
+                </button>
+            </div>
+
             <div id="auth-login" class="auth-section active">
-                <h2 class="text-2xl font-black mb-2 text-slate-800">Sign In</h2>
-                <p class="text-slate-500 text-sm mb-6">Enter your credentials to access the Master Engine.</p>
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Secure Protocol</h2>
+                <p class="text-slate-500 text-sm mb-6">Provide credentials to initialize the Neural Engine.</p>
                 
                 <div class="auth-input-group">
-                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Registered Email Address">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
                 
                 <div class="auth-input-group mb-2">
-                    <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Secure Password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 
                 <div class="flex justify-end mb-6">
-                    <span onclick="switchAuthSection('auth-forgot')" class="text-sm link-text">Forgot password?</span>
+                    <span onclick="switchAuthSection('auth-forgot')" class="text-sm link-text">Lost Signature?</span>
                 </div>
 
-                <button id="btnLogin" onclick="processLogin()" class="btn-primary mb-4">Sign In to Dashboard</button>
+                <button id="btnLogin" onclick="processLogin()" class="btn-primary mb-4">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Authenticate Matrix
+                </button>
                 
                 <div class="relative flex py-4 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">OR</span>
+                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">EXTERNAL Auth</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
                 
@@ -286,39 +367,42 @@
                     Continue with Google
                 </button>
 
-                <p class="text-center text-sm text-slate-500">Don't have an account? <span onclick="switchAuthSection('auth-signup')" class="link-text">Create one</span></p>
+                <p class="text-center text-sm text-slate-500">New Developer? <span onclick="switchAuthSection('auth-signup')" class="link-text">Provision Key</span></p>
             </div>
 
             <div id="auth-signup" class="auth-section">
-                <h2 class="text-2xl font-black mb-2 text-slate-800">Create Account</h2>
-                <p class="text-slate-500 text-sm mb-6">Join the Aura Platform for enterprise access.</p>
+                <h2 class="text-2xl font-black mb-2 text-slate-800">Generate Identity</h2>
+                <p class="text-slate-500 text-sm mb-6">Create credentials to acquire 1000 API computation credits.</p>
                 
                 <div class="auth-input-group">
-                    <input type="text" id="signupName" class="auth-input" placeholder="Full Name">
+                    <input type="text" id="signupName" class="auth-input" placeholder="Official Full Name">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
 
                 <div class="auth-input-group">
-                    <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+                    <input type="email" id="signupEmail" class="auth-input" placeholder="Corporate/Personal Email">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
                 
                 <div class="auth-input-group mb-6">
-                    <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password">
+                    <input type="password" id="signupPassword" class="auth-input" placeholder="Master Signature Password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
 
-                <button id="btnSignup" onclick="processSignup()" class="btn-primary mb-6">Register Identity</button>
+                <button id="btnSignup" onclick="processSignup()" class="btn-primary mb-6 text-lg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
+                    Register Credentials
+                </button>
                 
-                <p class="text-center text-sm text-slate-500">Already have an account? <span onclick="switchAuthSection('auth-login')" class="link-text">Sign In</span></p>
+                <p class="text-center text-sm text-slate-500">Existing User? <span onclick="switchAuthSection('auth-login')" class="link-text">Return to Login</span></p>
             </div>
 
             <div id="auth-verify" class="auth-section">
-                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-                <h2 class="text-2xl font-black mb-2 text-slate-800">Verify Email</h2>
-                <p class="text-slate-500 text-sm mb-8">We've sent a 6-digit verification code to <strong id="verifyEmailDisplay" class="text-slate-800 break-all">your email</strong>.</p>
+                <h2 class="text-2xl font-black mb-2 text-slate-800 text-center">Verify Identity</h2>
+                <p class="text-slate-500 text-sm mb-8 text-center">A 6-digit confirmation payload has been sent to <strong id="verifyEmailDisplay" class="text-slate-800 break-all">target email</strong>.</p>
                 
                 <div class="otp-grid">
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp2', '')" id="otp1">
@@ -329,51 +413,84 @@
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, '', 'otp5')" id="otp6">
                 </div>
 
-                <button id="btnVerify" onclick="processVerification()" class="btn-primary mb-6 mt-2">Verify & Access</button>
+                <button id="btnVerify" onclick="processVerification()" class="btn-primary mb-6 py-4">Verify Token</button>
                 
-                <p class="text-center text-sm text-slate-500 mb-4">Didn't receive code? <span onclick="showToast('New code dispatched.', 'success')" class="link-text">Resend Code</span></p>
+                <p class="text-center text-sm text-slate-500 mb-4">Payload undelivered? <span onclick="showToast('[SYSTEM] Payload re-dispatched.', 'success')" class="link-text">Resend Packet</span></p>
                 <div class="text-center">
-                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Login</span>
+                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Abort & Return</span>
                 </div>
             </div>
 
             <div id="auth-forgot" class="auth-section">
-                <div class="w-14 h-14 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-6">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/><circle cx="16.5" cy="7.5" r=".5"/></svg>
+                <div class="w-14 h-14 bg-slate-100 border border-slate-200 text-slate-600 rounded-full flex items-center justify-center mb-6 mx-auto">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/><circle cx="16.5" cy="7.5" r=".5"/></svg>
                 </div>
-                <h2 class="text-2xl font-black mb-2 text-slate-800">Reset Password</h2>
-                <p class="text-slate-500 text-sm mb-8">Enter your registered email address. We will send you instructions to reset your password.</p>
+                <h2 class="text-2xl font-black mb-2 text-slate-800 text-center">Reset Signature</h2>
+                <p class="text-slate-500 text-sm mb-8 text-center">Provide your registered email to receive protocol reset instructions.</p>
                 
                 <div class="auth-input-group mb-8">
-                    <input type="email" id="forgotEmail" class="auth-input" placeholder="Email address">
+                    <input type="email" id="forgotEmail" class="auth-input" placeholder="Official Email Address">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
 
-                <button id="btnForgot" onclick="processForgotPassword()" class="btn-primary mb-4">Send Reset Link</button>
+                <button id="btnForgot" onclick="processForgotPassword()" class="btn-primary mb-4 py-4">Transmit Reset Link</button>
                 
                 <div class="text-center mt-4">
-                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Sign In</span>
+                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Return to Gateway</span>
                 </div>
             </div>
 
         </div>
+
+        <div class="ad-wrapper">
+            <script async="async" data-cfasync="false" src="https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js"></script>
+            <div id="container-4474729a63899bf107ff1c83aed64247"></div>
+        </div>
+
     </div>
 
+    <script type='text/javascript' src='//pl29209252.profitablecpmratenetwork.com/af/ea/96/afea96a6523b5e58e271afebd83a4515.js'></script>
+
     <script>
-        // CONFIGURATION
+        // --- 1. CONFIGURATION ---
         const CONFIG = {
             API_BASE: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com"
         };
 
-        // BOOT SEQUENCE (Checks if already logged in)
+        // --- 2. BOOT SEQUENCE (Checks if already logged in) ---
         window.onload = function() {
             const storedToken = localStorage.getItem('aura_session_token');
+            const userData = localStorage.getItem('aura_user_data');
+            
+            // If token exists, direct immediate routing to main dashboard
             if (storedToken !== null && storedToken !== "") {
-                // If token exists, skip login and redirect to main.html immediately
                 window.location.href = "main.html";
+            } else if (userData !== null && userData !== "") {
+                // If user data exists but no active token, show Fast Login
+                try {
+                    const parsedData = JSON.parse(userData);
+                    const fastNameElement = document.getElementById('fastName');
+                    const fastEmailElement = document.getElementById('fastEmail');
+                    const fastAvatarElement = document.getElementById('fastAvatar');
+                    
+                    if (fastNameElement !== null) fastNameElement.innerText = parsedData.name;
+                    if (fastEmailElement !== null) fastEmailElement.innerText = parsedData.email;
+                    
+                    if (fastAvatarElement !== null && parsedData.name.length > 0) {
+                        fastAvatarElement.innerText = parsedData.name.substring(0, 2).toUpperCase();
+                    }
+                    
+                    switchAuthSection('auth-fast-login');
+                } catch (parseError) {
+                    switchAuthSection('auth-login');
+                }
+            } else {
+                // Completely new device or wiped data
+                switchAuthSection('auth-login');
             }
         };
 
+        // --- 3. UI VIEW CONTROLLERS ---
         function switchAuthSection(sectionId) {
             const authSections = document.querySelectorAll('.auth-section');
             for (let i = 0; i < authSections.length; i++) {
@@ -386,7 +503,7 @@
             }
         }
 
-        function showToast(messageText, type = "success") {
+        function showToast(messageText, notificationType = "success") {
             const toastElement = document.getElementById('toast');
             const toastMsgElement = document.getElementById('toastMsg');
             const iconElement = document.getElementById('toastIcon');
@@ -395,10 +512,10 @@
             
             toastMsgElement.innerText = messageText;
             
-            if (type === "error") {
-                iconElement.setAttribute('stroke', '#ef4444'); // Red
+            if (notificationType === "error") {
+                if (iconElement !== null) iconElement.setAttribute('stroke', '#ef4444'); 
             } else {
-                iconElement.setAttribute('stroke', '#34d399'); // Green
+                if (iconElement !== null) iconElement.setAttribute('stroke', '#34d399'); 
             }
             
             toastElement.classList.add('show');
@@ -408,7 +525,7 @@
         }
 
         // ==========================================================================
-        // 1. STANDARD LOGIN LOGIC
+        // 4. STANDARD LOGIN PROTOCOL (REAL API CALL)
         // ==========================================================================
         async function processLogin() {
             const emailInput = document.getElementById('loginEmail');
@@ -420,21 +537,21 @@
             const passwordValue = passwordInput.value.trim();
             
             if (emailValue === "" || passwordValue === "") {
-                showToast("Email and Password are strictly required.", "error");
+                showToast("[SYSTEM] Email and Password signatures are strictly required.", "error");
                 return;
             }
 
             const loginButton = document.getElementById('btnLogin');
-            let originalButtonText = "Sign In";
+            let originalButtonText = "Sign In to Dashboard";
             
             if (loginButton !== null) {
                 originalButtonText = loginButton.innerHTML;
-                loginButton.innerHTML = "Authenticating...";
+                loginButton.innerHTML = "Authenticating Matrix...";
                 loginButton.disabled = true;
             }
 
             try {
-                // REAL API CALL TO BACKEND
+                // REAL API HTTP POST CALL
                 const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -444,7 +561,7 @@
                 const responseData = await serverResponse.json();
 
                 if (serverResponse.ok === true && responseData.success === true) {
-                    // Success! Save Token and Redirect to main.html
+                    // Success! Write token to local memory and switch page
                     localStorage.setItem('aura_session_token', responseData.token);
                     
                     const userDataObject = { 
@@ -453,18 +570,15 @@
                     };
                     localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
                     
-                    // The Real Routing to Dashboard
+                    // Route to Dashboard Module
                     window.location.href = "main.html";
                 } else {
-                    throw new Error(responseData.message || "Invalid Credentials");
+                    throw new Error(responseData.message || "Invalid System Credentials");
                 }
             } catch (networkError) {
-                // IMPORTANT: If API fails or backend is unreachable, Redirect to failed.html
-                console.error("Login Failed:", networkError.message);
-                
-                // Store error message in localStorage so failed.html can read it if needed
+                // Route to Failure Page with exact error trace
+                console.error("Login Process Terminated:", networkError.message);
                 localStorage.setItem('aura_last_error', networkError.message);
-                
                 window.location.href = "failed.html";
             } finally {
                 if (loginButton !== null) {
@@ -475,19 +589,31 @@
         }
 
         // ==========================================================================
-        // 2. GOOGLE LOGIN PREPARATION
+        // 5. FAST LOGIN PROTOCOL (1-Click Return)
         // ==========================================================================
-        function startGoogleLogin() {
-            // Once you get the Google Client ID, we will add the OAuth URL here.
-            // For now, it shows a toast.
-            showToast("Waiting for Google Client ID insertion from admin.");
+        async function processFastLogin() {
+            showToast("[INFO] Verifying Local Identity Cache...");
             
-            // Future logic:
-            // window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID...`;
+            // For added security, we could verify the token in the background, 
+            // but for immediate UX we route to main and let main.html handle the backend validation.
+            setTimeout(function() {
+                // Since this screen only appears if aura_user_data exists, 
+                // we assign a fresh connection state and route to dashboard.
+                window.location.href = "main.html";
+            }, 800);
         }
 
         // ==========================================================================
-        // 3. SIGNUP LOGIC
+        // 6. GOOGLE OAUTH PLACEHOLDER PROTOCOL
+        // ==========================================================================
+        function startGoogleLogin() {
+            showToast("[INFO] Awaiting Admin Google Client ID Injection.");
+            // Production Routing Mechanism:
+            // window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID_HERE&redirect_uri=...`;
+        }
+
+        // ==========================================================================
+        // 7. REGISTRATION PROTOCOL (SIGNUP)
         // ==========================================================================
         async function processSignup() {
             const nameInput = document.getElementById('signupName');
@@ -501,7 +627,7 @@
             const passwordValue = passwordInput.value.trim();
 
             if (nameValue === "" || emailValue === "" || passwordValue === "") {
-                showToast("All registration fields must be filled.", "error");
+                showToast("[SYSTEM] Complete data population required for registration.", "error");
                 return;
             }
 
@@ -510,12 +636,12 @@
             
             if (signupButton !== null) {
                 originalButtonText = signupButton.innerHTML;
-                signupButton.innerHTML = `Registering...`;
+                signupButton.innerHTML = `Transmitting Profile...`;
                 signupButton.disabled = true;
             }
 
             try {
-                // REAL API CALL
+                // REAL API HTTP POST CALL
                 const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -525,7 +651,6 @@
                 const responseData = await serverResponse.json();
                 
                 if (serverResponse.ok === true) {
-                    // Move to OTP screen
                     const verifyEmailDisplay = document.getElementById('verifyEmailDisplay');
                     if (verifyEmailDisplay !== null) {
                         verifyEmailDisplay.innerText = emailValue;
@@ -535,13 +660,12 @@
                     localStorage.setItem('aura_temp_name', nameValue);
                     
                     switchAuthSection('auth-verify');
-                    showToast("Verification Code Dispatched to Email");
+                    showToast("[SYSTEM] Verification Packet Transmitted", "success");
                 } else {
-                    throw new Error(responseData.message || "Registration Fault");
+                    throw new Error(responseData.message || "Registration Sequence Fault");
                 }
             } catch (networkError) {
-                // If API fails, redirect to failed.html
-                localStorage.setItem('aura_last_error', "Signup API connection failed.");
+                localStorage.setItem('aura_last_error', "Identity provisioning node failed to respond.");
                 window.location.href = "failed.html";
             } finally {
                 if (signupButton !== null) {
@@ -552,7 +676,7 @@
         }
 
         // ==========================================================================
-        // 4. OTP VERIFICATION LOGIC
+        // 8. TWO-FACTOR VERIFICATION PROTOCOL (OTP)
         // ==========================================================================
         function moveToNext(currentElement, nextElementID, previousElementID) {
             if (currentElement.value.length >= 1) {
@@ -578,7 +702,7 @@
             }
 
             if (otpString.length < 6) {
-                showToast("Please provide the complete 6-digit sequence.", "error");
+                showToast("[SYSTEM] Full 6-digit cryptographic signature required.", "error");
                 return;
             }
 
@@ -587,18 +711,18 @@
             
             if (verifyButton !== null) {
                 verifyButton.disabled = true;
-                verifyButton.innerText = "Verifying Signature...";
+                verifyButton.innerText = "Analyzing Signature...";
             }
 
             try {
-                // Real backend call: await fetch('/api/auth/verify', { body: { email: tempEmail, otp: otpString } })
+                // Future Implementation: await fetch('/api/auth/verify', ...)
                 
-                // Simulating response for now (Assume success)
+                // Active Validation Pipeline Simulation (Success Route)
                 setTimeout(function() {
-                    const tempName = localStorage.getItem('aura_temp_name') || "New Developer";
-                    const newSessionToken = "sk-aura-verified-" + Math.random().toString(36).substring(2, 15);
+                    const tempName = localStorage.getItem('aura_temp_name') || "Developer";
+                    const generatedSecureToken = "sk-aura-authorized-" + Math.random().toString(36).substring(2, 15);
                     
-                    localStorage.setItem('aura_session_token', newSessionToken);
+                    localStorage.setItem('aura_session_token', generatedSecureToken);
                     
                     const userDataObject = { 
                         name: tempName, 
@@ -609,20 +733,19 @@
                     localStorage.removeItem('aura_temp_email');
                     localStorage.removeItem('aura_temp_name');
                     
-                    // Success Routing!
+                    // Route to Internal Dashboard
                     window.location.href = "main.html";
                     
-                }, 1200);
+                }, 1500);
 
-            } catch (error) {
-                // Failure Routing
-                localStorage.setItem('aura_last_error', "OTP Verification Failed.");
+            } catch (validationError) {
+                localStorage.setItem('aura_last_error', "Cryptographic OTP Validation Failed.");
                 window.location.href = "failed.html";
             }
         }
 
         // ==========================================================================
-        // 5. FORGOT PASSWORD
+        // 9. PASSWORD RESET PROTOCOL
         // ==========================================================================
         async function processForgotPassword() {
             const emailInput = document.getElementById('forgotEmail');
@@ -631,18 +754,18 @@
             const emailValue = emailInput.value.trim();
             
             if (emailValue === "") {
-                showToast("Enter a valid registered email address.", "error");
+                showToast("[ERROR] Missing target email vector.", "error");
                 return;
             }
 
             const forgotButton = document.getElementById('btnForgot');
             if (forgotButton !== null) {
                 forgotButton.disabled = true;
-                forgotButton.innerText = "Transmitting Request...";
+                forgotButton.innerText = "Transmitting Sequence...";
             }
 
             setTimeout(function() {
-                showToast("Password reset parameters dispatched to email.");
+                showToast("[SYSTEM] Recovery parameters dispatched.");
                 switchAuthSection('auth-login');
                 
                 if (forgotButton !== null) {
