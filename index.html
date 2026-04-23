@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Aura Enterprise V4 — Master Neural Engine</title>
+    
     <meta property="og:title" content="Aura Enterprise V4 - Master Neural Engine">
     <meta property="og:description" content="Ultimate AI Gateway. 20 Permission Scopes, 1000 Daily Credits. Text, Image, Video & Audio capabilities.">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,20 +17,27 @@
     <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
 
     <style>
-        /* GEMINI ADVANCED STYLE BASE */
+        /* ==========================================================================
+           GLOBAL VARIABLES & CROSS-BROWSER RESETS
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         :root {
             --bg-main: #f8f9fa; 
             --bg-panel: #ffffff; 
             --text-main: #1e293b; 
             --text-muted: #64748b;
             --accent-blue: #1a73e8; 
-            --accent-purple: #c5221f;
             --glass-bg: rgba(255, 255, 255, 0.85); 
             --glass-border: rgba(255, 255, 255, 0.4);
         }
 
         body { 
-            font-family: 'Outfit', sans-serif; 
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--bg-main); 
             color: var(--text-main); 
             margin: 0; 
@@ -36,13 +45,17 @@
         }
 
         .font-mono { 
-            font-family: 'Fira Code', monospace; 
+            font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; 
         }
         
-        /* Smooth View Transitions */
+        /* ==========================================================================
+           VIEW TRANSITIONS & LAYOUT
+           ========================================================================== */
         .view-section { 
             display: none; 
-            animation: fadeScale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+            animation: fadeScale 0.4s ease-out forwards; 
+            width: 100%;
+            max-width: 100%;
         }
         
         .view-section.active { 
@@ -50,37 +63,49 @@
         }
 
         @keyframes fadeScale { 
-            from { opacity: 0; transform: translateY(20px) scale(0.98); } 
-            to { opacity: 1; transform: translateY(0) scale(1); } 
+            from { 
+                opacity: 0; 
+                transform: translateY(15px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
         }
 
-        /* Sidebar Styling */
+        /* ==========================================================================
+           SIDEBAR NAVIGATION
+           ========================================================================== */
         .sidebar { 
             background-color: var(--bg-panel); 
             border-right: 1px solid #e2e8f0; 
-            transition: transform 0.4s ease; 
+            transition: transform 0.3s ease-in-out; 
             z-index: 50; 
         }
 
         .nav-item { 
-            transition: all 0.3s ease; 
-            border-radius: 12px; 
+            transition: all 0.2s ease; 
+            border-radius: 10px; 
             color: var(--text-muted); 
             font-weight: 600; 
-            margin-bottom: 8px; 
+            margin-bottom: 4px; 
             padding: 12px 16px; 
             display: flex; 
             align-items: center; 
-            gap: 14px; 
+            gap: 12px; 
             font-size: 14px; 
             position: relative; 
             overflow: hidden; 
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
         }
 
         .nav-item:hover { 
             background-color: #f1f5f9; 
             color: var(--text-main); 
-            transform: translateX(4px); 
         }
 
         .nav-item.active { 
@@ -99,25 +124,27 @@
             border-radius: 0 4px 4px 0; 
         }
         
-        /* Premium Buttons */
+        /* ==========================================================================
+           BUTTONS & COMPONENTS
+           ========================================================================== */
         .btn-primary { 
             background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
             color: white; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             border: none; 
-            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); 
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.25); 
             border-radius: 12px; 
             cursor: pointer; 
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-primary:hover:not(:disabled) { 
             transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(26, 115, 232, 0.4); 
-        }
-
-        .btn-primary:active:not(:disabled) { 
-            transform: translateY(0); 
+            box-shadow: 0 6px 18px rgba(26, 115, 232, 0.4); 
         }
 
         .btn-primary:disabled { 
@@ -127,36 +154,46 @@
             transform: none; 
         }
         
-        /* Chat UI Elements */
+        /* ==========================================================================
+           AI PLAYGROUND / CHAT INTERFACE
+           ========================================================================== */
         .chat-container { 
             display: flex; 
             flex-direction: column; 
-            gap: 24px; 
+            gap: 20px; 
             padding: 20px 5%; 
-            max-height: calc(100vh - 350px); 
+            height: calc(100vh - 280px); 
             overflow-y: auto; 
+            overflow-x: hidden;
             scroll-behavior: smooth; 
         }
 
         .chat-bubble { 
-            max-width: 85%; 
+            max-width: 90%; 
             font-size: 15px; 
-            line-height: 1.7; 
+            line-height: 1.6; 
             position: relative; 
             animation: slideIn 0.3s ease-out; 
+            word-wrap: break-word; 
         }
 
         @keyframes slideIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
         }
         
         .chat-user { 
             align-self: flex-end; 
             background: #e8f0fe; 
             color: #1e293b; 
-            padding: 14px 20px; 
-            border-radius: 24px 24px 4px 24px; 
+            padding: 12px 18px; 
+            border-radius: 20px 20px 4px 20px; 
             font-weight: 500; 
             border: 1px solid #d2e3fc; 
         }
@@ -164,131 +201,100 @@
         .chat-ai { 
             align-self: flex-start; 
             color: #1e293b; 
-            padding: 0 10px; 
+            padding: 0; 
             display: flex; 
-            gap: 16px; 
+            gap: 12px; 
             width: 100%; 
         }
 
         .ai-avatar { 
-            width: 40px; 
-            height: 40px; 
-            background: linear-gradient(135deg, #1a73e8, #c5221f); 
+            width: 36px; 
+            height: 36px; 
+            background: linear-gradient(135deg, #1a73e8, #1557b0); 
             border-radius: 50%; 
             flex-shrink: 0; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: white; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
         }
 
         .ai-content { 
             flex: 1; 
             background: transparent; 
+            min-width: 0; 
         }
 
         .chat-image { 
-            border-radius: 16px; 
-            margin-top: 12px; 
+            border-radius: 12px; 
+            margin-top: 10px; 
             max-width: 100%; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
+            height: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             transition: transform 0.3s; 
             border: 1px solid #e2e8f0; 
-            cursor: pointer; 
-        }
-
-        .chat-image:hover { 
-            transform: scale(1.01); 
         }
         
-        /* Input Box */
         .input-wrapper { 
             background: var(--glass-bg); 
-            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(20px); 
+            backdrop-filter: blur(20px); 
             border-top: 1px solid var(--glass-border); 
-            padding: 15px 5%; 
+            padding: 12px 5%; 
             position: absolute; 
             bottom: 0; 
             left: 0; 
             right: 0; 
             z-index: 10; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.03); 
         }
 
         .input-box { 
             background: #ffffff; 
             border: 1px solid #cbd5e1; 
-            border-radius: 32px; 
+            border-radius: 30px; 
             display: flex; 
             align-items: center; 
-            padding: 8px 16px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+            padding: 6px 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
             transition: box-shadow 0.3s, border-color 0.3s; 
             gap: 8px; 
         }
 
         .input-box:focus-within { 
             border-color: var(--accent-blue); 
-            box-shadow: 0 4px 25px rgba(26, 115, 232, 0.15); 
+            box-shadow: 0 4px 20px rgba(26, 115, 232, 0.15); 
         }
 
         .input-box input { 
             flex: 1; 
             border: none; 
             outline: none; 
-            padding: 12px; 
+            padding: 10px; 
             font-size: 15px; 
-            font-family: 'Outfit', sans-serif; 
             background: transparent; 
+            font-family: 'Outfit', sans-serif; 
+            min-width: 0; 
         }
         
-        .mic-btn { 
-            background: transparent; 
-            border: none; 
-            color: #64748b; 
-            cursor: pointer; 
-            padding: 10px; 
-            border-radius: 50%; 
-            transition: all 0.2s; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-        }
-
-        .mic-btn:hover { 
-            background: #f1f5f9; 
-            color: #1a73e8; 
-        }
-
-        .mic-btn.recording { 
-            color: #ef4444; 
-            animation: pulseMic 1.5s infinite; 
-            background: #fef2f2; 
-        }
-
-        @keyframes pulseMic { 
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
-        }
-
-        /* Permission Scopes Grid */
+        /* ==========================================================================
+           PERMISSION SCOPES GRID
+           ========================================================================== */
         .scopes-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
-            gap: 10px; 
-            max-height: 200px; 
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+            gap: 8px; 
+            max-height: 220px; 
             overflow-y: auto; 
-            padding-right: 8px; 
-            margin-bottom: 10px; 
+            padding-right: 5px; 
+            margin-bottom: 15px; 
         }
 
         .scope-card { 
             background: #f8fafc; 
             border: 1px solid #e2e8f0; 
-            border-radius: 10px; 
-            padding: 10px; 
+            border-radius: 8px; 
+            padding: 8px 10px; 
             display: flex; 
             align-items: center; 
             gap: 8px; 
@@ -296,11 +302,6 @@
             cursor: pointer; 
             font-size: 12px; 
             font-weight: 600; 
-        }
-
-        .scope-card:hover { 
-            border-color: #94a3b8; 
-            background: #f1f5f9; 
         }
 
         .scope-card.active-scope { 
@@ -316,28 +317,11 @@
             cursor: pointer; 
         }
 
-        /* Preset Buttons */
-        .preset-btn { 
-            background: #f1f5f9; 
-            color: #475569; 
-            border: 1px solid #cbd5e1; 
-            padding: 6px 12px; 
-            font-size: 11px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            border-radius: 8px; 
-        }
-
-        .preset-btn:hover { 
-            background: #e2e8f0; 
-            color: #1e293b; 
-        }
-
-        /* AI Playground Tabs */
+        /* ==========================================================================
+           TABS & CODE BLOCKS
+           ========================================================================== */
         .ai-tab { 
-            padding: 10px 16px; 
+            padding: 10px 14px; 
             font-size: 13px; 
             font-weight: 700; 
             color: #64748b; 
@@ -346,13 +330,12 @@
             transition: all 0.2s; 
             display: flex; 
             align-items: center; 
-            gap: 8px; 
-        }
-
-        .ai-tab:hover { 
-            color: #1e293b; 
-            background: rgba(0,0,0,0.02); 
-            border-radius: 8px 8px 0 0; 
+            gap: 6px; 
+            white-space: nowrap;
+            background: transparent;
+            border-top: none;
+            border-left: none;
+            border-right: none;
         }
 
         .ai-tab.active { 
@@ -362,7 +345,6 @@
             border-radius: 8px 8px 0 0; 
         }
 
-        /* Mac Style Code Blocks */
         .mac-header { 
             background-color: #1e293b; 
             border-radius: 12px 12px 0 0; 
@@ -375,7 +357,7 @@
         .mac-body { 
             background-color: #0f172a; 
             border-radius: 0 0 12px 12px; 
-            padding: 24px; 
+            padding: 20px; 
             overflow-x: auto; 
             color: #f8fafc; 
         }
@@ -396,340 +378,365 @@
             letter-spacing: 0.5px; 
         }
 
-        .mac-btn:hover { 
-            background-color: #475569; 
-            color: #ffffff; 
+        /* ==========================================================================
+           SCROLLBARS & MODALS
+           ========================================================================== */
+        ::-webkit-scrollbar { 
+            width: 6px; 
+            height: 6px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+        }
+        
+        * { 
+            scrollbar-width: thin; 
+            scrollbar-color: #cbd5e1 transparent; 
         }
 
-        /* Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Media Gallery */
-        .gallery-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-            gap: 16px; 
+        .modal-content-scroll {
+            max-height: 85vh;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        .gallery-item { 
-            border-radius: 16px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            border: 1px solid #e2e8f0; 
-            position: relative; 
-            cursor: pointer;
-        }
-
-        .gallery-item img { 
-            width: 100%; 
-            height: 150px; 
-            object-fit: cover; 
-            transition: transform 0.3s; 
-        }
-
-        .gallery-item:hover img { 
-            transform: scale(1.05); 
-        }
-
-        /* Mobile Responsiveness */
+        /* ==========================================================================
+           RESPONSIVE MOBILE RULES
+           ========================================================================== */
         @media (max-width: 768px) { 
             .sidebar { 
                 transform: translateX(-100%); 
                 position: fixed; 
                 inset: 0; 
-                z-index: 50; 
+                z-index: 60; 
                 width: 280px; 
             } 
             .sidebar.open { 
                 transform: translateX(0); 
             } 
             .chat-container { 
-                padding: 20px 4%; 
-                max-height: calc(100vh - 380px); 
+                height: calc(100vh - 250px); 
             } 
-            .input-wrapper { 
-                padding: 15px 4%; 
-            } 
+            .view-section {
+                padding: 16px !important; 
+            }
         }
     </style>
 </head>
+<body class="flex h-screen overflow-hidden text-slate-800 w-full">
 
-<body class="flex h-screen overflow-hidden text-slate-800 selection:bg-blue-200 selection:text-blue-900">
-
-    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden transition-opacity duration-300 opacity-0 backdrop-blur-sm" onclick="toggleSidebar()"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/60 z-50 hidden transition-opacity duration-300 opacity-0" style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);" onclick="toggleSidebar()"></div>
     
     <input type="file" id="importFile" accept=".json" class="hidden" onchange="processImport(event)">
 
-    <aside id="sidebar" class="sidebar w-[280px] flex flex-col h-full z-50">
+    <aside id="sidebar" class="sidebar w-[280px] flex flex-col h-full shadow-2xl md:shadow-none">
         
         <div class="h-20 flex items-center px-6 shrink-0 border-b border-slate-100">
-            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm border border-slate-100">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
             </div>
             <div class="ml-3">
-                <span class="block text-xl font-extrabold tracking-tight text-slate-800 leading-none">Aura V4</span>
-                <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ultimate Enterprise</span>
+                <span class="block text-xl font-extrabold text-slate-800 leading-none">Aura V4</span>
+                <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Master Engine</span>
             </div>
         </div>
 
-        <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-            <div class="pb-1"><p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-3">Core Platform</p></div>
+        <nav class="flex-1 px-4 py-5 space-y-1 overflow-y-auto w-full">
+            <div class="pb-2">
+                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-2">Platform Core</p>
+            </div>
             
             <button onclick="switchView('view-dashboard', this)" class="nav-item active w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg> 
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
                 Analytics Dashboard
             </button>
             
             <button onclick="switchView('view-apikeys', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg> 
-                API Keys & Access
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/>
+                </svg>
+                Secure API Keys
             </button>
             
             <button onclick="switchView('view-test', this)" class="nav-item w-full relative">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> 
-                AI Playground 
-                <span class="absolute right-3 bg-[#1a73e8] text-white text-[8px] font-bold px-2 py-0.5 rounded shadow-sm">REAL</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                    <path d="M12 16v-4"/>
+                    <path d="M12 8h.01"/>
+                </svg>
+                AI Playground
             </button>
             
             <button onclick="switchView('view-docs', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> 
-                Documentation
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                API Documentation
             </button>
             
-            <div class="pt-4 pb-1"><p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-3">Advanced Features</p></div>
+            <div class="pt-4 pb-2">
+                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-2">Advanced Features</p>
+            </div>
             
             <button onclick="switchView('view-gallery', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> 
-                File Gallery
-            </button>
-            
-            <button onclick="switchView('view-team', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> 
-                Team & Roles
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                Media Gallery
             </button>
             
             <button onclick="switchView('view-webhooks', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> 
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
                 Webhook System
             </button>
             
-            <button onclick="switchView('view-referral', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
-                Affiliate Program
+            <button onclick="switchView('view-team', this)" class="nav-item w-full">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Team Access
             </button>
             
-            <div class="pt-4 pb-1"><p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-3">System & Admin</p></div>
+            <div class="pt-4 pb-2">
+                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-2">System Administration</p>
+            </div>
             
             <button onclick="switchView('view-logs', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> 
-                API Logs
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Server Logs
             </button>
             
-            <button onclick="switchView('view-health', this)" class="nav-item w-full text-rose-500 font-bold hover:text-rose-600 hover:bg-rose-50">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> 
-                System Telemetry
+            <button onclick="switchView('view-health', this)" class="nav-item w-full text-rose-500 hover:bg-rose-50 hover:text-rose-600">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                System Health
             </button>
             
             <button onclick="switchView('view-settings', this)" class="nav-item w-full">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> 
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
                 Global Settings
             </button>
         </nav>
 
-        <div class="p-5 shrink-0 border-t border-slate-100">
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <p class="text-sm font-bold text-slate-800" id="userNameDisplay">Guest Session</p>
-                        <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mt-0.5" id="userRoleDisplay">Local Mode</p>
-                    </div>
-                    <button onclick="openModal('loginModal')" class="bg-white border border-slate-200 p-1.5 rounded-lg text-slate-400 hover:text-blue-600 shadow-sm transition-colors" title="Sync Account">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                    </button>
-                </div>
-            </div>
+        <div class="p-5 shrink-0 border-t border-slate-100 bg-slate-50">
+            <button onclick="openModal('loginModal')" class="w-full bg-white border border-slate-200 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-100 mb-3 transition-colors flex items-center justify-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Sync Account
+            </button>
+            <p class="text-xs font-bold text-center text-slate-600" id="userNameDisplay">Guest Session Active</p>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-white">
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-white relative w-full">
         
-        <header class="h-16 border-b border-slate-200 flex items-center justify-between px-6 bg-white/90 backdrop-blur-xl z-10 shrink-0">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="md:hidden p-1.5 text-slate-500 bg-slate-50 rounded border border-slate-200 hover:bg-slate-100">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <header class="h-16 border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 bg-white z-10 shrink-0 w-full">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button onclick="toggleSidebar()" class="md:hidden p-1.5 bg-slate-50 border border-slate-200 rounded hover:bg-slate-100">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
                 </button>
-                <h2 id="headerTitle" class="font-extrabold text-slate-800 text-sm uppercase tracking-[0.1em]">Analytics Dashboard</h2>
+                <h2 id="headerTitle" class="font-extrabold text-slate-800 text-xs sm:text-sm uppercase tracking-widest truncate max-w-[120px] sm:max-w-none">Analytics Dashboard</h2>
             </div>
-            <div class="flex gap-3 items-center">
-                <button onclick="forceWakeServer()" class="bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 shadow-sm">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Wake
+            
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button onclick="forceWakeServer()" class="bg-amber-50 text-amber-600 border border-amber-200 px-3 py-1.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    Wake Server
                 </button>
-                <div id="liveStatus" class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+                <div id="liveStatus" class="flex gap-1.5 items-center bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Wait</span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest">Checking...</span>
                 </div>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto">
+        <div class="flex-1 overflow-y-auto w-full">
             
-            <div id="view-dashboard" class="view-section active p-6 lg:p-10 max-w-7xl mx-auto">
+            <div id="view-dashboard" class="view-section active p-6 lg:p-10 max-w-7xl mx-auto w-full">
                 
-                <div class="mb-8 w-full flex justify-center">
+                <div class="mb-6 w-full flex justify-center overflow-hidden rounded-lg">
                     <script async="async" data-cfasync="false" src="https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js"></script>
                     <div id="container-4474729a63899bf107ff1c83aed64247"></div>
                 </div>
 
-                <div class="flex flex-col md:flex-row justify-between md:items-end mb-8 gap-4">
+                <div class="flex flex-col md:flex-row justify-between md:items-end mb-6 gap-4">
                     <div>
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-1">Overview & Analytics</h1>
-                        <p class="text-slate-500 text-sm">Monitor your V4 Engine usage and limits.</p>
+                        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Platform Overview</h1>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Real-time neural engine telemetry.</p>
                     </div>
-                    <button onclick="sharePlatform()" class="bg-white border border-slate-200 hover:border-[#1a73e8] text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                        Invite & Earn
-                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white border border-slate-200 p-6 rounded-[20px] shadow-sm lg:col-span-2">
-                        <h3 class="text-sm font-extrabold text-slate-800 mb-4 flex items-center gap-2">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> 
-                            API Usage Graph (Real-Time)
-                        </h3>
-                        <div class="w-full h-[250px] relative">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 w-full">
+                    <div class="bg-white border border-slate-200 p-5 rounded-[20px] shadow-sm lg:col-span-2 w-full">
+                        <h3 class="text-sm font-extrabold text-slate-800 mb-4">API Usage Trend</h3>
+                        <div class="w-full h-[200px] relative">
                             <canvas id="usageChart"></canvas>
                         </div>
                     </div>
                     
-                    <div class="flex flex-col gap-6">
-                        <div class="bg-white border border-slate-200 p-6 rounded-[20px] shadow-sm relative overflow-hidden flex-1">
-                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500"></span> Total Sub-Keys
-                            </p>
-                            <h2 id="dashKeyCount" class="text-4xl font-black text-slate-900">0</h2>
+                    <div class="flex flex-row lg:flex-col gap-4 w-full">
+                        <div class="bg-white border border-slate-200 p-5 rounded-[20px] shadow-sm flex-1">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Active Keys</p>
+                            <h2 id="dashKeyCount" class="text-3xl sm:text-4xl font-black text-blue-600">0</h2>
                         </div>
-                        <div class="bg-white border border-slate-200 p-6 rounded-[20px] shadow-sm relative overflow-hidden flex-1">
-                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Daily Logs
-                            </p>
-                            <h2 id="dashLogCount" class="text-4xl font-black text-slate-900">0</h2>
+                        <div class="bg-white border border-slate-200 p-5 rounded-[20px] shadow-sm flex-1">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">System Logs</p>
+                            <h2 id="dashLogCount" class="text-3xl sm:text-4xl font-black text-emerald-500">0</h2>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="view-apikeys" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div id="view-apikeys" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
                     <div>
-                        <h1 class="text-3xl font-black text-slate-900 mb-2 tracking-tight">Access Control System</h1>
-                        <p class="text-slate-500 text-sm">Manage API Keys, custom permissions, and limits.</p>
+                        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mb-1 tracking-tight">Access Control</h1>
+                        <p class="text-slate-500 text-xs sm:text-sm">Deploy keys with 20 distinct scopes & passwords.</p>
                     </div>
-                    <button onclick="openModal('keyModal')" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 
-                        Generate API Key
+                    <button onclick="openModal('keyModal')" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-bold w-full md:w-auto">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg> 
+                        Deploy New Key
                     </button>
                 </div>
                 
-                <div class="border border-slate-200 rounded-[20px] overflow-hidden shadow-sm bg-white">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left min-w-[900px]">
+                <div class="border border-slate-200 rounded-[20px] overflow-hidden bg-white shadow-sm w-full">
+                    <div class="w-full overflow-x-auto pb-2">
+                        <table class="w-full text-left min-w-[700px]">
                             <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th class="px-6 py-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Identity</th>
-                                    <th class="px-6 py-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Secret Mask</th>
-                                    <th class="px-6 py-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Scopes</th>
-                                    <th class="px-6 py-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
+                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Identity</th>
+                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Secret Mask</th>
+                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Scopes</th>
+                                    <th class="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="keyTableBody" class="divide-y divide-slate-100">
                                 </tbody>
                         </table>
                     </div>
-                    <div id="emptyState" class="p-20 text-center">
-                        <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
-                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-800 mb-1">No Access Keys</h3>
-                        <p class="text-slate-500 text-sm">Generate a key to configure limits and models.</p>
+                    <div id="emptyState" class="p-16 text-center text-slate-400 text-sm">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4">
+                            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/>
+                        </svg>
+                        No Secure Keys Deployed Yet.
                     </div>
                 </div>
             </div>
 
-            <div id="view-test" class="view-section h-full relative">
-                <div class="flex flex-col h-full bg-[#f8f9fa] relative">
-                    
-                    <div class="px-6 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center bg-white z-20 shadow-sm gap-4">
-                        <div class="flex items-center gap-1 overflow-x-auto pb-1">
-                            <button onclick="switchAITab('text')" id="tab-text" class="ai-tab active">Text Gen</button>
-                            <button onclick="switchAITab('image')" id="tab-image" class="ai-tab">Image Gen</button>
-                            <button onclick="switchAITab('video')" id="tab-video" class="ai-tab">Video Synth</button>
-                        </div>
-                        
-                        <div class="flex items-center gap-2 shrink-0">
-                            <input type="text" id="playgroundBaseUrl" placeholder="https://api.openai.com" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-[11px] font-mono text-slate-700 outline-none shadow-sm cursor-pointer hidden sm:block w-48 lg:w-64" title="Change Base URL to test external APIs (e.g., OpenAI)">
-                            
-                            <select id="testApiKeySelect" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-[11px] font-bold text-slate-700 outline-none shadow-sm cursor-pointer" onchange="toggleManualKeyInput()">
-                                <option value="">-- Choose Key --</option>
-                                <option value="manual">Manual Override...</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div id="manualKeyDiv" class="hidden px-6 py-2 bg-indigo-50 border-b border-indigo-100 z-10 shadow-inner">
-                        <input type="password" id="testManualKeyInput" placeholder="Enter API Key (sk-...)" class="w-full bg-white border border-indigo-200 rounded-lg px-4 py-2 text-xs font-mono outline-none shadow-sm">
-                    </div>
-                    
-                    <div id="testChatWindow" class="flex-1 chat-container pb-40 pt-6">
-                        <div class="chat-bubble chat-ai">
-                            <div class="ai-avatar">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                            </div>
-                            <div class="ai-content">
-                                <strong class="block text-sm mb-1 text-slate-800">Aura Master Router V4</strong>
-                                <p class="text-slate-600 text-sm">Engine initialized. If you change the <b>Base URL</b> to an external API (like OpenAI), requests will be routed directly to them without passing through your Render backend. Let's build!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="input-wrapper">
-                        <div class="flex gap-2 justify-between max-w-5xl mx-auto mb-2">
-                            <button onclick="openModal('promptModal')" class="text-[10px] font-black uppercase tracking-widest text-[#1a73e8] flex items-center gap-1 hover:underline">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg> 
-                                Prompt Templates
-                            </button>
-                        </div>
-                        
-                        <div class="input-box max-w-5xl mx-auto bg-white p-1.5 border border-slate-300 rounded-full shadow-lg flex gap-2 items-center">
-                            <input type="hidden" id="currentAiMode" value="text">
-                            <input type="text" id="testChatInput" placeholder="Message Aura Auto-Router..." class="flex-1 bg-transparent border-none outline-none px-4 py-2 text-sm text-slate-800 font-medium placeholder-slate-400" onkeypress="if(event.key === 'Enter') sendMultiModalRequest()">
-                            <button onclick="sendMultiModalRequest()" class="bg-[#1a73e8] hover:bg-[#1557b0] text-white p-3.5 rounded-full transition-transform hover:scale-105 shadow-md flex items-center justify-center">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-docs" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">API Documentation</h1>
-                <p class="text-slate-500 mb-8 text-sm">Integrate universal endpoints into your apps.</p>
+            <div id="view-test" class="view-section h-full relative flex flex-col bg-[#f8f9fa] w-full">
                 
-                <div class="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm mb-8">
+                <div class="px-4 py-3 border-b border-slate-200 bg-white z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm w-full">
                     
-                    <div class="bg-[#f8fafc] border border-slate-200 p-4 rounded-xl mb-6 flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Base Endpoint</p>
-                            <code class="text-sm font-mono font-bold text-[#1a73e8]"><span class="dynamic-url">https://your-api.onrender.com</span></code>
+                    <div class="flex gap-2 w-full sm:w-auto overflow-x-auto pb-1">
+                        <button onclick="switchAITab('text')" id="tab-text" class="ai-tab active">Text Engine</button>
+                        <button onclick="switchAITab('image')" id="tab-image" class="ai-tab">Image Engine</button>
+                        <button onclick="switchAITab('audio')" id="tab-audio" class="ai-tab">Audio Engine</button>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full sm:w-auto">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="text" id="playgroundBaseUrl" placeholder="https://api.openai.com" class="w-full sm:w-48 bg-slate-50 border border-slate-200 rounded px-2 py-1.5 text-[11px] font-mono outline-none text-slate-600" title="Custom API Endpoint URL">
+                        </div>
+                        <select id="testApiKeySelect" class="w-full sm:w-auto bg-white border border-slate-200 rounded px-2 py-1.5 text-[11px] font-bold text-slate-600 outline-none cursor-pointer" onchange="toggleManualKeyInput()">
+                            <option value="">-- Choose Key --</option>
+                            <option value="manual">Manual Override</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="manualKeyDiv" class="hidden px-4 py-2 bg-indigo-50 border-b border-indigo-100 z-10 w-full">
+                    <input type="password" id="testManualKeyInput" placeholder="Enter Manual API Key (sk-...)" class="w-full bg-white border border-indigo-200 rounded p-2 text-xs font-mono outline-none shadow-sm">
+                </div>
+
+                <div id="testChatWindow" class="flex-1 chat-container">
+                    <div class="chat-bubble chat-ai">
+                        <div class="ai-avatar">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="ai-content">
+                            <strong class="block text-sm mb-1 text-slate-800">Aura Master Engine V4</strong>
+                            <p class="text-[14px]">System initialized. You can modify the Endpoint URL above to test external platforms (like OpenAI), or use your Render URL to test local limits. Select an action to begin.</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-6 flex justify-center">
+                <div class="input-wrapper w-full">
+                    <div class="flex justify-between max-w-5xl mx-auto mb-2 px-2">
+                        <button onclick="openModal('promptModal')" class="text-[10px] font-black uppercase tracking-widest text-[#1a73e8] hover:underline flex items-center gap-1">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                            </svg>
+                            Prompt Library
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" id="currentAiMode" value="text">
+                    
+                    <div class="input-box max-w-5xl mx-auto w-full">
+                        <input type="text" id="testChatInput" placeholder="Message Master Engine..." onkeypress="if(event.key === 'Enter') { sendMultiModalRequest(); }">
+                        <button onclick="sendMultiModalRequest()" class="bg-[#1a73e8] text-white p-2.5 rounded-full hover:bg-blue-700 transition-colors shrink-0 shadow-md">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-docs" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-4 text-slate-900">API Documentation</h1>
+                
+                <div class="bg-white border border-slate-200 rounded-[20px] p-5 shadow-sm mb-6 w-full overflow-hidden">
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl mb-6 break-all">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Base Endpoint URL</p>
+                        <code class="text-xs sm:text-sm font-mono font-bold text-[#1a73e8]"><span class="dynamic-url">https://your-api.onrender.com</span></code>
+                    </div>
+                    
+                    <div class="mb-6 flex justify-center overflow-hidden w-full">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : 'd8879924a239dc66902c5ed5d6e0c756',
@@ -743,133 +750,108 @@
                     </div>
 
                     <div class="mac-header">
-                        <div class="flex gap-2">
-                            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                        </div>
-                        <button onclick="copyCode('c-node', this)" class="mac-btn">COPY JS</button>
+                        <span class="text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest">Node.js Request Example</span>
+                        <button onclick="copyCode('c-node', this)" class="mac-btn">COPY CODE</button>
                     </div>
                     <div class="mac-body">
-<pre id="c-node" class="font-mono text-xs leading-relaxed text-gray-200">
-<span class="token-keyword">const</span> response = <span class="token-keyword">await</span> <span class="token-function">fetch</span>(<span class="token-string">"<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions"</span>, {
-  <span class="token-function">method</span>: <span class="token-string">"POST"</span>,
-  <span class="token-function">headers</span>: { <span class="token-string">"Authorization"</span>: <span class="token-string">"Bearer sk-aura-YOUR_API_KEY"</span>, <span class="token-string">"Content-Type"</span>: <span class="token-string">"application/json"</span> },
-  <span class="token-function">body</span>: <span class="token-function">JSON.stringify</span>({
-    <span class="token-function">model</span>: <span class="token-string">"openrouter/free"</span>, 
-    <span class="token-function">messages</span>:[{ <span class="token-function">role</span>: <span class="token-string">"user"</span>, <span class="token-function">content</span>: <span class="token-string">"Hello AI!"</span> }]
-  })
+<pre id="c-node" class="font-mono text-[11px] sm:text-xs leading-relaxed text-gray-200">
+const response = await fetch("<span class="dynamic-url">https://your-api.onrender.com</span>/v1/chat/completions", {
+    method: "POST",
+    headers: { 
+        "Authorization": "Bearer sk-aura-YOUR_API_KEY", 
+        "Content-Type": "application/json" 
+    },
+    body: JSON.stringify({
+        model: "openrouter/free",
+        messages: [
+            { role: "user", content: "Hello Aura Master Engine!" }
+        ]
+    })
 });
-console.<span class="token-function">log</span>((<span class="token-keyword">await</span> response.<span class="token-function">json</span>()).choices[<span class="token-number">0</span>].message.content);
+
+const data = await response.json();
+console.log(data.choices[0].message.content);
 </pre>
                     </div>
                 </div>
             </div>
 
-            <div id="view-gallery" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 class="text-3xl font-black mb-1 text-slate-900 tracking-tight">Media Storage</h1>
-                        <p class="text-slate-500 text-sm">Generated images are saved here locally.</p>
+            <div id="view-gallery" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-4 text-slate-900">Media Gallery</h1>
+                <div id="galleryGrid" class="gallery-grid w-full">
+                    <div class="col-span-full p-8 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-[16px] text-sm">
+                        Gallery is empty. Generate images in Playground to populate.
                     </div>
                 </div>
-                <div id="galleryGrid" class="gallery-grid">
+            </div>
+
+            <div id="view-team" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-4 text-slate-900">Team Management</h1>
+                <div class="bg-white border border-slate-200 p-6 rounded-[20px] text-center">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 text-slate-300">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <p class="text-slate-500 text-sm">Team integration requires backend Schema v5.</p>
+                </div>
+            </div>
+
+            <div id="view-webhooks" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-4 text-slate-900">Webhook System</h1>
+                <div class="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Target URL</label>
+                    <input type="text" id="webhookInput" placeholder="https://your-webhook-url.com/endpoint" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mb-4 font-mono text-sm outline-none">
+                    <button onclick="showToast('Webhook Configuration Saved Successfully!')" class="btn-primary px-6 py-2.5 rounded-xl font-bold text-sm">Register Webhook</button>
+                </div>
+            </div>
+
+            <div id="view-logs" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Server Logs</h1>
+                    <button onclick="clearLogs()" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-bold border border-rose-200">Purge Logs</button>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-[16px] p-4 min-h-[300px] overflow-x-auto w-full" id="activityLogBody">
                     </div>
             </div>
 
-            <div id="view-team" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Team Access Management</h1>
-                <p class="text-slate-500 mb-8 text-sm">Invite developers to use your APIs under sub-accounts.</p>
-                <div class="bg-white border border-slate-200 p-8 rounded-[20px] shadow-sm text-center">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 text-slate-300"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">Team Feature in Development</h3>
-                    <p class="text-slate-500 text-sm max-w-md mx-auto mb-4">Adding sub-accounts requires a major backend update. This UI will sync with the next server patch.</p>
-                    <button class="bg-slate-100 text-slate-400 px-6 py-2 rounded-lg font-bold text-sm cursor-not-allowed">Invite Member</button>
-                </div>
-            </div>
-
-            <div id="view-webhooks" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Webhook Triggers</h1>
-                <p class="text-slate-500 mb-8 text-sm">Send real-time usage data to external apps (Zapier, Discord).</p>
-                <div class="bg-white border border-slate-200 p-6 rounded-[20px] shadow-sm mb-6">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Endpoint URL</label>
-                    <input type="text" id="webhookInput" placeholder="https://hook.site.com/api" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm font-mono outline-none focus:border-blue-500 mb-4">
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 text-xs font-bold text-slate-600"><input type="checkbox" checked class="accent-blue-600"> Limit Hit</label>
-                        <label class="flex items-center gap-2 text-xs font-bold text-slate-600"><input type="checkbox" class="accent-blue-600"> Payment/Recharge</label>
-                    </div>
-                    <button onclick="saveWebhook()" class="mt-6 bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl text-sm font-bold transition-colors">Save Webhook</button>
-                </div>
-            </div>
-
-            <div id="view-referral" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Affiliate Program</h1>
-                <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-8 rounded-[20px] shadow-md text-white text-center mb-6">
-                    <h2 class="text-2xl font-black mb-2">Earn 20% Lifetime Commission</h2>
-                    <p class="text-white/90 text-sm mb-6">Share your unique referral link. When they upgrade, you earn.</p>
-                    <div class="bg-white/20 p-4 rounded-xl font-mono text-sm border border-white/30 mb-4 cursor-pointer" onclick="copyCode('refLink', this)" id="refLink">https://freeapikeyganretor.edgeone.app?ref=aura_dev</div>
-                    <p class="text-xs font-bold">Click to copy your link</p>
-                </div>
-            </div>
-
-            <div id="view-logs" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">System Events Log</h1>
-                    <button onclick="clearLogs()" class="px-5 py-2.5 bg-white text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-50 transition-colors border border-rose-200 shadow-sm">Purge Logs</button>
-                </div>
-                <div class="border border-slate-200 rounded-[20px] overflow-hidden shadow-sm bg-white min-h-[400px]">
-                    <div id="activityLogBody" class="p-6 font-mono text-xs space-y-3">
-                        </div>
-                </div>
-            </div>
-
-            <div id="view-health" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Server Telemetry & Admin</h1>
+            <div id="view-health" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-4 text-slate-900">Admin Telemetry</h1>
                 
-                <div class="mb-6 flex justify-center">
+                <div class="mb-4 flex justify-center w-full overflow-hidden">
                     <script type="text/javascript">
-                        atOptions = {
-                            'key' : '6f299d2299552f8b87b3a9a0e794e26f',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
+                        atOptions = { 'key' : '6f299d2299552f8b87b3a9a0e794e26f', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="https://www.highperformanceformat.com/6f299d2299552f8b87b3a9a0e794e26f/invoke.js"></script>
                 </div>
 
-                <div class="bg-[#0f172a] p-8 rounded-[20px] shadow-xl relative border border-slate-800">
-                    <button onclick="fetchHealth()" id="healthBtn" class="mb-4 bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-lg text-xs font-bold transition-colors">Sync Metrics</button>
-                    <pre id="healthStats" class="text-emerald-400 font-mono text-xs leading-relaxed overflow-x-auto min-h-[200px]">Awaiting Admin Config...</pre>
+                <div class="bg-[#0f172a] border border-slate-800 rounded-[20px] p-6 shadow-xl w-full">
+                    <button onclick="fetchHealth()" id="healthBtn" class="mb-4 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition-colors">Sync Server Metrics</button>
+                    <pre id="healthStats" class="text-emerald-400 font-mono text-[10px] sm:text-xs overflow-x-auto min-h-[150px] w-full whitespace-pre-wrap word-break">Awaiting Admin Configuration Secret...</pre>
                 </div>
             </div>
 
-            <div id="view-settings" class="view-section p-6 lg:p-10 max-w-7xl mx-auto">
-                <h1 class="text-3xl font-black mb-8 text-slate-900 tracking-tight">Global Architecture Config</h1>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    
-                    <div class="bg-white p-6 rounded-[20px] border border-slate-200 shadow-sm">
-                        <label class="block text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-2">Backend Gateway URL</label>
-                        <input type="text" id="cfgUrl" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 mb-4 font-mono outline-none">
-                        
-                        <label class="block text-[10px] font-bold text-rose-600 uppercase tracking-widest mb-2">Admin God-Mode Secret</label>
-                        <input type="password" id="cfgAdminSecret" class="w-full bg-rose-50 border border-rose-200 text-rose-900 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-rose-500 mb-4 font-mono outline-none">
-                        
-                        <button onclick="saveSettings()" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">Commit Changes</button>
+            <div id="view-settings" class="view-section p-6 lg:p-10 max-w-7xl mx-auto w-full">
+                <h1 class="text-2xl sm:text-3xl font-black mb-6 text-slate-900">Global Configuration</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white border border-slate-200 rounded-[20px] p-5 shadow-sm w-full">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Backend Gateway URL</label>
+                        <input type="text" id="cfgUrl" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 mb-3 font-mono text-xs outline-none">
+                        <button onclick="saveSettings()" class="w-full btn-primary py-2.5 rounded-lg font-bold text-xs">Commit URL</button>
                     </div>
-
-                    <div class="bg-white p-6 rounded-[20px] border border-slate-200 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-indigo-500"><path d="M12 2L2 7l10 5 10-5-10-5z"></path></svg> 
-                            White-Label Branding
-                        </h3>
-                        <p class="text-xs text-slate-500 mb-4">Customize the platform interface.</p>
-                        
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Platform Name</label>
-                        <input type="text" value="Aura Enterprise" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm mb-4 outline-none">
-                        
-                        <button onclick="showToast('Branding applied locally!')" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-900">Apply Brand</button>
+                    <div class="bg-white border border-slate-200 rounded-[20px] p-5 shadow-sm w-full">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Admin God-Mode Secret</label>
+                        <input type="password" id="cfgAdminSecret" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 mb-3 font-mono text-xs outline-none">
+                        <button onclick="saveSettings()" class="w-full bg-slate-800 text-white hover:bg-slate-900 py-2.5 rounded-lg font-bold text-xs">Save Secret</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-5 rounded-[20px] border border-slate-200 shadow-sm w-full">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3">Data Operations</h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button onclick="exportData()" class="flex-1 bg-slate-800 text-white py-3 rounded-xl font-bold text-xs hover:bg-slate-900 transition-colors">Export Database Backup</button>
+                        <button onclick="document.getElementById('importFile').click()" class="flex-1 bg-white border border-slate-300 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-50 transition-colors">Import Restoration File</button>
                     </div>
                 </div>
             </div>
@@ -879,127 +861,111 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
 
     <div id="promptModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('promptModal')"></div>
-        <div class="bg-white w-full max-w-lg rounded-[20px] shadow-2xl relative z-10 p-6">
-            <h2 class="text-xl font-black mb-4">Prompt Template Library</h2>
-            <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-                <button onclick="usePrompt('Write a highly optimized Node.js Express server with rate limiting.')" class="w-full text-left p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-lg text-sm font-medium transition-colors">🚀 Optimized Node.js Server Code</button>
-                <button onclick="usePrompt('A futuristic cyberpunk city with neon lights, highly detailed, 8k resolution, unreal engine 5 render')" class="w-full text-left p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-lg text-sm font-medium transition-colors">🌆 Cyberpunk City (Image Prompt)</button>
-                <button onclick="usePrompt('Write a professional cold email to a potential client offering AI automation services.')" class="w-full text-left p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-lg text-sm font-medium transition-colors">📧 Professional Cold Email</button>
+        <div class="bg-white w-full max-w-md rounded-[20px] shadow-2xl relative z-10 p-6 modal-content-scroll">
+            <h2 class="text-lg font-black mb-4">Prompt Templates</h2>
+            <div class="space-y-2">
+                <button onclick="usePrompt('Write a highly optimized Node.js Express server with rate limiting and secure headers.')" class="w-full text-left p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-xs font-medium flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+                    Optimized Server Code
+                </button>
+                <button onclick="usePrompt('A futuristic cyberpunk city with neon lights, highly detailed, 8k resolution, unreal engine 5 render')" class="w-full text-left p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-xs font-medium flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Cyberpunk City Image
+                </button>
             </div>
-            <button onclick="closeModal('promptModal')" class="mt-4 w-full text-slate-500 font-bold py-2 text-sm hover:text-slate-700">Close</button>
+            <button onclick="closeModal('promptModal')" class="mt-4 w-full text-slate-500 font-bold py-2 text-xs">Close Library</button>
         </div>
     </div>
 
     <div id="keyModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" id="keyModalOverlay" onclick="closeModal('keyModal')"></div>
-        <div class="bg-white w-full max-w-4xl rounded-[24px] shadow-2xl relative z-10 p-6 sm:p-8 transform scale-95 opacity-0 transition-all duration-300" id="keyModalContent">
-            <h2 class="text-2xl font-black mb-1 tracking-tight">Provision Access Key</h2>
-            <p class="text-slate-500 text-xs mb-4">Set exact limits, IPs, and 20 scopes for this key.</p>
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('keyModal')"></div>
+        <div class="bg-white w-full max-w-3xl rounded-[24px] shadow-2xl relative z-10 p-5 sm:p-8 modal-content-scroll">
+            <h2 class="text-xl sm:text-2xl font-black mb-4">Provision Secret Key</h2>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Project/App Name</label>
-                    <input type="text" id="keyNameInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm outline-none focus:border-[#1a73e8]">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Key Identity Name</label>
+                    <input type="text" id="keyNameInput" placeholder="e.g., Mobile App Client" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-blue-600 uppercase tracking-widest block mb-1">View Password</label>
-                    <input type="password" id="keyPasswordInput" class="w-full bg-blue-50 border border-blue-200 rounded-xl px-3 py-3 text-sm outline-none text-blue-900 focus:border-[#1a73e8]">
+                    <label class="text-[10px] font-bold text-blue-500 uppercase block mb-1">Secure Decryption Password</label>
+                    <input type="password" id="keyPasswordInput" placeholder="Create a strong password" class="w-full bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5 text-sm outline-none text-blue-900">
                 </div>
             </div>
 
-            <div class="flex items-center justify-between mb-2 mt-4">
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">API Scopes</label>
-                <div class="flex gap-2">
-                    <button class="preset-btn" onclick="applyPreset('full')">Full AI</button>
-                    <button class="preset-btn" onclick="applyPreset('image')">Media Only</button>
-                    <button class="preset-btn" onclick="applyPreset('basic')">Text Only</button>
-                </div>
-            </div>
-
-            <div class="scopes-grid mb-6">
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-2 mt-4">20 Security Scopes</label>
+            <div class="scopes-grid mb-5">
                 <label class="scope-card active-scope"><input type="checkbox" class="scope-cb" value="text_generation" checked disabled> Text Gen</label>
                 <label class="scope-card active-scope"><input type="checkbox" class="scope-cb" value="image_generation" checked> Image Gen</label>
-                <label class="scope-card active-scope"><input type="checkbox" class="scope-cb" value="video_generation" checked> Video Gen</label>
                 <label class="scope-card active-scope"><input type="checkbox" class="scope-cb" value="audio_generation" checked> Audio TTS</label>
+                <label class="scope-card active-scope"><input type="checkbox" class="scope-cb" value="video_generation" checked> Video Gen</label>
                 <label class="scope-card"><input type="checkbox" class="scope-cb" value="image_analysis"> Vision Scan</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="file_upload"> Storage I/O</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="code_execution"> Auto-Code</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="webhook_access"> Webhooks</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="fine_tuning"> Fine Tune</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="agents"> AI Agents</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="billing"> Billing API</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="rate_limit"> Rate Limits</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="auth_admin"> Auth Admin</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="embeddings"> Embeddings</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="moderation"> Moderation</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="stt"> STT</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="streaming"> Streaming</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="multimodal"> Multimodal</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="system_logs"> Read Logs</label>
-                <label class="scope-card"><input type="checkbox" class="scope-cb" value="db_access"> DB Access</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="file_upload"> File Upload</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="code_execution"> Code Exec Sandbox</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="db_access"> Database Read</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="webhooks"> Webhook Triggers</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="fine_tuning"> Model Fine Tuning</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="agents"> Autonomous Agents</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="billing"> Billing Read</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="rate_limit"> Rate Limit Rules</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="auth_admin"> Authentication Admin</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="embeddings"> Embeddings Matrix</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="moderation"> Content Moderation</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="stt"> Speech-To-Text</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="streaming"> Live Streaming Data</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="multimodal"> Multimodal Synthesis</label>
+                <label class="scope-card"><input type="checkbox" class="scope-cb" value="system_logs"> Read System Logs</label>
             </div>
             
-            <div class="flex gap-3">
-                <button id="genBtn" onclick="generateKey()" class="flex-1 btn-primary py-3.5 font-bold rounded-xl text-sm">Deploy Engine Key</button>
-                <button onclick="closeModal('keyModal')" class="px-6 py-3.5 bg-slate-100 font-bold rounded-xl text-slate-600 text-sm hover:bg-slate-200">Cancel</button>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <button id="genBtn" onclick="generateKey()" class="flex-1 btn-primary py-3 font-bold rounded-xl text-sm">Deploy Live Key</button>
+                <button onclick="closeModal('keyModal')" class="px-6 py-3 bg-slate-100 font-bold rounded-xl text-slate-600 text-sm hover:bg-slate-200">Cancel</button>
             </div>
         </div>
     </div>
 
     <div id="viewKeyModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/70" onclick="closeModal('viewKeyModal')"></div>
-        <div class="bg-white w-full max-w-sm rounded-[24px] p-6 relative z-10">
-            <h2 class="text-xl font-black mb-4">Decrypt Key</h2>
+        <div class="bg-white w-full max-w-sm rounded-[20px] p-6 relative z-10">
+            <h2 class="text-lg font-black mb-3">Decrypt Hidden Key</h2>
             <input type="hidden" id="unlockKeyIndex">
-            <input type="password" id="unlockPasswordInput" placeholder="Enter Password..." class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl mb-4 outline-none text-center tracking-widest text-lg font-bold">
-            <button onclick="unlockAndShowKey()" class="btn-primary w-full py-3 rounded-xl font-bold">Decrypt</button>
+            <input type="password" id="unlockPasswordInput" placeholder="Enter original password" class="w-full border border-slate-200 p-2.5 rounded-lg mb-3 outline-none text-center">
+            <button onclick="unlockAndShowKey()" class="btn-primary w-full py-2.5 rounded-lg font-bold text-sm">Decrypt</button>
         </div>
     </div>
     
     <div id="successModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/90" onclick="closeModal('successModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-[24px] p-8 text-center relative z-10 shadow-2xl">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="bg-white w-full max-w-sm rounded-[20px] p-6 text-center relative z-10 shadow-2xl">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h2 class="text-2xl font-black mb-2">Key Authorized!</h2>
-            <code id="displayKey" class="block bg-slate-100 p-4 rounded-xl text-xs font-mono font-bold break-all mb-4 text-slate-800"></code>
-            <button onclick="copyGeneratedKey(this)" class="btn-primary w-full py-3 rounded-xl font-bold mb-2 transition-all">Copy Secure Key</button>
-            <button onclick="closeModal('successModal')" class="w-full py-2 text-slate-400 font-bold text-sm hover:text-slate-600">Close</button>
+            <h2 class="text-xl font-black mb-2">Key Authorized!</h2>
+            <code id="displayKey" class="block bg-slate-100 p-3 rounded-lg text-[10px] font-mono font-bold break-all mb-4 text-slate-800 border border-slate-200"></code>
+            <button onclick="copyGeneratedKey(this)" class="btn-primary w-full py-2.5 rounded-lg font-bold mb-2 text-sm">Copy Live Key</button>
+            <button onclick="closeModal('successModal')" class="w-full py-2 text-slate-400 font-bold text-xs hover:text-slate-600">Close Window</button>
         </div>
     </div>
 
     <div id="loginModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/70" onclick="closeModal('loginModal')"></div>
-        <div class="bg-white w-full max-w-md rounded-[24px] p-8 relative z-10">
-            <h2 class="text-2xl font-black mb-2">Sync Access</h2>
-            <p class="text-slate-500 text-xs mb-4">Enter master key to fetch data.</p>
-            <input type="password" id="loginKeyInput" placeholder="sk-aura-..." class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl mb-4 font-mono outline-none focus:border-blue-500">
-            <button onclick="syncAccount()" id="syncBtn" class="btn-primary w-full py-3 rounded-xl font-bold">Sync Connection</button>
+        <div class="bg-white w-full max-w-sm rounded-[20px] p-6 relative z-10">
+            <h2 class="text-xl font-black mb-2">Sync Live Account</h2>
+            <p class="text-xs text-slate-500 mb-4">Enter master key to fetch real-time data from server.</p>
+            <input type="password" id="loginKeyInput" placeholder="sk-aura-..." class="w-full border p-2.5 rounded-lg mb-4 font-mono outline-none">
+            <button onclick="syncAccount()" id="syncBtn" class="btn-primary w-full py-2.5 rounded-lg font-bold text-sm">Connect To Server</button>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 opacity-0 bg-slate-900 text-white px-6 py-3 rounded-full transition-all z-[300] shadow-xl flex items-center gap-2">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        <span id="toastMsg" class="font-bold text-sm tracking-wide"></span>
-    </div>
-
-    <div id="wakeOverlay" class="fixed inset-0 z-[200] hidden flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-xl transition-opacity duration-500 opacity-0">
-        <div class="bg-white/80 backdrop-blur-2xl p-10 rounded-[2rem] max-w-md w-full text-center mx-4 border border-white/50 shadow-2xl">
-            <div class="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6"></div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2 tracking-tight">Waking up Engine...</h2>
-            <p class="text-gray-500 text-sm mb-8 leading-relaxed">The server is booting up. This will take up to a minute. Please wait.</p>
-            <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4 overflow-hidden">
-                <div id="progressBar" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
-            </div>
-            <p class="text-xs text-gray-400 font-mono font-bold uppercase tracking-widest"><span id="timeElapsed" class="text-indigo-600">0</span>s / 60s</p>
-        </div>
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 translate-y-20 opacity-0 bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-bold z-[300] transition-all flex items-center gap-2">
+        <svg width="14" height="14" fill="none" stroke="#34d399" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toastMsg">Action Successful</span>
     </div>
     
-    <script src="https://pl29209252.profitablecpmratenetwork.com/af/ea/96/afea96a6523b5e58e271afebd83a4515.js"></script>
+    <script type='text/javascript' src='//pl29209252.profitablecpmratenetwork.com/af/ea/96/afea96a6523b5e58e271afebd83a4515.js'></script>
 
     <script>
-        // --- GLOBAL CONFIGURATION & STATE ---
+        // --- GLOBAL CONFIGURATION & STATE STORAGE ---
         let CONFIG = { 
             url: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com", 
             admin: localStorage.getItem('aura_admin') || "" 
@@ -1011,25 +977,31 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
         
         let usageChartInstance = null;
 
-        // --- INITIALIZATION ---
+        // --- SYSTEM INITIALIZATION ---
         function init() {
+            // Set initial values in settings inputs
             document.getElementById('cfgUrl').value = CONFIG.url; 
             document.getElementById('cfgAdminSecret').value = CONFIG.admin;
-            document.getElementById('playgroundBaseUrl').value = CONFIG.url; // Setup Playground Base URL
+            document.getElementById('playgroundBaseUrl').value = CONFIG.url; 
             
+            // Check for existing active session
             if (localStorage.getItem('aura_session_token')) {
-                document.getElementById('userNameDisplay').innerText = "Live Session";
+                document.getElementById('userNameDisplay').innerText = "Live Session Active";
             }
             
+            // Render UI Components
             updateUI(); 
             updateDocUrls(); 
             populateTestKeys(); 
+            
+            // Validate server connection
             testPing();
 
-            // Set up checkbox visual state logic
-            document.querySelectorAll('.scope-cb').forEach(cb => {
+            // Scope Checkbox interaction logic (changes background color when selected)
+            const scopeCheckboxes = document.querySelectorAll('.scope-cb');
+            scopeCheckboxes.forEach(function(cb) {
                 cb.addEventListener('change', function() {
-                    if (this.checked) {
+                    if (this.checked === true) {
                         this.parentElement.classList.add('active-scope');
                     } else {
                         this.parentElement.classList.remove('active-scope');
@@ -1037,28 +1009,32 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
                 });
             });
 
-            // Initialize Analytics Chart slightly after load
-            setTimeout(initChart, 500);
+            // Initialize Chart after a brief delay to ensure canvas is rendered
+            setTimeout(function() {
+                initChart();
+            }, 500);
         }
 
-        // --- CHART JS IMPLEMENTATION ---
+        // --- CHART.JS GRAPH IMPLEMENTATION ---
         function initChart() {
-            const ctx = document.getElementById('usageChart'); 
-            if (!ctx) return;
+            const chartCanvas = document.getElementById('usageChart'); 
+            if (!chartCanvas) {
+                return;
+            }
             
-            if (usageChartInstance) {
+            if (usageChartInstance !== null) {
                 usageChartInstance.destroy();
             }
             
-            usageChartInstance = new Chart(ctx, { 
+            usageChartInstance = new Chart(chartCanvas, { 
                 type: 'line', 
                 data: { 
-                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Now"], 
+                    labels: ["1st Hr", "2nd Hr", "3rd Hr", "4th Hr", "5th Hr", "Current"], 
                     datasets: [{ 
-                        label: 'Total Engine Calls', 
-                        data: [5, 12, 8, 25, 14, myLogs.length], 
+                        label: 'API Request Volume', 
+                        data: [2, 5, 3, 8, 4, myLogs.length], 
                         borderColor: '#1a73e8', 
-                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        backgroundColor: 'rgba(26, 115, 232, 0.15)',
                         tension: 0.4,
                         fill: true
                     }] 
@@ -1066,270 +1042,260 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false } 
+                    },
                     scales: {
-                        y: { beginAtZero: true, grid: { display: false } },
-                        x: { grid: { display: false } }
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { display: false } 
+                        },
+                        x: { 
+                            grid: { display: false } 
+                        }
                     }
                 } 
             });
         }
 
-        // --- PRESET APPLICATION ---
-        function applyPreset(type) {
-            document.querySelectorAll('.scope-cb').forEach(cb => {
-                if (cb.value === 'text_generation') return; // Text is always checked and disabled
-                
-                cb.checked = false;
-                cb.parentElement.classList.remove('active-scope');
-                
-                if (type === 'full') { 
-                    cb.checked = true; 
-                    cb.parentElement.classList.add('active-scope'); 
-                }
-                
-                if (type === 'image' && (cb.value === 'image_generation' || cb.value === 'video_generation' || cb.value === 'file_upload')) { 
-                    cb.checked = true; 
-                    cb.parentElement.classList.add('active-scope'); 
-                }
-            });
-        }
-
-        // --- PROMPT LIBRARY ---
+        // --- PROMPT TEMPLATE ASSIGNMENT ---
         function usePrompt(text) {
             document.getElementById('testChatInput').value = text;
             closeModal('promptModal');
         }
 
-        // --- SAVE WEBHOOK ---
-        function saveWebhook() {
-            const hook = document.getElementById('webhookInput').value;
-            if (!hook) {
-                return showToast("Enter webhook URL first.");
-            }
-            logActivity("Webhook Configured", "Settings", "Success");
-            showToast("Webhook endpoint saved locally.");
-        }
-
-        // --- 🚨 FIXED MULTI-MODAL ROUTING ENGINE (HANDLES OPENAI & RENDER) 🚨 ---
+        // --- 🚨 FIXED MULTI-MODAL ROUTING ENGINE (OPENAI & RENDER) 🚨 ---
         async function sendMultiModalRequest() {
-            const input = document.getElementById('testChatInput'); 
-            const msg = input.value.trim(); 
-            if (!msg) return;
+            const chatInputArea = document.getElementById('testChatInput'); 
+            const userMessage = chatInputArea.value.trim(); 
             
-            // Reading Inputs from Playground settings
-            let customUrl = document.getElementById('playgroundBaseUrl').value.trim().replace(/\/$/, '');
-            let key = document.getElementById('testApiKeySelect').value; 
-            
-            // Handle Manual Key Override
-            if (key === 'manual') {
-                key = document.getElementById('testManualKeyInput').value.trim();
-            }
-            // Fallback to Session Key
-            if (!key) {
-                key = localStorage.getItem('aura_session_token');
-            }
-            
-            if (!key) {
-                return showToast("API Key Required! Select or Provision one.");
-            }
-            
-            const mode = document.getElementById('currentAiMode').value;
-            
-            // Build UI
-            createChatBubble('user', msg); 
-            input.value = '';
-            
-            const loadId = 'load-' + Date.now(); 
-            createChatBubble('ai', "Routing payload securely...", loadId, true);
-
-            // Construct Endpoint and Payload
-            let endpoint = mode === 'text' ? '/v1/chat/completions' : '/v1/images/generations';
-            let payload = {};
-            
-            if (mode === 'text') {
-                payload = { 
-                    model: "openrouter/free", // Defaulting. The user can switch if custom API requires it.
-                    messages: [{ role: "user", content: msg }] 
-                };
-            } else if (mode === 'image') {
-                payload = { prompt: msg };
-            } else if (mode === 'video') {
-                // Future Implementation Route
-                document.getElementById(loadId).remove();
-                createChatBubble('error', `Video mode is currently disabled in this environment.`, null, false);
+            if (userMessage === "") {
                 return;
+            }
+            
+            // Reading Inputs from Playground Config
+            let customEndpointUrl = document.getElementById('playgroundBaseUrl').value.trim();
+            // Remove trailing slash if user added it accidentally
+            if (customEndpointUrl.endsWith('/')) {
+                customEndpointUrl = customEndpointUrl.slice(0, -1);
+            }
+
+            let authenticationKey = document.getElementById('testApiKeySelect').value; 
+            
+            // Handle Manual Key Override condition
+            if (authenticationKey === 'manual') {
+                authenticationKey = document.getElementById('testManualKeyInput').value.trim();
+            }
+            
+            // Fallback to Session Key if dropdown was empty
+            if (!authenticationKey || authenticationKey === "") {
+                authenticationKey = localStorage.getItem('aura_session_token');
+            }
+            
+            if (!authenticationKey || authenticationKey === "") {
+                showToast("API Key is missing! Please select or provision one.");
+                return;
+            }
+            
+            const aiMode = document.getElementById('currentAiMode').value;
+            
+            // Update Chat UI with User Message
+            createChatBubble('user', userMessage, null, false); 
+            chatInputArea.value = '';
+            
+            const loaderId = 'load-' + Date.now(); 
+            createChatBubble('ai', "Routing payload to Neural Matrix...", loaderId, true);
+
+            // Construct Endpoint and Body Payload
+            let finalEndpoint = '';
+            let requestPayload = {};
+            
+            if (aiMode === 'text') {
+                finalEndpoint = '/v1/chat/completions';
+                requestPayload = { 
+                    model: "openrouter/free", 
+                    messages: [{ role: "user", content: userMessage }] 
+                };
+            } else if (aiMode === 'image') {
+                finalEndpoint = '/v1/images/generations';
+                requestPayload = { 
+                    prompt: userMessage 
+                };
+            } else if (aiMode === 'audio') {
+                finalEndpoint = '/v1/audio/speech';
+                requestPayload = { 
+                    input: userMessage 
+                };
             }
 
             try {
-                let fetchResult;
+                let fetchResultObject;
 
-                // ROUTING LOGIC
-                // If custom URL is the Render URL, use aggressiveFetch to wake the server if it's sleeping
-                if (customUrl === CONFIG.url) {
-                    fetchResult = await aggressiveFetch(endpoint, payload, true, { 'Authorization': `Bearer ${key}` });
-                } 
-                // If custom URL is external (like https://api.openai.com), use direct fast fetch
-                else {
-                    const extRes = await fetch(customUrl + endpoint, {
+                // ROUTING LOGIC BRANCHING
+                if (customEndpointUrl === CONFIG.url) {
+                    // Use Aggressive Fetch for Render Server to ensure it wakes up from sleep
+                    fetchResultObject = await aggressiveFetch(finalEndpoint, requestPayload, true, { 'Authorization': `Bearer ${authenticationKey}` });
+                } else {
+                    // Use Direct Standard Fetch for External APIs (e.g., OpenAI)
+                    const externalResponse = await fetch(customEndpointUrl + finalEndpoint, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json', 
-                            'Authorization': `Bearer ${key}` 
+                            'Authorization': `Bearer ${authenticationKey}` 
                         },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify(requestPayload)
                     });
                     
-                    fetchResult = { 
-                        ok: extRes.ok, 
-                        data: await extRes.json() 
+                    fetchResultObject = { 
+                        ok: externalResponse.ok, 
+                        data: await externalResponse.json() 
                     };
                 }
                 
-                // Cleanup UI Loader
-                document.getElementById(loadId).remove();
+                // Cleanup UI Loading Indicator
+                const loaderElement = document.getElementById(loaderId);
+                if (loaderElement) {
+                    loaderElement.remove();
+                }
                 
-                // Handle Response Payload
-                if (fetchResult.ok) {
-                    const data = fetchResult.data;
+                // Handle Response Payload Execution
+                if (fetchResultObject.ok === true) {
+                    const responseData = fetchResultObject.data;
                     
-                    if (mode === 'text') {
-                        createChatBubble('ai', data.choices[0].message.content, null, false);
+                    if (aiMode === 'text') {
+                        const aiText = responseData.choices[0].message.content;
+                        createChatBubble('ai', aiText, null, false);
                     } 
-                    else if (mode === 'image') {
-                        const imgUrl = data.data[0].url;
-                        myGallery.unshift(imgUrl); 
+                    else if (aiMode === 'image') {
+                        const generatedImageUrl = responseData.data[0].url;
+                        myGallery.unshift(generatedImageUrl); 
                         localStorage.setItem('aura_gallery', JSON.stringify(myGallery)); 
                         updateUI(); 
-                        createChatBubble('ai', `<img src="${imgUrl}" class="chat-image">`, null, true);
+                        createChatBubble('ai', `<img src="${generatedImageUrl}" class="chat-image" alt="Generated Output">`, null, true);
+                    }
+                    else if (aiMode === 'audio') {
+                        const audioUrl = responseData.data[0].url;
+                        createChatBubble('ai', `<audio controls src="${audioUrl}" class="w-full mt-2"></audio>`, null, true);
                     }
                     
-                    logActivity(`Playground Route [${mode}]`, customUrl, "Success");
+                    logActivity(`Playground Request [${aiMode}]`, customEndpointUrl, "Success");
                 } else {
-                    throw new Error(fetchResult.data.error?.message || "Remote API Connection Refused.");
+                    let errorMessage = "Remote API Connection Refused.";
+                    if (fetchResultObject.data && fetchResultObject.data.error && fetchResultObject.data.error.message) {
+                        errorMessage = fetchResultObject.data.error.message;
+                    }
+                    throw new Error(errorMessage);
                 }
-            } catch (e) { 
-                document.getElementById(loadId)?.remove(); 
-                createChatBubble('ai', `❌ ERROR: ${e.message}`, null, false); 
-                logActivity(`Playground Error`, customUrl, "Failed"); 
+            } catch (error) { 
+                const loaderElement = document.getElementById(loaderId);
+                if (loaderElement) {
+                    loaderElement.remove();
+                }
+                createChatBubble('ai', `<strong>Error Detected:</strong> ${error.message}`, null, true); 
+                logActivity(`Playground Pipeline Error`, customEndpointUrl, "Failed"); 
             }
         }
 
-        // --- RENDER SERVER AGGRESSIVE FETCH (WITH RETRIES AND OVERLAY) ---
-        async function aggressiveFetch(endpoint, payload, useAuth = false, customHeaders = {}) {
-            let headers = { 'Content-Type': 'application/json', ...customHeaders };
+        // --- AGGRESSIVE FETCH ENGINE FOR RENDER.COM (Handles Sleep States) ---
+        async function aggressiveFetch(endpointUrl, payloadObject, useAuthHeader = false, additionalHeaders = {}) {
+            let headersList = { 
+                'Content-Type': 'application/json' 
+            };
             
-            if (useAuth && !headers['Authorization']) {
-                const sessionKey = localStorage.getItem('aura_session_token');
-                headers['Authorization'] = `Bearer ${sessionKey}`;
+            // Merge custom headers
+            for (let key in additionalHeaders) {
+                headersList[key] = additionalHeaders[key];
+            }
+            
+            if (useAuthHeader === true && !headersList['Authorization']) {
+                const storedSessionKey = localStorage.getItem('aura_session_token');
+                headersList['Authorization'] = `Bearer ${storedSessionKey}`;
             }
 
-            const maxRetries = 15; // 60 seconds roughly
-            const overlay = document.getElementById('wakeOverlay');
-            const timeText = document.getElementById('timeElapsed');
-            const bar = document.getElementById('progressBar');
-            
-            let secondsPassed = 0;
-            let timerInterval = null;
-
-            for (let i = 0; i < maxRetries; i++) {
+            for (let attempt = 0; attempt < 3; attempt++) {
                 try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 6000);
-                    
-                    const res = await fetch(CONFIG.url + endpoint, { 
+                    const serverResponse = await fetch(CONFIG.url + endpointUrl, { 
                         method: 'POST', 
-                        headers: headers, 
-                        body: JSON.stringify(payload),
-                        signal: controller.signal 
+                        headers: headersList, 
+                        body: JSON.stringify(payloadObject) 
                     });
                     
-                    clearTimeout(timeoutId);
-
-                    // If Cold Start error (502/503/504) from Render, throw to retry
-                    if (res.status === 502 || res.status === 503 || res.status === 504) {
-                        throw new Error("Cold Start");
+                    const responseDataJson = await serverResponse.json();
+                    
+                    return { 
+                        ok: serverResponse.ok, 
+                        data: responseDataJson 
+                    };
+                } catch (connectionError) { 
+                    if (attempt === 2) {
+                        // Throw on final attempt
+                        throw connectionError; 
                     }
                     
-                    // Success! Remove Overlay
-                    if (timerInterval) clearInterval(timerInterval);
-                    overlay.classList.add('opacity-0'); 
-                    setTimeout(() => overlay.classList.add('hidden'), 500);
+                    // Attempt to ping root to trigger a wake-up
+                    try { 
+                        await fetch(CONFIG.url + '/'); 
+                    } catch(pingError) {
+                        // Ignore ping errors
+                    } 
                     
-                    testPing(); 
-                    return { ok: res.ok, data: await res.json() };
-
-                } catch (error) {
-                    if (i === maxRetries - 1) {
-                        if (timerInterval) clearInterval(timerInterval);
-                        overlay.classList.add('opacity-0'); 
-                        setTimeout(() => overlay.classList.add('hidden'), 500);
-                        throw new Error("Server refused to wake up after 60s.");
-                    }
-                    
-                    // On first failure, show wake overlay
-                    if (i === 0) {
-                        overlay.classList.remove('hidden'); 
-                        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-                        
-                        timerInterval = setInterval(() => {
-                            secondsPassed++; 
-                            timeText.innerText = secondsPassed; 
-                            bar.style.width = Math.min((secondsPassed / 60) * 100, 100) + '%';
-                        }, 1000);
-                    }
-                    
-                    await new Promise(r => setTimeout(r, 4000));
+                    // Wait 2.5 seconds before retrying the actual payload request
+                    await new Promise(function(resolve) {
+                        setTimeout(resolve, 2500);
+                    }); 
                 }
             }
         }
 
-        // --- SECURE KEY GENERATION ---
+        // --- SECURE KEY DEPLOYMENT FUNCTION ---
         async function generateKey() {
-            const name = document.getElementById('keyNameInput').value.trim(); 
-            const pwd = document.getElementById('keyPasswordInput').value.trim();
+            const nameInputValue = document.getElementById('keyNameInput').value.trim(); 
+            const passwordInputValue = document.getElementById('keyPasswordInput').value.trim();
             
-            if (!name || !pwd) {
-                return showToast("Name and Password are required.");
+            if (nameInputValue === "" || passwordInputValue === "") {
+                showToast("Identity Name and Secure Password are strictly required.");
+                return;
             }
             
-            const scopes = []; 
-            document.querySelectorAll('.scope-cb:checked').forEach(cb => scopes.push(cb.value));
+            const selectedScopesList = []; 
+            const checkboxElements = document.querySelectorAll('.scope-cb:checked');
             
-            const btn = document.getElementById('genBtn'); 
-            const oldText = btn.innerHTML; 
-            btn.innerHTML = "Deploying Key..."; 
-            btn.disabled = true;
+            checkboxElements.forEach(function(checkbox) {
+                selectedScopesList.push(checkbox.value);
+            });
+            
+            const deployButton = document.getElementById('genBtn'); 
+            const originalButtonText = deployButton.innerHTML; 
+            
+            deployButton.innerHTML = "Deploying to Server..."; 
+            deployButton.disabled = true;
 
             try {
-                // Generate Key against the Render Server
-                const res = await aggressiveFetch('/api/auth/generate', { 
-                    name: name, 
-                    password: pwd, 
-                    scopes: scopes 
+                const apiResponse = await aggressiveFetch('/api/auth/generate', { 
+                    name: nameInputValue, 
+                    password: passwordInputValue, 
+                    scopes: selectedScopesList 
                 });
                 
-                if (res.ok && res.data.success) {
-                    const newKey = res.data.apiKey;
+                if (apiResponse.ok === true && apiResponse.data.success === true) {
+                    const securelyGeneratedKey = apiResponse.data.apiKey;
                     
-                    // Save local object with original mapping
+                    // Store local reference
                     myKeys.push({ 
-                        name: name, 
-                        key: newKey, 
-                        password: pwd, 
-                        scopes: scopes, 
-                        date: new Date().toLocaleDateString() 
+                        name: nameInputValue, 
+                        key: securelyGeneratedKey, 
+                        password: passwordInputValue, 
+                        scopes: selectedScopesList 
                     }); 
-                    
                     localStorage.setItem('aura_keys', JSON.stringify(myKeys));
                     
-                    // Auto login if first key
-                    if (!localStorage.getItem('aura_session_token')) {
-                        localStorage.setItem('aura_session_token', newKey);
+                    if (localStorage.getItem('aura_session_token') === null) {
+                        localStorage.setItem('aura_session_token', securelyGeneratedKey);
                     }
                     
-                    logActivity("Key Provisioned", name, "Success"); 
-                    document.getElementById('displayKey').innerText = newKey; 
+                    logActivity("API Key Provisioned", nameInputValue, "Success"); 
+                    
+                    document.getElementById('displayKey').innerText = securelyGeneratedKey; 
                     
                     updateUI(); 
                     populateTestKeys(); 
@@ -1337,264 +1303,411 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
                     closeModal('keyModal'); 
                     openModal('successModal');
                 } else {
-                    throw new Error(res.data.error?.message || "Server Fault");
+                    let errMessage = "Server returned an unknown fault.";
+                    if (apiResponse.data && apiResponse.data.error && apiResponse.data.error.message) {
+                        errMessage = apiResponse.data.error.message;
+                    }
+                    throw new Error(errMessage);
                 }
-            } catch (e) { 
-                showToast("Error: " + e.message); 
-                logActivity("Key Generation", name, "Failed");
+            } catch (runtimeError) { 
+                showToast("Generation Pipeline Error: " + runtimeError.message); 
             } finally { 
-                btn.innerHTML = oldText; 
-                btn.disabled = false; 
+                deployButton.innerHTML = originalButtonText; 
+                deployButton.disabled = false; 
             }
         }
 
-        // --- FIXED INDEX UI RENDERER ---
+        // --- CORE UI RENDER ENGINE ---
         function updateUI() {
-            document.getElementById('dashKeyCount').innerText = myKeys.length;
-            document.getElementById('dashLogCount').innerText = myLogs.length;
+            // Update Dashboard Counters
+            document.getElementById('dashKeyCount').innerText = myKeys.length.toString();
+            document.getElementById('dashLogCount').innerText = myLogs.length.toString();
 
-            const tbody = document.getElementById('keyTableBody');
-            const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = '';
+            // Rebuild API Keys Table
+            const keysTableBody = document.getElementById('keyTableBody');
+            const emptyStateContainer = document.getElementById('emptyState');
+            
+            keysTableBody.innerHTML = '';
             
             if (myKeys.length === 0) {
-                emptyState.style.display = 'block';
+                emptyStateContainer.style.display = 'block';
             } else {
-                emptyState.style.display = 'none';
+                emptyStateContainer.style.display = 'none';
                 
-                // Map to preserve the original index for safe deletion and viewing
-                const reversedKeys = myKeys.map((k, index) => ({ ...k, originalIndex: index })).reverse();
+                // Map original indexes before reversing for safe DOM operations
+                const mappedKeys = [];
+                for (let index = 0; index < myKeys.length; index++) {
+                    mappedKeys.push({
+                        originalObject: myKeys[index],
+                        originalIndex: index
+                    });
+                }
                 
-                reversedKeys.forEach((k) => {
-                    const scHtml = k.scopes.map(s => {
-                        return `<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[9px] font-bold border border-slate-200 uppercase">${s.replace('_', ' ')}</span>`;
-                    }).join(' ');
+                // Reverse to show newest at the top
+                mappedKeys.reverse();
+                
+                for (let i = 0; i < mappedKeys.length; i++) {
+                    const currentMappedKey = mappedKeys[i];
+                    const keyData = currentMappedKey.originalObject;
+                    const actualIndex = currentMappedKey.originalIndex;
                     
-                    tbody.insertAdjacentHTML('beforeend', `
-                        <tr class="border-b border-slate-100 transition-colors hover:bg-slate-50">
-                            <td class="px-6 py-5 text-sm font-bold text-slate-800">${escapeHTML(k.name)}</td>
-                            <td class="px-6 py-5 text-xs font-mono text-slate-500">sk-aura-...${k.key.slice(-4)}</td>
-                            <td class="px-6 py-5 flex flex-wrap gap-1 max-w-[250px]">${scHtml}</td>
-                            <td class="px-6 py-5 text-right whitespace-nowrap">
-                                <button onclick="promptUnlockKey(${k.originalIndex})" class="text-blue-600 font-bold text-xs bg-blue-50 px-3 py-2 rounded-lg mr-2 hover:bg-blue-100 transition-colors">View</button>
-                                <button onclick="deleteKey(${k.originalIndex})" class="text-rose-600 font-bold text-xs bg-rose-50 px-3 py-2 rounded-lg hover:bg-rose-100 transition-colors">Delete</button>
+                    let scopeBadgesHTML = "";
+                    for (let s = 0; s < keyData.scopes.length; s++) {
+                        const formattedScopeName = keyData.scopes[s].replace(/_/g, ' ');
+                        scopeBadgesHTML += `<span class="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[8px] font-bold border border-slate-200 uppercase">${formattedScopeName}</span> `;
+                    }
+                    
+                    const safeName = escapeHTML(keyData.name);
+                    const maskedSecret = "sk-aura-... " + keyData.key.slice(-4);
+                    
+                    const rowHTML = `
+                        <tr class="border-b border-slate-100">
+                            <td class="p-3 sm:p-4 text-xs font-bold text-slate-800 break-all">${safeName}</td>
+                            <td class="p-3 sm:p-4 text-[10px] sm:text-xs font-mono text-slate-500 break-all">${maskedSecret}</td>
+                            <td class="p-3 sm:p-4 flex flex-wrap gap-1 max-w-[200px]">${scopeBadgesHTML}</td>
+                            <td class="p-3 sm:p-4 text-right whitespace-nowrap">
+                                <button onclick="promptUnlockKey(${actualIndex})" class="text-blue-600 font-bold text-[10px] bg-blue-50 px-2 py-1 rounded mr-1">View</button>
+                                <button onclick="deleteKey(${actualIndex})" class="text-rose-600 font-bold text-[10px] bg-rose-50 px-2 py-1 rounded">Remove</button>
                             </td>
                         </tr>
-                    `);
-                });
-            }
-
-            // Update Gallery View
-            const gallery = document.getElementById('galleryGrid');
-            if (myGallery.length > 0) {
-                gallery.innerHTML = myGallery.map(u => {
-                    return `<div class="gallery-item"><img src="${u}"></div>`;
-                }).join('');
-            } else {
-                gallery.innerHTML = `<div class="col-span-full p-10 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-[20px]">Gallery is empty. Generate images in Playground!</div>`;
-            }
-
-            // Update Logs Table
-            const logBox = document.getElementById('activityLogBody');
-            if (logBox) {
-                if (myLogs.length === 0) {
-                    logBox.innerHTML = `<div class="p-10 text-center text-slate-400">No logs generated yet.</div>`;
-                } else {
-                    logBox.innerHTML = myLogs.map(l => {
-                        const statusClass = l.status === 'Success' ? 'text-emerald-500' : 'text-rose-500';
-                        return `
-                            <div class="border-b border-slate-100 py-3 flex justify-between items-center">
-                                <div class="flex items-center gap-4">
-                                    <span class="text-slate-400 font-mono text-[10px]">${l.time}</span>
-                                    <span class="font-bold text-xs text-slate-700 w-32 truncate">${l.action}</span>
-                                    <span class="text-[10px] text-slate-500 truncate w-40 hidden sm:block">${l.target}</span>
-                                </div>
-                                <span class="text-[9px] font-black uppercase ${statusClass}">${l.status}</span>
-                            </div>
-                        `;
-                    }).join('');
+                    `;
+                    
+                    keysTableBody.insertAdjacentHTML('beforeend', rowHTML);
                 }
             }
 
-            // Update Chart Data
-            if (usageChartInstance) { 
+            // Rebuild Media Gallery
+            const galleryGrid = document.getElementById('galleryGrid');
+            if (myGallery.length > 0) {
+                let galleryHTML = "";
+                for (let g = 0; g < myGallery.length; g++) {
+                    galleryHTML += `<div class="gallery-item"><img src="${myGallery[g]}" alt="Aura Generated Media"></div>`;
+                }
+                galleryGrid.innerHTML = galleryHTML;
+            } else {
+                galleryGrid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 text-sm border-2 border-dashed border-slate-200 rounded-[16px]">Media Library is empty. Use the Playground to generate items.</div>`;
+            }
+
+            // Rebuild System Logs Table
+            const activityLogBody = document.getElementById('activityLogBody');
+            if (activityLogBody !== null) {
+                let logsHTML = "";
+                for (let l = 0; l < myLogs.length; l++) {
+                    const logItem = myLogs[l];
+                    let statusClass = 'text-rose-500';
+                    if (logItem.status === 'Success') {
+                        statusClass = 'text-emerald-500';
+                    }
+                    
+                    logsHTML += `
+                        <div class="border-b border-slate-100 py-2.5 flex justify-between items-center">
+                            <div class="flex items-center gap-2 sm:gap-4">
+                                <span class="text-slate-400 font-mono text-[9px] sm:text-[10px]">${logItem.time}</span>
+                                <span class="font-bold text-[10px] sm:text-xs text-slate-700 max-w-[80px] sm:max-w-none truncate">${logItem.action}</span>
+                                <span class="text-[9px] text-slate-500 truncate max-w-[100px] hidden sm:block">${logItem.target}</span>
+                            </div>
+                            <span class="text-[8px] sm:text-[9px] font-black uppercase ${statusClass}">${logItem.status}</span>
+                        </div>
+                    `;
+                }
+                activityLogBody.innerHTML = logsHTML;
+            }
+
+            // Update Chart.js Graphic Line Data
+            if (usageChartInstance !== null) { 
                 usageChartInstance.data.datasets[0].data[5] = myLogs.length; 
                 usageChartInstance.update(); 
             }
         }
 
-        // --- UTILITY AND MODAL FUNCTIONS ---
-        function createChatBubble(type, html, id = null, isHtml = false) { 
-            const cw = document.getElementById('testChatWindow'); 
-            const d = document.createElement('div'); 
-            d.className = `chat-bubble chat-${type}`; 
+        // --- BACKUP & RESTORE SYSTEM ---
+        function exportData() {
+            if (myKeys.length === 0) {
+                showToast("No active keys available for backup.");
+                return;
+            }
             
-            if (id) {
-                d.id = id; 
+            const exportObject = { 
+                version: "4.0", 
+                keys: myKeys, 
+                logs: myLogs, 
+                gallery: myGallery 
+            };
+            
+            const dataString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
+            const downloadLink = document.createElement('a'); 
+            
+            downloadLink.setAttribute("href", dataString); 
+            downloadLink.setAttribute("download", `Aura_Core_Backup.json`);
+            
+            document.body.appendChild(downloadLink); 
+            downloadLink.click(); 
+            downloadLink.remove();
+            
+            showToast("Database Backup Created Successfully.");
+        }
+
+        function processImport(event) {
+            const uploadedFile = event.target.files[0]; 
+            if (!uploadedFile) {
+                return;
+            }
+            
+            const fileReader = new FileReader();
+            fileReader.onload = function(readEvent) {
+                try { 
+                    const parsedData = JSON.parse(readEvent.target.result);
+                    
+                    if (parsedData.keys) { 
+                        myKeys = parsedData.keys; 
+                        localStorage.setItem('aura_keys', JSON.stringify(myKeys)); 
+                    }
+                    if (parsedData.logs) { 
+                        myLogs = parsedData.logs; 
+                        localStorage.setItem('aura_logs', JSON.stringify(myLogs)); 
+                    }
+                    if (parsedData.gallery) { 
+                        myGallery = parsedData.gallery; 
+                        localStorage.setItem('aura_gallery', JSON.stringify(myGallery)); 
+                    }
+                    
+                    updateUI(); 
+                    populateTestKeys(); 
+                    showToast("Database restored successfully from file."); 
+                } catch(err) { 
+                    showToast("Corrupted backup file. Restoration failed."); 
+                }
+            }; 
+            
+            fileReader.readAsText(uploadedFile); 
+            event.target.value = ''; // Reset input
+        }
+
+        // --- UTILITY AND INTERFACE FUNCTIONS ---
+        function createChatBubble(type, htmlContent, elementId = null, isHtmlFlag = false) { 
+            const chatWindowContainer = document.getElementById('testChatWindow'); 
+            const bubbleDiv = document.createElement('div'); 
+            
+            bubbleDiv.className = `chat-bubble chat-${type}`; 
+            
+            if (elementId !== null) {
+                bubbleDiv.id = elementId; 
             }
             
             if (type === 'user') {
-                d.innerText = html; 
+                bubbleDiv.innerText = htmlContent; 
             } else {
-                if (isHtml) {
-                    d.innerHTML = html;
+                let innerContent = "";
+                if (isHtmlFlag === true) {
+                    innerContent = htmlContent;
                 } else {
-                    d.innerHTML = `<div class="ai-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="ai-content text-sm w-full">${html.replace(/\n/g, '<br>')}</div>`;
+                    innerContent = htmlContent.replace(/\n/g, '<br>');
                 }
+                
+                bubbleDiv.innerHTML = `
+                    <div class="ai-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div class="ai-content w-full text-sm">
+                        ${innerContent}
+                    </div>
+                `;
             }
             
-            cw.appendChild(d); 
-            cw.scrollTop = cw.scrollHeight; 
+            chatWindowContainer.appendChild(bubbleDiv); 
+            chatWindowContainer.scrollTop = chatWindowContainer.scrollHeight; 
         }
 
-        function promptUnlockKey(idx) { 
-            document.getElementById('unlockKeyIndex').value = idx; 
+        function promptUnlockKey(indexValue) { 
+            document.getElementById('unlockKeyIndex').value = indexValue; 
             openModal('viewKeyModal'); 
         }
 
         function unlockAndShowKey() { 
-            const idx = document.getElementById('unlockKeyIndex').value; 
-            const inputPass = document.getElementById('unlockPasswordInput').value;
+            const targetIndex = document.getElementById('unlockKeyIndex').value; 
+            const inputPassword = document.getElementById('unlockPasswordInput').value;
             
-            if (inputPass === myKeys[idx].password) { 
+            if (inputPassword === myKeys[targetIndex].password) { 
                 closeModal('viewKeyModal'); 
-                document.getElementById('displayKey').innerText = myKeys[idx].key; 
+                document.getElementById('displayKey').innerText = myKeys[targetIndex].key; 
                 openModal('successModal'); 
             } else {
-                showToast("Incorrect Password"); 
+                showToast("Access Denied: Incorrect Decryption Password"); 
             }
         }
 
-        function deleteKey(idx) { 
-            if (confirm("Permanently delete this key from dashboard?")) { 
-                myKeys.splice(idx, 1); 
+        function deleteKey(targetIndex) { 
+            if (confirm("Are you sure you want to permanently revoke this key from the dashboard?")) { 
+                myKeys.splice(targetIndex, 1); 
                 localStorage.setItem('aura_keys', JSON.stringify(myKeys)); 
                 updateUI(); 
                 populateTestKeys(); 
             } 
         }
 
-        function logActivity(action, target, status) { 
-            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
-            myLogs.unshift({ time: timestamp, action: action, target: target, status: status }); 
-            if (myLogs.length > 60) myLogs.pop(); // Keep array size bounded
+        function logActivity(actionName, targetName, statusResult) { 
+            const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
+            myLogs.unshift({ 
+                time: currentTime, 
+                action: actionName, 
+                target: targetName, 
+                status: statusResult 
+            }); 
+            
+            if (myLogs.length > 50) {
+                myLogs.pop(); // Keep log size manageable in local storage
+            }
+            
             localStorage.setItem('aura_logs', JSON.stringify(myLogs)); 
             updateUI(); 
         }
-        
+
         function clearLogs() { 
             myLogs = []; 
             localStorage.setItem('aura_logs', '[]'); 
             updateUI(); 
-            showToast("Logs Purged"); 
+            showToast("System Logs Purged Successfully"); 
         }
 
         function populateTestKeys() { 
-            const s = document.getElementById('testApiKeySelect'); 
-            s.innerHTML = '<option value="">-- Select Auth Key --</option><option value="manual">Manual Key Override...</option>'; 
-            myKeys.forEach(k => {
-                s.innerHTML += `<option value="${k.key}">${k.name}</option>`;
-            }); 
+            const selectorElement = document.getElementById('testApiKeySelect'); 
+            selectorElement.innerHTML = '<option value="">-- Select Authority Key --</option><option value="manual">Inject Manual Override...</option>'; 
+            
+            for (let i = 0; i < myKeys.length; i++) {
+                const keyItem = myKeys[i];
+                let truncatedName = keyItem.name;
+                if (truncatedName.length > 10) {
+                    truncatedName = truncatedName.substring(0, 10) + "...";
+                }
+                selectorElement.innerHTML += `<option value="${keyItem.key}">${truncatedName}</option>`;
+            }
         }
 
         function toggleManualKeyInput() { 
-            const selectVal = document.getElementById('testApiKeySelect').value;
-            const manualDiv = document.getElementById('manualKeyDiv');
-            if (selectVal === 'manual') {
-                manualDiv.classList.remove('hidden');
+            const selectorValue = document.getElementById('testApiKeySelect').value;
+            const manualDivElement = document.getElementById('manualKeyDiv');
+            
+            if (selectorValue === 'manual') {
+                manualDivElement.classList.remove('hidden');
             } else {
-                manualDiv.classList.add('hidden');
+                manualDivElement.classList.add('hidden');
             }
         }
 
         function saveSettings() { 
-            CONFIG.url = document.getElementById('cfgUrl').value.replace(/\/$/, ''); 
-            CONFIG.admin = document.getElementById('cfgAdminSecret').value; 
+            const urlInput = document.getElementById('cfgUrl').value.replace(/\/$/, '');
+            const adminSecretInput = document.getElementById('cfgAdminSecret').value;
+            
+            CONFIG.url = urlInput; 
+            CONFIG.admin = adminSecretInput; 
+            
             localStorage.setItem('aura_url', CONFIG.url); 
             localStorage.setItem('aura_admin', CONFIG.admin); 
             
             document.getElementById('playgroundBaseUrl').value = CONFIG.url;
+            
             updateDocUrls(); 
             testPing(); 
-            showToast("Architecture Config Saved"); 
+            showToast("Global Architecture Configuration Committed."); 
         }
 
         function syncAccount() { 
-            const k = document.getElementById('loginKeyInput').value; 
-            if (k) { 
-                localStorage.setItem('aura_session_token', k); 
-                document.getElementById('userNameDisplay').innerText = "Live Session"; 
-                showToast("Account Synced!"); 
+            const inputKeyValue = document.getElementById('loginKeyInput').value.trim(); 
+            
+            if (inputKeyValue !== "") { 
+                localStorage.setItem('aura_session_token', inputKeyValue); 
+                document.getElementById('userNameDisplay').innerText = "Live Session Authenticated"; 
+                showToast("Account Synced to Mainframe!"); 
                 closeModal('loginModal'); 
-            } 
+            } else {
+                showToast("Cannot sync empty identity string.");
+            }
         }
 
         async function fetchHealth() {
-            if (!CONFIG.admin) return showToast("Set Admin God-Mode Secret First.");
+            if (CONFIG.admin === "") {
+                showToast("Warning: Configure Admin Secret in Settings First.");
+                return;
+            }
             
-            const logBox = document.getElementById('healthStats'); 
-            logBox.innerText = "Fetching Telemetry from Neural Core...";
+            const telemetryBox = document.getElementById('healthStats'); 
+            telemetryBox.innerText = "Initiating handshake with Neural Core...";
             
             try {
-                // Try aggressive fetch first to wake up if asleep
-                await aggressiveFetch('/api/admin/system-health', {});
-                
-                const res = await fetch(CONFIG.url + '/api/admin/system-health', { 
+                const serverResponse = await fetch(CONFIG.url + '/api/admin/system-health', { 
                     headers: { 'x-admin-secret': CONFIG.admin }
                 });
                 
-                if (!res.ok) throw new Error("Auth Failed. Invalid Secret.");
+                if (serverResponse.ok === false) {
+                    throw new Error("Authentication Refused. Invalid Secret.");
+                }
                 
-                const data = await res.json();
-                logBox.innerText = JSON.stringify(data, null, 4); 
-                showToast("Telemetry Live");
-            } catch (e) { 
-                logBox.innerText = `ERROR: ${e.message}`; 
+                const healthData = await serverResponse.json();
+                telemetryBox.innerText = JSON.stringify(healthData, null, 4); 
+                showToast("Telemetry Stream Live");
+            } catch (runtimeError) { 
+                telemetryBox.innerText = `[SECURE CONNECTION FAILED]\nReason: ${runtimeError.message}`; 
             }
         }
 
         async function testPing() { 
-            const liveStatus = document.getElementById('liveStatus');
+            const statusElement = document.getElementById('liveStatus');
             try { 
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const abortController = new AbortController();
+                const timeoutReference = setTimeout(function() {
+                    abortController.abort();
+                }, 4000);
                 
-                const res = await fetch(CONFIG.url + '/', { signal: controller.signal }); 
-                clearTimeout(timeoutId);
+                const pingResponse = await fetch(CONFIG.url + '/', { signal: abortController.signal }); 
+                clearTimeout(timeoutReference);
                 
-                if (res.ok) {
-                    liveStatus.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span><span class="text-[10px] font-bold text-slate-500 uppercase">Live</span>`;
+                if (pingResponse.ok === true) {
+                    statusElement.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span><span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active</span>`;
                 } else {
-                    throw new Error();
+                    throw new Error("Bad Status");
                 }
-            } catch (e) { 
-                liveStatus.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.6)]"></span><span class="text-[10px] font-bold text-slate-500 uppercase">Sleep</span>`; 
+            } catch (networkError) { 
+                statusElement.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]"></span><span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sleeping</span>`; 
             } 
         }
 
         async function forceWakeServer() { 
-            showToast("Sending Core Wake Request..."); 
+            showToast("Transmitting Wake Signal to V4 Engine..."); 
             try { 
                 await fetch(CONFIG.url + '/'); 
                 testPing(); 
-            } catch (e) {} 
+            } catch (e) {
+                // Ignore wake errors
+            } 
         }
         
-        // --- UI SWITCHERS ---
-        function switchAITab(m) { 
-            document.querySelectorAll('.ai-tab').forEach(e => e.classList.remove('active')); 
-            document.getElementById('tab-' + m).classList.add('active'); 
-            document.getElementById('currentAiMode').value = m; 
+        function switchAITab(modeIdentifier) { 
+            const tabElements = document.querySelectorAll('.ai-tab');
+            for (let t = 0; t < tabElements.length; t++) {
+                tabElements[t].classList.remove('active');
+            }
+            
+            document.getElementById('tab-' + modeIdentifier).classList.add('active'); 
+            document.getElementById('currentAiMode').value = modeIdentifier; 
         }
 
-        function switchView(id, btn) { 
-            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); 
-            btn.classList.add('active'); 
+        function switchView(viewId, buttonElement) { 
+            const navElements = document.querySelectorAll('.nav-item');
+            for (let n = 0; n < navElements.length; n++) {
+                navElements[n].classList.remove('active');
+            }
             
-            document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active')); 
-            document.getElementById(id).classList.add('active'); 
+            buttonElement.classList.add('active'); 
             
-            document.getElementById('headerTitle').innerText = btn.innerText.trim(); 
+            const sectionElements = document.querySelectorAll('.view-section');
+            for (let v = 0; v < sectionElements.length; v++) {
+                sectionElements[v].classList.remove('active');
+            }
+            
+            document.getElementById(viewId).classList.add('active'); 
+            document.getElementById('headerTitle').innerText = buttonElement.innerText.trim(); 
             
             if (window.innerWidth < 768) {
                 toggleSidebar(); 
@@ -1602,115 +1715,128 @@ console.<span class="token-function">log</span>((<span class="token-keyword">awa
         }
 
         function toggleSidebar() { 
-            const s = document.getElementById('sidebar');
-            const o = document.getElementById('mobileOverlay'); 
-            if (s.classList.contains('open')) { 
-                s.classList.remove('open'); 
-                o.classList.remove('opacity-100'); 
-                setTimeout(() => o.classList.add('hidden'), 300); 
+            const sidebarElement = document.getElementById('sidebar');
+            const overlayElement = document.getElementById('mobileOverlay'); 
+            
+            if (sidebarElement.classList.contains('open')) { 
+                sidebarElement.classList.remove('open'); 
+                overlayElement.classList.remove('opacity-100'); 
+                setTimeout(function() {
+                    overlayElement.classList.add('hidden');
+                }, 300); 
             } else { 
-                s.classList.add('open'); 
-                o.classList.remove('hidden'); 
-                setTimeout(() => o.classList.add('opacity-100'), 10); 
+                sidebarElement.classList.add('open'); 
+                overlayElement.classList.remove('hidden'); 
+                setTimeout(function() {
+                    overlayElement.classList.add('opacity-100');
+                }, 10); 
             } 
         }
 
         function updateDocUrls() { 
-            const currentUrl = CONFIG.url || "https://your-api.onrender.com";
-            document.querySelectorAll('.dynamic-url').forEach(e => e.innerText = currentUrl); 
-            const docBase = document.getElementById('docBaseUrlDisplay');
-            if(docBase) docBase.innerText = currentUrl; 
+            let targetUrl = CONFIG.url;
+            if (targetUrl === "") {
+                targetUrl = "https://your-api.onrender.com";
+            }
+            
+            const dynamicUrlSpans = document.querySelectorAll('.dynamic-url');
+            for (let d = 0; d < dynamicUrlSpans.length; d++) {
+                dynamicUrlSpans[d].innerText = targetUrl;
+            }
         }
 
-        function openModal(id) { 
-            const m = document.getElementById(id); 
-            m.classList.remove('hidden'); 
-            setTimeout(() => {
-                const overlay = m.querySelector('div:first-child');
-                const content = m.querySelector('div:nth-child(2)');
-                if(overlay) overlay.classList.remove('opacity-0');
-                if(content) content.classList.remove('scale-95', 'opacity-0');
+        function openModal(modalId) { 
+            const modalElement = document.getElementById(modalId); 
+            modalElement.classList.remove('hidden'); 
+            
+            setTimeout(function() {
+                const overlayBg = modalElement.querySelector('div:nth-child(1)');
+                const mainContent = modalElement.querySelector('div:nth-child(2)');
+                
+                if (overlayBg) overlayBg.classList.remove('opacity-0');
+                if (mainContent) mainContent.classList.remove('scale-95', 'opacity-0');
             }, 10); 
         } 
 
-        function closeModal(id) { 
-            const m = document.getElementById(id); 
-            const overlay = m.querySelector('div:first-child');
-            const content = m.querySelector('div:nth-child(2)');
+        function closeModal(modalId) { 
+            const modalElement = document.getElementById(modalId); 
+            const overlayBg = modalElement.querySelector('div:nth-child(1)');
+            const mainContent = modalElement.querySelector('div:nth-child(2)');
             
-            if(overlay) overlay.classList.add('opacity-0');
-            if(content) content.classList.add('scale-95', 'opacity-0');
+            if (overlayBg) overlayBg.classList.add('opacity-0');
+            if (mainContent) mainContent.classList.add('scale-95', 'opacity-0');
             
-            setTimeout(() => {
-                m.classList.add('hidden'); 
+            setTimeout(function() {
+                modalElement.classList.add('hidden'); 
             }, 300); 
             
-            // Cleanup Inputs
-            if (id === 'keyModal') {
+            if (modalId === 'keyModal') {
                 document.getElementById('keyNameInput').value = ''; 
                 document.getElementById('keyPasswordInput').value = '';
             } 
-            if (id === 'viewKeyModal') {
+            if (modalId === 'viewKeyModal') {
                 document.getElementById('unlockPasswordInput').value = '';
+            }
+            if (modalId === 'loginModal') {
+                document.getElementById('loginKeyInput').value = '';
             }
         }
 
-        function showToast(m) { 
-            document.getElementById('toastMsg').innerText = m; 
-            const t = document.getElementById('toast'); 
-            t.classList.remove('opacity-0', 'translate-y-20'); 
-            setTimeout(() => {
-                t.classList.add('opacity-0', 'translate-y-20');
+        function showToast(messageText) { 
+            document.getElementById('toastMsg').innerText = messageText; 
+            const toastElement = document.getElementById('toast'); 
+            
+            toastElement.classList.remove('opacity-0', 'translate-y-20'); 
+            
+            setTimeout(function() {
+                toastElement.classList.add('opacity-0', 'translate-y-20');
             }, 3000); 
         }
 
-        // Copy functionality with Real-Time Feedback
-        function copyCode(id, btn) { 
-            const textToCopy = document.getElementById(id).innerText;
-            if (navigator.clipboard) {
+        function copyCode(elementId, buttonElement) { 
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(textToCopy);
             } else {
-                const ta = document.createElement("textarea"); 
-                ta.value = textToCopy; 
-                document.body.appendChild(ta); 
-                ta.select(); 
+                const textArea = document.createElement("textarea"); 
+                textArea.value = textToCopy; 
+                document.body.appendChild(textArea); 
+                textArea.select(); 
                 document.execCommand("copy"); 
-                ta.remove();
+                textArea.remove();
             }
-            const oldText = btn.innerText;
-            btn.innerText = "COPIED ✅"; 
-            btn.classList.add('text-green-400');
-            setTimeout(() => {
-                btn.innerText = oldText; 
-                btn.classList.remove('text-green-400');
+            
+            const originalButtonText = buttonElement.innerText;
+            buttonElement.innerText = "COPIED"; 
+            
+            setTimeout(function() {
+                buttonElement.innerText = originalButtonText;
             }, 2000); 
         }
 
-        function copyGeneratedKey(btn) { 
-            copyCode('displayKey', btn); 
-            showToast("Secured Key Copied"); 
+        function copyGeneratedKey(buttonElement) { 
+            copyCode('displayKey', buttonElement); 
+            showToast("Secured Key Copied Successfully"); 
         }
 
-        function escapeHTML(s) { 
-            return s.replace(/[&<>'"]/g, t => {
-                return {'&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;'}[t] || t;
+        function escapeHTML(inputString) { 
+            return inputString.replace(/[&<>'"]/g, function(tag) {
+                const entityMap = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                };
+                return entityMap[tag] || tag;
             }); 
         }
 
-        function sharePlatform() { 
-            const txt = `🚀 Aura V4 Master Engine!\nFree Secure API Key with Daily Credits for AI Generative APIs.\nConnect here: https://freeapikeyganretor.edgeone.app`; 
-            if (navigator.share) {
-                navigator.share({ title: 'Aura Enterprise', text: txt }).catch(e => {
-                    navigator.clipboard.writeText(txt);
-                    showToast("Promo Link Copied!");
-                });
-            } else {
-                navigator.clipboard.writeText(txt); 
-                showToast("Promo Link Copied!"); 
-            }
-        }
-
-        window.onload = init;
+        // --- BOOT STRAP ---
+        window.onload = function() {
+            init();
+        };
     </script>
 </body>
 </html>
