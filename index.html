@@ -5,285 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Aura Platform - Secure Gateway</title>
     
-    <meta property="og:title" content="Aura Enterprise V5 - Master Engine">
-    <meta property="og:description" content="Secure AI Gateway. Strict Auth and Native Platform Integration.">
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
-
     <style>
-        /* ==========================================================================
-           GLOBAL VARIABLES & NORMALIZATION
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        :root {
-            --bg-main: #f0f4f8; 
-            --accent-blue: #1a73e8; 
-            --glass-bg: rgba(255, 255, 255, 0.85); 
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
-        }
-
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            margin: 0; 
-            background-color: var(--bg-main);
-            background-image: radial-gradient(circle at 50% 0%, #e8f0fe 0%, #f0f4f8 100%);
-            width: 100vw;
-            min-height: 100vh;
-            overflow-x: hidden;
-            overflow-y: auto; /* Allows scrolling if ads take up vertical space */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* ==========================================================================
-           AUTH CONTAINER (CENTERED & RESPONSIVE)
-           ========================================================================== */
-        .page-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            width: 100%;
-            padding: 20px;
-            max-width: 480px;
-        }
-
-        .auth-container {
-            width: 100%;
-            background: var(--glass-bg);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,1);
-            padding: 40px 30px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .auth-section {
-            display: none;
-            flex-direction: column;
-            animation: slideUp 0.4s ease-out forwards;
-        }
-
-        .auth-section.active {
-            display: flex;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================================================
-           ADSTERRA SECURE WRAPPER (PREVENTS LAYOUT BREAKS)
-           ========================================================================== */
-        .ad-wrapper {
-            width: 100%;
-            margin-top: 24px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            max-height: 300px; /* Strict Lock to prevent infinite expansion */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 8px;
-        }
-
-        /* ==========================================================================
-           INPUTS & BUTTONS
-           ========================================================================== */
-        .auth-input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .auth-input-group svg {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            transition: color 0.3s;
-        }
-
-        .auth-input {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 16px;
-            padding: 16px 16px 16px 48px;
-            font-size: 15px;
-            font-family: 'Outfit', sans-serif;
-            color: #1e293b;
-            transition: all 0.3s;
-            outline: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        .auth-input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
-        }
-
-        .auth-input:focus + svg {
-            color: var(--accent-blue);
-        }
-
-        .btn-primary { 
-            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); 
-            color: white; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            border: none; 
-            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); 
-            border-radius: 16px; 
-            cursor: pointer; 
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        .btn-primary:hover:not(:disabled) { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3); 
-        }
-
-        .btn-primary:disabled { 
-            background: #94a3b8; 
-            cursor: not-allowed; 
-            box-shadow: none; 
-            transform: none; 
-        }
-
-        /* The New "Continue with Aura" Button */
-        .btn-aura {
-            background-color: #ffffff;
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
-            transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
-            border-radius: 16px;
-            cursor: pointer;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            padding: 16px;
-            font-size: 15px;
-        }
-
-        .btn-aura:hover {
-            background-color: #f8fafc;
-            border-color: var(--accent-blue);
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08);
-        }
-
-        .link-text {
-            color: var(--accent-blue);
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .link-text:hover {
-            color: #1557b0;
-            text-decoration: underline;
-        }
-
-        /* Identity Card for Fast Login */
-        .identity-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-        }
-
-        .identity-card:hover {
-            border-color: var(--accent-blue);
-            background: #f8fafc;
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08);
-        }
-
-        /* OTP Inputs */
-        .otp-grid {
-            display: flex;
-            gap: 8px;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .otp-input {
-            width: 45px;
-            height: 56px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            color: #1e293b;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .otp-input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-
-        /* Toast Notification */
-        #toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #1e293b;
-            color: #ffffff;
-            padding: 14px 24px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 9999;
-        }
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        :root { --bg-main: #f0f4f8; --accent-blue: #1a73e8; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(255, 255, 255, 0.9); --shadow-soft: 0 10px 40px rgba(0,0,0,0.08); }
+        body { font-family: 'Outfit', sans-serif; margin: 0; background-color: var(--bg-main); background-image: radial-gradient(circle at 50% 0%, #e8f0fe 0%, #f0f4f8 100%); width: 100vw; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
+        .page-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; width: 100%; padding: 20px; max-width: 480px; }
+        .auth-container { width: 100%; background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,1); padding: 40px 30px; position: relative; z-index: 10; }
+        .auth-section { display: none; flex-direction: column; animation: slideUp 0.4s ease-out forwards; }
+        .auth-section.active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .auth-input-group { position: relative; margin-bottom: 20px; }
+        .auth-input-group svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; transition: color 0.3s; }
+        .auth-input { width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 16px 16px 16px 48px; font-size: 15px; color: #1e293b; transition: all 0.3s; outline: none; }
+        .auth-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1); }
+        .auth-input:focus + svg { color: var(--accent-blue); }
+        .btn-primary { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); color: white; transition: all 0.3s; border: none; box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); border-radius: 16px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; width: 100%; font-size: 16px; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3); }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-aura { background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; transition: all 0.3s; border-radius: 16px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; font-size: 15px; }
+        .btn-aura:hover { background-color: #f8fafc; border-color: var(--accent-blue); box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08); }
+        .link-text { color: var(--accent-blue); font-weight: 600; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+        .link-text:hover { color: #1557b0; text-decoration: underline; }
+        .identity-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.3s; margin-bottom: 20px; }
+        .identity-card:hover { border-color: var(--accent-blue); background: #f8fafc; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08); }
+        .otp-grid { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 24px; }
+        .otp-input { width: 45px; height: 56px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 24px; font-weight: 700; text-align: center; color: #1e293b; outline: none; transition: all 0.2s; }
+        .otp-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1e293b; color: #ffffff; padding: 14px 24px; border-radius: 100px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
@@ -294,13 +46,9 @@
     </div>
 
     <div class="page-wrapper">
-        
         <div class="mb-6 text-center">
-            <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30 border border-blue-400/50">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    <circle cx="12" cy="12" r="2" fill="white"/>
-                </svg>
+            <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-400">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/><circle cx="12" cy="12" r="2" fill="white"/></svg>
             </div>
             <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Aura Platform</h1>
         </div>
@@ -310,7 +58,6 @@
             <div id="auth-fast-login" class="auth-section">
                 <h2 class="text-2xl font-black mb-2 text-slate-800">Identity Restored</h2>
                 <p class="text-slate-500 text-sm mb-6">Your local credentials match our records. Click below to enter the dashboard.</p>
-                
                 <div class="identity-card" onclick="processFastLogin()">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-lg" id="fastAvatar">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -321,113 +68,67 @@
                     </div>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>
-
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">OR</span>
-                    <div class="flex-grow border-t border-slate-200"></div>
-                </div>
-
-                <button onclick="switchAuthSection('auth-login')" class="btn-aura mt-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    Switch Identity Account
-                </button>
+                <div class="relative flex py-4 items-center"><div class="flex-grow border-t border-slate-200"></div><span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">OR</span><div class="flex-grow border-t border-slate-200"></div></div>
+                <button onclick="switchAuthSection('auth-login')" class="btn-aura mt-2">Switch Identity Account</button>
             </div>
 
             <div id="auth-login" class="auth-section active">
                 <h2 class="text-2xl font-black mb-2 text-slate-800">Secure Protocol</h2>
                 <p class="text-slate-500 text-sm mb-6">Provide credentials to initialize the Neural Engine.</p>
-                
                 <div class="auth-input-group">
                     <input type="email" id="loginEmail" class="auth-input" placeholder="Registered Email Address">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-                
                 <div class="auth-input-group mb-2">
                     <input type="password" id="loginPassword" class="auth-input" placeholder="Secure Password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
-                
-                <div class="flex justify-end mb-6">
-                    <span onclick="switchAuthSection('auth-forgot')" class="text-sm link-text">Lost Signature?</span>
-                </div>
-
-                <button id="btnLogin" onclick="processLogin()" class="btn-primary mb-4">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    Authenticate Matrix
-                </button>
-                
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">Aura Auth</span>
-                    <div class="flex-grow border-t border-slate-200"></div>
-                </div>
-                
-                <button onclick="switchAuthSection('auth-aura-key')" class="btn-aura mb-6">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
-                    Continue with Aura
-                </button>
-
+                <div class="flex justify-end mb-6"><span onclick="switchAuthSection('auth-forgot')" class="text-sm link-text">Lost Signature?</span></div>
+                <button id="btnLogin" onclick="processLogin()" class="btn-primary mb-4">Authenticate Matrix</button>
+                <div class="relative flex py-4 items-center"><div class="flex-grow border-t border-slate-200"></div><span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-widest">Aura Auth</span><div class="flex-grow border-t border-slate-200"></div></div>
+                <button onclick="switchAuthSection('auth-aura-key')" class="btn-aura mb-6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Continue with Aura Key</button>
                 <p class="text-center text-sm text-slate-500">New Developer? <span onclick="switchAuthSection('auth-signup')" class="link-text">Provision Key</span></p>
             </div>
 
             <div id="auth-aura-key" class="auth-section">
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6 border border-blue-100 mx-auto">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/>
-                    </svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                 </div>
                 <h2 class="text-2xl font-black mb-2 text-slate-800 text-center">Aura Secure Login</h2>
-                <p class="text-slate-500 text-sm mb-6 text-center">Authenticate using your Master API Key or Session Token.</p>
-                
+                <p class="text-slate-500 text-sm mb-6 text-center">Authenticate using your Master API Key.</p>
                 <div class="auth-input-group mb-6">
                     <input type="password" id="auraKeyInput" class="auth-input font-mono text-sm" placeholder="sk-aura-...">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
                 </div>
-
                 <button id="btnAuraKey" onclick="processAuraKeyLogin()" class="btn-primary mb-4 py-4 text-lg">Authenticate Matrix</button>
-                
-                <div class="text-center mt-2">
-                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Standard Login</span>
-                </div>
+                <div class="text-center mt-2"><span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Back to Standard Login</span></div>
             </div>
 
             <div id="auth-signup" class="auth-section">
                 <h2 class="text-2xl font-black mb-2 text-slate-800">Generate Identity</h2>
                 <p class="text-slate-500 text-sm mb-6">Create credentials to acquire 1000 API computation credits.</p>
-                
                 <div class="auth-input-group">
                     <input type="text" id="signupName" class="auth-input" placeholder="Official Full Name">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
-
                 <div class="auth-input-group">
                     <input type="email" id="signupEmail" class="auth-input" placeholder="Corporate/Personal Email">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-                
                 <div class="auth-input-group mb-6">
                     <input type="password" id="signupPassword" class="auth-input" placeholder="Master Signature Password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
-
-                <button id="btnSignup" onclick="processSignup()" class="btn-primary mb-6 text-lg">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
-                    Register Credentials
-                </button>
-                
+                <button id="btnSignup" onclick="processSignup()" class="btn-primary mb-6 py-4 text-lg">Register Credentials</button>
                 <p class="text-center text-sm text-slate-500">Existing User? <span onclick="switchAuthSection('auth-login')" class="link-text">Return to Login</span></p>
             </div>
 
             <div id="auth-verify" class="auth-section">
-                <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
+                <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 mx-auto">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
                 <h2 class="text-2xl font-black mb-2 text-slate-800 text-center">Verify Identity</h2>
                 <p class="text-slate-500 text-sm mb-8 text-center">A 6-digit confirmation payload has been sent to <strong id="verifyEmailDisplay" class="text-slate-800 break-all">target email</strong>.</p>
-                
                 <div class="otp-grid">
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp2', '')" id="otp1">
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp3', 'otp1')" id="otp2">
@@ -436,13 +137,8 @@
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp6', 'otp4')" id="otp5">
                     <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, '', 'otp5')" id="otp6">
                 </div>
-
-                <button id="btnVerify" onclick="processVerification()" class="btn-primary mb-6 py-4">Verify Token</button>
-                
-                <p class="text-center text-sm text-slate-500 mb-4">Payload undelivered? <span onclick="showToast('[SYSTEM] Payload re-dispatched.', 'success')" class="link-text">Resend Packet</span></p>
-                <div class="text-center">
-                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Abort & Return</span>
-                </div>
+                <button id="btnVerify" onclick="processVerification()" class="btn-primary mb-6 py-4">Verify Identity Link</button>
+                <div class="text-center"><span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Abort Sequence</span></div>
             </div>
 
             <div id="auth-forgot" class="auth-section">
@@ -451,400 +147,226 @@
                 </div>
                 <h2 class="text-2xl font-black mb-2 text-slate-800 text-center">Reset Signature</h2>
                 <p class="text-slate-500 text-sm mb-8 text-center">Provide your registered email to receive protocol reset instructions.</p>
-                
                 <div class="auth-input-group mb-8">
                     <input type="email" id="forgotEmail" class="auth-input" placeholder="Official Email Address">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-
                 <button id="btnForgot" onclick="processForgotPassword()" class="btn-primary mb-4 py-4">Transmit Reset Link</button>
-                
-                <div class="text-center mt-4">
-                    <span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Return to Gateway</span>
-                </div>
+                <div class="text-center mt-4"><span onclick="switchAuthSection('auth-login')" class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">Return to Gateway</span></div>
             </div>
 
         </div>
-
-        <div class="ad-wrapper">
-            <script async="async" data-cfasync="false" src="https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js"></script>
-            <div id="container-4474729a63899bf107ff1c83aed64247"></div>
-        </div>
-
     </div>
 
-    <script type='text/javascript' src='//pl29209252.profitablecpmratenetwork.com/af/ea/96/afea96a6523b5e58e271afebd83a4515.js'></script>
-
     <script>
-        // CORE CONFIGURATION
-        const CONFIG = {
-            API_BASE: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com"
-        };
+        const CONFIG = { API_BASE: localStorage.getItem('aura_url') || "https://aura-backend-api-1cnr.onrender.com" };
 
-        // BOOT SEQUENCE (Checks if already logged in)
         window.onload = function() {
             const storedToken = localStorage.getItem('aura_session_token');
             const userData = localStorage.getItem('aura_user_data');
-            
-            // If token exists, direct immediate routing to main dashboard
             if (storedToken !== null && storedToken !== "") {
                 window.location.href = "main.html";
             } else if (userData !== null && userData !== "") {
-                // If user data exists but no active token, show Fast Login
                 try {
                     const parsedData = JSON.parse(userData);
                     const fastNameElement = document.getElementById('fastName');
                     const fastEmailElement = document.getElementById('fastEmail');
                     const fastAvatarElement = document.getElementById('fastAvatar');
-                    
                     if (fastNameElement !== null) fastNameElement.innerText = parsedData.name;
                     if (fastEmailElement !== null) fastEmailElement.innerText = parsedData.email;
-                    
                     if (fastAvatarElement !== null && parsedData.name.length > 0) {
                         fastAvatarElement.innerText = parsedData.name.substring(0, 2).toUpperCase();
                     }
-                    
                     switchAuthSection('auth-fast-login');
-                } catch (parseError) {
-                    switchAuthSection('auth-login');
-                }
-            } else {
-                // Completely new device or wiped data
-                switchAuthSection('auth-login');
-            }
+                } catch (parseError) { switchAuthSection('auth-login'); }
+            } else { switchAuthSection('auth-login'); }
         };
 
-        // UI HELPER FUNCTIONS
         function switchAuthSection(sectionId) {
             const authSections = document.querySelectorAll('.auth-section');
-            for (let i = 0; i < authSections.length; i++) {
-                authSections[i].classList.remove('active');
-            }
-            
+            for (let i = 0; i < authSections.length; i++) { authSections[i].classList.remove('active'); }
             const targetSection = document.getElementById(sectionId);
-            if (targetSection !== null) {
-                targetSection.classList.add('active');
-            }
+            if (targetSection !== null) targetSection.classList.add('active');
         }
 
         function showToast(messageText, notificationType = "success") {
             const toastElement = document.getElementById('toast');
             const toastMsgElement = document.getElementById('toastMsg');
             const iconElement = document.getElementById('toastIcon');
-            
             if (toastElement === null || toastMsgElement === null) return;
-            
             toastMsgElement.innerText = messageText;
-            
             if (notificationType === "error") {
                 if (iconElement !== null) iconElement.setAttribute('stroke', '#ef4444'); 
             } else {
                 if (iconElement !== null) iconElement.setAttribute('stroke', '#34d399'); 
             }
-            
             toastElement.classList.add('show');
-            setTimeout(function() {
-                toastElement.classList.remove('show');
-            }, 3000);
+            setTimeout(function() { toastElement.classList.remove('show'); }, 3000);
         }
 
-        // ==========================================================================
-        // 1. STANDARD EMAIL/PASSWORD LOGIN
-        // ==========================================================================
         async function processLogin() {
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
-            
             if (emailInput === null || passwordInput === null) return;
-            
             const emailValue = emailInput.value.trim();
             const passwordValue = passwordInput.value.trim();
-            
-            if (emailValue === "" || passwordValue === "") {
-                showToast("[SYSTEM] Email and Password signatures are strictly required.", "error");
-                return;
-            }
-
+            if (emailValue === "" || passwordValue === "") { showToast("[SYSTEM] Credentials required.", "error"); return; }
             const loginButton = document.getElementById('btnLogin');
-            let originalButtonText = "Sign In to Dashboard";
-            
-            if (loginButton !== null) {
-                originalButtonText = loginButton.innerHTML;
-                loginButton.innerHTML = "Authenticating Matrix...";
-                loginButton.disabled = true;
-            }
+            let originalButtonText = "Authenticate Matrix";
+            if (loginButton !== null) { originalButtonText = loginButton.innerHTML; loginButton.innerHTML = "Processing..."; loginButton.disabled = true; }
 
             try {
-                // REAL API HTTP POST CALL
                 const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: emailValue, password: passwordValue })
                 });
-
                 const responseData = await serverResponse.json();
-
                 if (serverResponse.ok === true && responseData.success === true) {
-                    // Success! Write token to local memory and switch page
                     localStorage.setItem('aura_session_token', responseData.token);
-                    
-                    const userDataObject = { 
-                        name: responseData.user.name, 
-                        email: responseData.user.email 
-                    };
-                    localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
-                    
-                    // Route to Dashboard Module
+                    localStorage.setItem('aura_user_data', JSON.stringify({ name: responseData.user.name, email: responseData.user.email }));
                     window.location.href = "main.html";
-                } else {
-                    throw new Error(responseData.message || "Invalid System Credentials");
-                }
+                } else { throw new Error(responseData.message || "Invalid Credentials"); }
             } catch (networkError) {
-                // Route to Failure Page with exact error trace
-                console.error("Login Process Terminated:", networkError.message);
                 localStorage.setItem('aura_last_error', networkError.message);
                 window.location.href = "failed.html";
             } finally {
-                if (loginButton !== null) {
-                    loginButton.innerHTML = originalButtonText;
-                    loginButton.disabled = false;
-                }
+                if (loginButton !== null) { loginButton.innerHTML = originalButtonText; loginButton.disabled = false; }
             }
         }
 
-        // ==========================================================================
-        // 2. FAST LOGIN PROTOCOL (1-Click Return)
-        // ==========================================================================
         async function processFastLogin() {
-            showToast("[INFO] Verifying Local Identity Cache...");
-            
-            // For added security, we could verify the token in the background, 
-            // but for immediate UX we route to main and let main.html handle the backend validation.
-            setTimeout(function() {
-                // Since this screen only appears if aura_user_data exists, 
-                // we assign a fresh connection state and route to dashboard.
-                window.location.href = "main.html";
-            }, 800);
+            setTimeout(function() { window.location.href = "main.html"; }, 800);
         }
 
-        // ==========================================================================
-        // 3. AURA PLATFORM KEY LOGIN
-        // ==========================================================================
         async function processAuraKeyLogin() {
             const keyInput = document.getElementById('auraKeyInput');
             if (keyInput === null) return;
-
             const keyValue = keyInput.value.trim();
-
-            if (keyValue === "") {
-                showToast("Security Key is required.", "error");
-                return;
-            }
-
+            if (keyValue === "") { showToast("Security Key is required.", "error"); return; }
             const keyButton = document.getElementById('btnAuraKey');
             let originalButtonText = "Authenticate Matrix";
-            
-            if (keyButton !== null) {
-                originalButtonText = keyButton.innerHTML;
-                keyButton.innerHTML = "Validating Key...";
-                keyButton.disabled = true;
-            }
+            if (keyButton !== null) { originalButtonText = keyButton.innerHTML; keyButton.innerHTML = "Validating Key..."; keyButton.disabled = true; }
 
             try {
-                // We call the key-login endpoint from the updated backend
                 const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/key-login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ apiKey: keyValue })
                 });
-
                 const responseData = await serverResponse.json();
-
                 if (serverResponse.ok === true && responseData.success === true) {
                     localStorage.setItem('aura_session_token', responseData.token);
-                    
-                    const userDataObject = { 
-                        name: responseData.user.name, 
-                        email: responseData.user.email 
-                    };
-                    localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
-                    
+                    localStorage.setItem('aura_user_data', JSON.stringify({ name: responseData.user.name, email: responseData.user.email }));
                     window.location.href = "main.html";
-                } else {
-                    throw new Error(responseData.message || "Invalid Security Key");
-                }
+                } else { throw new Error(responseData.message || "Invalid Security Key"); }
             } catch (networkError) {
                 localStorage.setItem('aura_last_error', networkError.message);
                 window.location.href = "failed.html";
             } finally {
-                if (keyButton !== null) {
-                    keyButton.innerHTML = originalButtonText;
-                    keyButton.disabled = false;
-                }
+                if (keyButton !== null) { keyButton.innerHTML = originalButtonText; keyButton.disabled = false; }
             }
         }
 
-        // ==========================================================================
-        // 4. REGISTRATION PROTOCOL (SIGNUP)
-        // ==========================================================================
         async function processSignup() {
             const nameInput = document.getElementById('signupName');
             const emailInput = document.getElementById('signupEmail');
             const passwordInput = document.getElementById('signupPassword');
-            
             if (nameInput === null || emailInput === null || passwordInput === null) return;
-            
             const nameValue = nameInput.value.trim();
             const emailValue = emailInput.value.trim();
             const passwordValue = passwordInput.value.trim();
-
-            if (nameValue === "" || emailValue === "" || passwordValue === "") {
-                showToast("[SYSTEM] Complete data population required for registration.", "error");
-                return;
-            }
-
+            if (nameValue === "" || emailValue === "" || passwordValue === "") { showToast("[SYSTEM] Fields cannot be empty.", "error"); return; }
             const signupButton = document.getElementById('btnSignup');
-            let originalButtonText = "Register Identity";
-            
-            if (signupButton !== null) {
-                originalButtonText = signupButton.innerHTML;
-                signupButton.innerHTML = `Transmitting Profile...`;
-                signupButton.disabled = true;
-            }
+            let originalButtonText = "Register Credentials";
+            if (signupButton !== null) { originalButtonText = signupButton.innerHTML; signupButton.innerHTML = `Registering...`; signupButton.disabled = true; }
 
             try {
-                // REAL API HTTP POST CALL
                 const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: nameValue, email: emailValue, password: passwordValue })
                 });
-                
                 const responseData = await serverResponse.json();
-                
                 if (serverResponse.ok === true) {
                     const verifyEmailDisplay = document.getElementById('verifyEmailDisplay');
-                    if (verifyEmailDisplay !== null) {
-                        verifyEmailDisplay.innerText = emailValue;
-                    }
-                    
+                    if (verifyEmailDisplay !== null) verifyEmailDisplay.innerText = emailValue;
                     localStorage.setItem('aura_temp_email', emailValue);
                     localStorage.setItem('aura_temp_name', nameValue);
-                    
                     switchAuthSection('auth-verify');
-                    showToast("[SYSTEM] Verification Packet Transmitted", "success");
-                } else {
-                    throw new Error(responseData.message || "Registration Sequence Fault");
-                }
+                    showToast("[SYSTEM] Verification Packet Transmitted");
+                } else { throw new Error(responseData.message || "Registration Fault"); }
             } catch (networkError) {
-                localStorage.setItem('aura_last_error', "Identity provisioning node failed to respond.");
+                localStorage.setItem('aura_last_error', networkError.message);
                 window.location.href = "failed.html";
             } finally {
-                if (signupButton !== null) {
-                    signupButton.innerHTML = originalButtonText;
-                    signupButton.disabled = false;
-                }
+                if (signupButton !== null) { signupButton.innerHTML = originalButtonText; signupButton.disabled = false; }
             }
         }
 
-        // ==========================================================================
-        // 5. TWO-FACTOR VERIFICATION PROTOCOL (OTP)
-        // ==========================================================================
         function moveToNext(currentElement, nextElementID, previousElementID) {
             if (currentElement.value.length >= 1) {
-                if (nextElementID !== "") {
-                    const nextElement = document.getElementById(nextElementID);
-                    if (nextElement !== null) nextElement.focus();
-                }
+                if (nextElementID !== "") { const nextElement = document.getElementById(nextElementID); if (nextElement !== null) nextElement.focus(); }
             } else if (currentElement.value.length === 0) {
-                if (previousElementID !== "") {
-                    const prevElement = document.getElementById(previousElementID);
-                    if (prevElement !== null) prevElement.focus();
-                }
+                if (previousElementID !== "") { const prevElement = document.getElementById(previousElementID); if (prevElement !== null) prevElement.focus(); }
             }
         }
 
+        // 🚨 REAL API VERIFICATION FIX 🚨
         async function processVerification() {
             let otpString = "";
             for (let i = 1; i <= 6; i++) {
                 const otpInput = document.getElementById('otp' + i);
-                if (otpInput !== null) {
-                    otpString += otpInput.value;
-                }
+                if (otpInput !== null) otpString += otpInput.value;
             }
-
-            if (otpString.length < 6) {
-                showToast("[SYSTEM] Full 6-digit cryptographic signature required.", "error");
-                return;
-            }
-
+            if (otpString.length < 6) { showToast("[SYSTEM] Invalid Code Length.", "error"); return; }
             const tempEmail = localStorage.getItem('aura_temp_email');
             const verifyButton = document.getElementById('btnVerify');
-            
-            if (verifyButton !== null) {
-                verifyButton.disabled = true;
-                verifyButton.innerText = "Analyzing Signature...";
-            }
+            if (verifyButton !== null) { verifyButton.disabled = true; verifyButton.innerText = "Analyzing Signature..."; }
 
             try {
-                // Future Implementation: await fetch('/api/auth/verify', ...)
+                // Calling the Real API Endpoint
+                const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempEmail, otp: otpString })
+                });
                 
-                // Active Validation Pipeline Simulation (Success Route)
-                setTimeout(function() {
+                const responseData = await serverResponse.json();
+                
+                if (serverResponse.ok === true && responseData.success === true) {
+                    localStorage.setItem('aura_session_token', responseData.token);
                     const tempName = localStorage.getItem('aura_temp_name') || "Developer";
-                    const generatedSecureToken = "sk-aura-authorized-" + Math.random().toString(36).substring(2, 15);
-                    
-                    localStorage.setItem('aura_session_token', generatedSecureToken);
-                    
-                    const userDataObject = { 
-                        name: tempName, 
-                        email: tempEmail 
-                    };
-                    localStorage.setItem('aura_user_data', JSON.stringify(userDataObject));
-                    
-                    localStorage.removeItem('aura_temp_email');
-                    localStorage.removeItem('aura_temp_name');
-                    
-                    // Route to Internal Dashboard
+                    localStorage.setItem('aura_user_data', JSON.stringify({ name: tempName, email: tempEmail }));
+                    localStorage.removeItem('aura_temp_email'); localStorage.removeItem('aura_temp_name');
                     window.location.href = "main.html";
-                    
-                }, 1500);
-
-            } catch (validationError) {
-                localStorage.setItem('aura_last_error', "Cryptographic OTP Validation Failed.");
-                window.location.href = "failed.html";
+                } else {
+                    throw new Error(responseData.message || "Cryptographic Verification Failed");
+                }
+            } catch (error) {
+                showToast("[ERROR] " + error.message, "error");
+                if (verifyButton !== null) { verifyButton.disabled = false; verifyButton.innerText = "Verify Token"; }
             }
         }
 
-        // ==========================================================================
-        // 6. PASSWORD RESET PROTOCOL
-        // ==========================================================================
         async function processForgotPassword() {
             const emailInput = document.getElementById('forgotEmail');
             if (emailInput === null) return;
-            
             const emailValue = emailInput.value.trim();
-            
-            if (emailValue === "") {
-                showToast("[ERROR] Missing target email vector.", "error");
-                return;
-            }
-
+            if (emailValue === "") { showToast("[ERROR] Missing target email.", "error"); return; }
             const forgotButton = document.getElementById('btnForgot');
-            if (forgotButton !== null) {
-                forgotButton.disabled = true;
-                forgotButton.innerText = "Transmitting Sequence...";
-            }
+            if (forgotButton !== null) { forgotButton.disabled = true; forgotButton.innerText = "Transmitting..."; }
 
-            setTimeout(function() {
-                showToast("[SYSTEM] Recovery parameters dispatched.");
-                switchAuthSection('auth-login');
-                
-                if (forgotButton !== null) {
-                    forgotButton.disabled = false;
-                    forgotButton.innerText = "Send Reset Link";
+            try {
+                const serverResponse = await fetch(CONFIG.API_BASE + '/api/auth/forgot-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: emailValue })
+                });
+                if(serverResponse.ok === true) {
+                    showToast("[SYSTEM] Recovery parameters dispatched.");
+                    switchAuthSection('auth-login');
                 }
-            }, 1500);
+            } catch(e) {
+                showToast("[ERROR] Transmission failed.", "error");
+            } finally {
+                if (forgotButton !== null) { forgotButton.disabled = false; forgotButton.innerText = "Transmit Reset Link"; }
+            }
         }
     </script>
 </body>
