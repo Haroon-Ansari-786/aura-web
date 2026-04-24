@@ -16,6 +16,31 @@
 
     <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
 
+    <script>
+        // AURA FRONTEND SECURITY SHIELD
+        (function() {
+            // 1. Instantly check for the token before ANY HTML loads
+            const sessionToken = localStorage.getItem('aura_session_token');
+            if (sessionToken === null || sessionToken === undefined || sessionToken === "") {
+                // If Hacker tries to access directly, destroy the page content and redirect
+                document.documentElement.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0f172a;color:#ef4444;font-family:monospace;font-weight:bold;font-size:18px;">[SECURITY] UNAUTHORIZED ACCESS ATTEMPT BLOCKED. REDIRECTING...</div>';
+                localStorage.setItem('aura_last_error', "Security Gateway: Direct URL access denied. Please authenticate.");
+                window.location.replace("index.html");
+                return;
+            }
+
+            // 2. URL Obfuscation: Hide "main.html" and make it look like a secure dashboard session
+            if (window.history && window.history.replaceState) {
+                // Generates a fake session ID to make the URL look highly secure and dynamic
+                const randomSessionHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                const secureUrl = window.location.pathname.replace("main.html", "") + "?dashboard_session=" + randomSessionHash;
+                
+                // Replace the visible URL without reloading the page
+                window.history.replaceState(null, "Aura Dashboard", secureUrl);
+            }
+        })();
+    </script>
+
     <style>
         /* ==========================================================================
            GLOBAL VARIABLES & NORMALIZATION
