@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Aura Platform - Master Engine Dashboard</title>
     
-    <meta property="og:title" content="Aura Enterprise V7 - Master Engine">
+    <meta property="og:title" content="Aura Enterprise V8.1 - Master Engine">
     <meta property="og:description" content="Secure AI Gateway. 20 Scopes, Strict Auth, and Native Platform Integration.">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
@@ -89,14 +87,8 @@
         }
 
         @keyframes fadeScale { 
-            from { 
-                opacity: 0; 
-                transform: translateY(15px); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
 
         /* ==========================================================================
@@ -228,7 +220,7 @@
            ========================================================================== */
         .playground-wrapper {
             position: relative;
-            height: calc(100vh - 64px);
+            height: calc(100vh - 64px); 
             display: flex;
             flex-direction: column;
             background: #f8fafc;
@@ -308,7 +300,6 @@
             border: 1px solid #e2e8f0; 
         }
 
-        /* ELEVATED FLOATING INPUT BOX */
         .floating-input-wrapper { 
             position: absolute; 
             bottom: 30px; 
@@ -575,7 +566,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <span class="block text-xl font-extrabold text-slate-800 leading-none tracking-tight">Aura V7.2</span>
+                    <span class="block text-xl font-extrabold text-slate-800 leading-none tracking-tight">Aura V8.1</span>
                     <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Master Engine</span>
                 </div>
             </div>
@@ -751,7 +742,7 @@
                     <div class="flex flex-col md:flex-row justify-between md:items-end mb-8 gap-4">
                         <div>
                             <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Platform Overview</h1>
-                            <p class="text-slate-500 text-sm mt-2">Real-time telemetry and API analytics for Aura V7.2.</p>
+                            <p class="text-slate-500 text-sm mt-2">Real-time telemetry and API analytics for Aura V8.1.</p>
                         </div>
                     </div>
                     
@@ -1431,11 +1422,15 @@ console.log(await response.json());
             } 
             else if (aiMode === 'image') {
                 finalEndpoint = '/v1/images/generations';
-                requestPayload = { prompt: userMessage };
+                requestPayload = { 
+                    prompt: userMessage 
+                };
             } 
             else if (aiMode === 'video') {
                 finalEndpoint = '/v1/video/generations';
-                requestPayload = { prompt: userMessage };
+                requestPayload = { 
+                    prompt: userMessage 
+                };
             }
 
             try {
@@ -1853,9 +1848,7 @@ console.log(await response.json());
 
         function createChatBubble(type, htmlContent, elementId = null, isHtmlFlag = false) { 
             const chatWindowContainer = document.getElementById('testChatWindow'); 
-            if (chatWindowContainer === null) {
-                return;
-            }
+            if (chatWindowContainer === null) return;
             
             const bubbleDiv = document.createElement('div'); 
             bubbleDiv.className = `chat-bubble chat-${type}`; 
@@ -1876,7 +1869,7 @@ console.log(await response.json());
                 
                 bubbleDiv.innerHTML = `
                     <div class="ai-avatar">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                         </svg>
                     </div>
@@ -1902,9 +1895,7 @@ console.log(await response.json());
             const targetIndexElement = document.getElementById('unlockKeyIndex');
             const inputPasswordElement = document.getElementById('unlockPasswordInput');
             
-            if (targetIndexElement === null || inputPasswordElement === null) {
-                return;
-            }
+            if (targetIndexElement === null || inputPasswordElement === null) return;
             
             const targetIndex = parseInt(targetIndexElement.value, 10);
             const inputPassword = inputPasswordElement.value;
@@ -1916,8 +1907,9 @@ console.log(await response.json());
                 if (displayKeyElement !== null) {
                     displayKeyElement.innerText = myKeys[targetIndex].key; 
                 }
+                
                 openModal('successModal'); 
-            } else { 
+            } else {
                 showToast("Access Denied: Incorrect Decryption Password", "error"); 
             }
         }
@@ -1957,16 +1949,13 @@ console.log(await response.json());
 
         function populateTestKeys() { 
             const selectorElement = document.getElementById('testApiKeySelect'); 
-            if (selectorElement === null) {
-                return;
-            }
+            if (selectorElement === null) return;
             
             selectorElement.innerHTML = '<option value="">-- Authority Key --</option><option value="manual">Inject Manual Override...</option>'; 
             
             for (let i = 0; i < myKeys.length; i++) {
                 const keyItem = myKeys[i];
                 let truncatedName = keyItem.name;
-                
                 if (truncatedName.length > 10) {
                     truncatedName = truncatedName.substring(0, 10) + "...";
                 }
@@ -2043,14 +2032,12 @@ console.log(await response.json());
 
         async function testPing() { 
             const statusElement = document.getElementById('liveStatus');
-            if (statusElement === null) {
-                return;
-            }
+            if (statusElement === null) return;
             
             try { 
                 const abortController = new AbortController();
-                const timeoutReference = setTimeout(function() { 
-                    abortController.abort(); 
+                const timeoutReference = setTimeout(function() {
+                    abortController.abort();
                 }, 4000);
                 
                 const pingResponse = await fetch(CONFIG.url + '/', { 
@@ -2129,14 +2116,12 @@ console.log(await response.json());
             if (sidebarElement.classList.contains('open')) { 
                 sidebarElement.classList.remove('open'); 
                 overlayElement.classList.remove('opacity-100'); 
-                
                 setTimeout(function() { 
                     overlayElement.classList.add('hidden'); 
                 }, 300); 
             } else { 
                 sidebarElement.classList.add('open'); 
                 overlayElement.classList.remove('hidden'); 
-                
                 setTimeout(function() { 
                     overlayElement.classList.add('opacity-100'); 
                 }, 10); 
@@ -2157,9 +2142,7 @@ console.log(await response.json());
 
         function openModal(modalId) { 
             const modalElement = document.getElementById(modalId); 
-            if (modalElement === null) {
-                return;
-            }
+            if (modalElement === null) return;
             
             modalElement.classList.remove('hidden'); 
             
@@ -2178,9 +2161,7 @@ console.log(await response.json());
 
         function closeModal(modalId) { 
             const modalElement = document.getElementById(modalId); 
-            if (modalElement === null) {
-                return;
-            }
+            if (modalElement === null) return;
             
             const overlayBg = modalElement.querySelector('div:nth-child(1)');
             const mainContent = modalElement.querySelector('div:nth-child(2)');
@@ -2217,9 +2198,7 @@ console.log(await response.json());
 
         function copyCode(elementId, buttonElement) { 
             const targetElement = document.getElementById(elementId);
-            if (targetElement === null || buttonElement === null) {
-                return;
-            }
+            if (targetElement === null || buttonElement === null) return;
             
             const textToCopy = targetElement.innerText;
             
@@ -2244,13 +2223,11 @@ console.log(await response.json());
 
         function copyGeneratedKey(buttonElement) { 
             copyCode('displayKey', buttonElement); 
-            showToast("[SYSTEM] Access Key Copied", "success"); 
+            showToast("[SYSTEM] Access Key Copied"); 
         }
 
         function escapeHTML(inputString) { 
-            if (typeof inputString !== 'string') {
-                return "";
-            }
+            if (typeof inputString !== 'string') return "";
             return inputString.replace(/[&<>'"]/g, function(tag) {
                 const entityMap = { 
                     '&': '&amp;', 
