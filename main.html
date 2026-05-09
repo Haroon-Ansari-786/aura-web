@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Aura Platform - Master Engine Dashboard</title>
     
-    <meta property="og:title" content="Aura Enterprise V8.2 - Master Engine">
+    <meta property="og:title" content="Aura Enterprise V8.0 - Master Engine">
     <meta property="og:description" content="Secure AI Gateway. 20 Scopes, Strict Auth, and Native Platform Integration.">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,8 +21,8 @@
             const currentSessionToken = localStorage.getItem('aura_session_token');
             if (currentSessionToken === null || currentSessionToken === undefined || currentSessionToken === "") {
                 document.documentElement.innerHTML = `
-                    <div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#0f172a; color:#ef4444; font-family:monospace; font-weight:bold; font-size:18px;">
-                        [SECURITY] UNAUTHORIZED ACCESS BLOCKED. TERMINATING CONNECTION.
+                    <div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#0f172a; color:#ef4444; font-family:monospace; font-weight:bold; font-size:18px; text-align:center; padding:20px;">
+                        [SECURITY] UNAUTHORIZED ACCESS BLOCKED.<br>TERMINATING CONNECTION TO NEURAL ENGINE.
                     </div>
                 `;
                 localStorage.setItem('aura_last_error', "[SECURITY] Direct URL access denied. Please authenticate through the secure gateway.");
@@ -222,7 +222,7 @@
            ========================================================================== */
         .playground-wrapper {
             position: relative;
-            height: calc(100vh - 64px);
+            height: calc(100vh - 64px); 
             display: flex;
             flex-direction: column;
             background: #f8fafc;
@@ -237,7 +237,7 @@
             overflow-y: auto; 
             overflow-x: hidden;
             scroll-behavior: smooth; 
-            padding-bottom: 160px; 
+            padding-bottom: 180px; /* Extra padding so chat isn't hidden behind input */
         }
 
         .chat-bubble { 
@@ -300,6 +300,18 @@
             height: auto;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1); 
             border: 1px solid #e2e8f0; 
+        }
+
+        .chat-code-block {
+            background-color: #0f172a;
+            color: #4ade80;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
+            margin-top: 8px;
         }
 
         /* ELEVATED FLOATING INPUT BOX */
@@ -570,7 +582,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <span class="block text-xl font-extrabold text-slate-800 leading-none tracking-tight">Aura V8.2</span>
+                    <span class="block text-xl font-extrabold text-slate-800 leading-none tracking-tight">Aura V8.0</span>
                     <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Master Engine</span>
                 </div>
             </div>
@@ -746,7 +758,7 @@
                     <div class="flex flex-col md:flex-row justify-between md:items-end mb-8 gap-4">
                         <div>
                             <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Platform Overview</h1>
-                            <p class="text-slate-500 text-sm mt-2">Real-time telemetry and API analytics for Aura V8.2.</p>
+                            <p class="text-slate-500 text-sm mt-2">Real-time telemetry and API analytics for Aura V8.0.</p>
                         </div>
                     </div>
                     
@@ -1120,7 +1132,6 @@ console.log(await response.json());
                     <p class="text-slate-500 mb-8 text-base">If you encounter any architectural bugs or need operational assistance, reach out to the engineering team.</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
                         <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full text-center flex flex-col items-center">
                             <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1400,44 +1411,83 @@ console.log(await response.json());
         }
 
         // ==============================================================================
-        // [REAL API ROUTING] NATIVE MULTI-MODAL CONNECTION TO SERVER V7.2
+        // [REAL API ROUTING] NATIVE MULTI-MODAL CONNECTION TO SERVER
         // ==============================================================================
         
         async function handlePlaygroundFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const uploadedFile = event.target.files[0];
+            if (uploadedFile === undefined || uploadedFile === null) {
+                return;
+            }
 
-            let authenticationKey = document.getElementById('testApiKeySelect').value;
-            if (authenticationKey === 'manual') authenticationKey = document.getElementById('testManualKeyInput').value.trim();
-            if (!authenticationKey) authenticationKey = localStorage.getItem('aura_session_token');
-            if (!authenticationKey) { showToast("[SYSTEM] Missing Key! Access Denied.", "error"); return; }
+            let authenticationKey = "";
+            const keySelectElement = document.getElementById('testApiKeySelect');
+            if (keySelectElement !== null) {
+                authenticationKey = keySelectElement.value;
+            }
+            
+            if (authenticationKey === 'manual') {
+                const manualKeyElement = document.getElementById('testManualKeyInput');
+                if (manualKeyElement !== null) {
+                    authenticationKey = manualKeyElement.value.trim();
+                }
+            }
+            
+            if (authenticationKey === "" || authenticationKey === null) {
+                authenticationKey = localStorage.getItem('aura_session_token');
+            }
+            
+            if (authenticationKey === "" || authenticationKey === null) { 
+                showToast("[SYSTEM] Missing Key! Access Denied.", "error"); 
+                return; 
+            }
 
             const loaderId = 'load-' + Date.now(); 
-            createChatBubble('user', `Uploading file: ${file.name}`, null, false);
+            createChatBubble('user', `Initiating secure upload payload: ${uploadedFile.name}`, null, false);
             createChatBubble('ai', "Transmitting binary payload to matrix storage...", loaderId, true);
 
-            const formData = new FormData();
-            formData.append('file', file);
+            const formDataObject = new FormData();
+            formDataObject.append('file', uploadedFile);
+
+            let customEndpointUrl = CONFIG.url;
+            if (customEndpointUrl.endsWith('/')) {
+                customEndpointUrl = customEndpointUrl.slice(0, -1);
+            }
 
             try {
-                const response = await fetch(`${CONFIG.url}/v1/files/upload`, {
+                const serverResponse = await fetch(`${customEndpointUrl}/v1/files/upload`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${authenticationKey}` },
-                    body: formData
+                    body: formDataObject
                 });
                 
-                const data = await response.json();
-                document.getElementById(loaderId).remove();
-
-                if (response.ok) {
-                    createChatBubble('ai', `<strong class="text-emerald-600">[SUCCESS] File Secured</strong><br>ID: ${data.id}<br>Filename: ${data.filename}<br>Bytes: ${data.bytes}`, null, true);
-                    logActivity(`File Upload [${data.filename}]`, CONFIG.url, "Success");
-                } else {
-                    throw new Error(data.error?.message || "File upload failed.");
+                const responseData = await serverResponse.json();
+                
+                const loaderElement = document.getElementById(loaderId);
+                if (loaderElement !== null) {
+                    loaderElement.remove();
                 }
-            } catch (error) {
-                document.getElementById(loaderId).remove();
-                createChatBubble('ai', `<strong>[ERROR]</strong> ${error.message}`, null, true);
+
+                if (serverResponse.ok === true) {
+                    createChatBubble('ai', `
+                        <strong class="block text-[11px] mb-2 text-emerald-600 uppercase tracking-widest">[SYSTEM] File Secured</strong>
+                        <p class="text-sm font-mono text-slate-700">ID: ${responseData.id}<br>Filename: ${responseData.filename}<br>Bytes: ${responseData.bytes}</p>
+                    `, null, true);
+                    
+                    logActivity(`File Upload [${responseData.filename}]`, customEndpointUrl, "Success");
+                } else {
+                    let errorMessage = "File upload failed.";
+                    if (responseData.error !== undefined) {
+                        errorMessage = typeof responseData.error === 'string' ? responseData.error : responseData.error.message;
+                    }
+                    throw new Error(errorMessage);
+                }
+            } catch (networkError) {
+                const loaderElement = document.getElementById(loaderId);
+                if (loaderElement !== null) {
+                    loaderElement.remove();
+                }
+                createChatBubble('ai', `<strong>[ERROR]</strong> ${networkError.message}`, null, true);
             }
         }
 
@@ -1498,7 +1548,6 @@ console.log(await response.json());
             let finalEndpoint = '';
             let requestPayload = {};
             
-            // Connect to Intent-Based Router if auto is selected
             if (aiMode === 'auto') {
                 finalEndpoint = '/v1/execute';
                 requestPayload = { prompt: userMessage };
@@ -1556,7 +1605,7 @@ console.log(await response.json());
                     
                     if (aiMode === 'code') {
                         const codeOutput = responseData.output || "Execution completed with no console output.";
-                        createChatBubble('ai', `<pre class="bg-slate-900 text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto">${codeOutput}</pre>`, null, true);
+                        createChatBubble('ai', `<strong class="block text-[11px] mb-2 text-[#1a73e8] uppercase tracking-widest">[SYSTEM] Sandbox Output</strong><div class="chat-code-block">${escapeHTML(codeOutput)}</div>`, null, true);
                     }
                     else if (aiMode === 'text' || responseData.type === 'text') {
                         const aiText = responseData.content || responseData.choices[0].message.content;
@@ -1586,7 +1635,7 @@ console.log(await response.json());
                         `;
                         createChatBubble('ai', videoHtml, null, true);
                     }
-                    else if (aiMode === 'audio') {
+                    else if (aiMode === 'audio' || responseData.type === 'audio') {
                         let audioUrl = "";
                         if (responseData.url) {
                             audioUrl = responseData.url;
@@ -1621,8 +1670,12 @@ console.log(await response.json());
 
         async function aggressiveFetch(endpointUrl, payloadObject, useAuthHeader = false, additionalHeaders = {}) {
             let baseUrlString = CONFIG.url;
-            if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
-            if (endpointUrl.startsWith('/') === false) endpointUrl = '/' + endpointUrl;
+            if (baseUrlString.endsWith('/')) {
+                baseUrlString = baseUrlString.slice(0, -1);
+            }
+            if (endpointUrl.startsWith('/') === false) {
+                endpointUrl = '/' + endpointUrl;
+            }
 
             let headersList = { 
                 'Content-Type': 'application/json' 
@@ -2099,7 +2152,9 @@ console.log(await response.json());
             
             if (urlInput !== null && adminSecretInput !== null) {
                 let sanitizedUrl = urlInput.value.replace(/\/$/, '');
-                if (!sanitizedUrl.startsWith('http')) sanitizedUrl = 'https://' + sanitizedUrl;
+                if (!sanitizedUrl.startsWith('http')) {
+                    sanitizedUrl = 'https://' + sanitizedUrl;
+                }
                 
                 CONFIG.url = sanitizedUrl; 
                 CONFIG.admin = adminSecretInput.value; 
@@ -2131,7 +2186,9 @@ console.log(await response.json());
             
             try {
                 let baseUrlString = CONFIG.url;
-                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                if (baseUrlString.endsWith('/')) {
+                    baseUrlString = baseUrlString.slice(0, -1);
+                }
                 
                 const serverResponse = await fetch(baseUrlString + '/api/admin/system-health', { 
                     headers: { 'x-admin-secret': CONFIG.admin } 
@@ -2159,7 +2216,9 @@ console.log(await response.json());
             
             try { 
                 let baseUrlString = CONFIG.url;
-                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                if (baseUrlString.endsWith('/')) {
+                    baseUrlString = baseUrlString.slice(0, -1);
+                }
                 
                 const abortController = new AbortController();
                 const timeoutReference = setTimeout(function() {
@@ -2186,7 +2245,9 @@ console.log(await response.json());
             showToast("[SYSTEM] Transmitting Wake Signal..."); 
             try { 
                 let baseUrlString = CONFIG.url;
-                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                if (baseUrlString.endsWith('/')) {
+                    baseUrlString = baseUrlString.slice(0, -1);
+                }
                 await fetch(baseUrlString + '/api/admin/ping'); 
                 testPing(); 
             } catch (error) {
@@ -2221,11 +2282,19 @@ console.log(await response.json());
             const fileInput = document.getElementById('fileInputContainer');
 
             if (modeIdentifier === 'file') {
-                if (standardInput) standardInput.classList.add('hidden');
-                if (fileInput) fileInput.classList.remove('hidden');
+                if (standardInput) {
+                    standardInput.classList.add('hidden');
+                }
+                if (fileInput) {
+                    fileInput.classList.remove('hidden');
+                }
             } else {
-                if (standardInput) standardInput.classList.remove('hidden');
-                if (fileInput) fileInput.classList.add('hidden');
+                if (standardInput) {
+                    standardInput.classList.remove('hidden');
+                }
+                if (fileInput) {
+                    fileInput.classList.add('hidden');
+                }
             }
         }
 
@@ -2272,12 +2341,14 @@ console.log(await response.json());
             if (sidebarElement.classList.contains('open')) { 
                 sidebarElement.classList.remove('open'); 
                 overlayElement.classList.remove('opacity-100'); 
+                
                 setTimeout(function() { 
                     overlayElement.classList.add('hidden'); 
                 }, 300); 
             } else { 
                 sidebarElement.classList.add('open'); 
                 overlayElement.classList.remove('hidden'); 
+                
                 setTimeout(function() { 
                     overlayElement.classList.add('opacity-100'); 
                 }, 10); 
@@ -2298,7 +2369,9 @@ console.log(await response.json());
 
         function openModal(modalId) { 
             const modalElement = document.getElementById(modalId); 
-            if (modalElement === null) return;
+            if (modalElement === null) {
+                return;
+            }
             
             modalElement.classList.remove('hidden'); 
             
@@ -2317,7 +2390,9 @@ console.log(await response.json());
 
         function closeModal(modalId) { 
             const modalElement = document.getElementById(modalId); 
-            if (modalElement === null) return;
+            if (modalElement === null) {
+                return;
+            }
             
             const overlayBg = modalElement.querySelector('div:nth-child(1)');
             const mainContent = modalElement.querySelector('div:nth-child(2)');
@@ -2336,18 +2411,27 @@ console.log(await response.json());
             if (modalId === 'keyModal') {
                 const nameInput = document.getElementById('keyNameInput');
                 const passInput = document.getElementById('keyPasswordInput');
-                if (nameInput !== null) nameInput.value = ''; 
-                if (passInput !== null) passInput.value = '';
+                
+                if (nameInput !== null) {
+                    nameInput.value = ''; 
+                }
+                if (passInput !== null) {
+                    passInput.value = '';
+                }
             } 
             if (modalId === 'viewKeyModal') {
                 const unlockInput = document.getElementById('unlockPasswordInput');
-                if (unlockInput !== null) unlockInput.value = '';
+                if (unlockInput !== null) {
+                    unlockInput.value = '';
+                }
             }
         }
 
         function copyCode(elementId, buttonElement) { 
             const targetElement = document.getElementById(elementId);
-            if (targetElement === null || buttonElement === null) return;
+            if (targetElement === null || buttonElement === null) {
+                return;
+            }
             
             const textToCopy = targetElement.innerText;
             
@@ -2376,7 +2460,9 @@ console.log(await response.json());
         }
 
         function escapeHTML(inputString) { 
-            if (typeof inputString !== 'string') return "";
+            if (typeof inputString !== 'string') {
+                return "";
+            }
             return inputString.replace(/[&<>'"]/g, function(tag) {
                 const entityMap = { 
                     '&': '&amp;', 
