@@ -16,8 +16,55 @@
     
     <script type='text/javascript' src='//pl29209248.profitablecpmratenetwork.com/27/40/c1/2740c101a1b1af588982b8953fb46da1.js'></script>
     
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; media-src 'self' https: data: blob:; connect-src 'self' https: data: blob:; font-src 'self' https: data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
     <script>
+        // [SECURITY] Anti-Tamper & Developer Tools Protection
         (function() {
+            // Anti-devtools: detect F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                    (e.ctrlKey && e.key === 'U') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+
+            // Anti-right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Anti-view-source via drag
+            document.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Devtools open detection via element trick
+            let devtoolsOpen = false;
+            const antiDevtoolsCheck = setInterval(function() {
+                const widthThreshold = window.outerWidth - window.innerWidth > 160;
+                const heightThreshold = window.outerHeight - window.innerHeight > 160;
+                if (widthThreshold || heightThreshold) {
+                    if (devtoolsOpen === false) {
+                        devtoolsOpen = true;
+                        document.body.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#0f172a; color:#ef4444; font-family:monospace; font-weight:bold; font-size:18px; text-align:center; padding:20px;">[SECURITY] Developer tools detected.<br>Access blocked for security.</div>';
+                        clearInterval(antiDevtoolsCheck);
+                    }
+                } else {
+                    devtoolsOpen = false;
+                }
+            }, 1000);
+
+            // Session validation
             const currentSessionToken = localStorage.getItem('aura_session_token');
             if (currentSessionToken === null || currentSessionToken === undefined || currentSessionToken === "") {
                 document.documentElement.innerHTML = `
@@ -29,6 +76,7 @@
                 window.location.replace("index.html");
                 return;
             }
+            // Secure URL masking
             if (window.history && window.history.replaceState) {
                 const randomSessionHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
                 const secureUrl = window.location.pathname.replace("main.html", "") + "?matrix_session=" + randomSessionHash;
@@ -54,6 +102,33 @@
             --text-muted: #64748b; 
             --accent-blue: #1a73e8; 
             --shadow-soft: 0 10px 40px rgba(0,0,0,0.05);
+            --border-color: #e2e8f0;
+            --bg-hover: #f1f5f9;
+            --bg-active: #e8f0fe;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --input-bg: #f8fafc;
+            --input-border: #cbd5e1;
+            --skeleton-from: #e2e8f0;
+            --skeleton-to: #f1f5f9;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-panel: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-blue: #60a5fa;
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.3);
+            --border-color: #334155;
+            --bg-hover: #334155;
+            --bg-active: #1e3a5f;
+            --card-bg: #1e293b;
+            --header-bg: #1e293b;
+            --input-bg: #334155;
+            --input-border: #475569;
+            --skeleton-from: #334155;
+            --skeleton-to: #1e293b;
         }
 
         body { 
@@ -62,6 +137,7 @@
             color: var(--text-main); 
             margin: 0; 
             overflow: hidden; 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .font-mono { 
@@ -98,8 +174,8 @@
            ========================================================================== */
         .sidebar { 
             background-color: var(--bg-panel); 
-            border-right: 1px solid #e2e8f0; 
-            transition: transform 0.3s ease-in-out; 
+            border-right: 1px solid var(--border-color); 
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease; 
             z-index: 50; 
             display: flex;
             flex-direction: column;
@@ -108,8 +184,8 @@
         .user-profile-box {
             padding: 20px;
             margin: 10px 16px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-hover) 100%);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -492,7 +568,202 @@
         }
 
         /* ==========================================================================
-           9. SCROLLBARS & MODALS & ADSTERRA STRICT CONTAINER
+           9. SKELETON LOADING ANIMATIONS
+           ========================================================================== */
+        .skeleton {
+            background: linear-gradient(90deg, var(--skeleton-from) 25%, var(--skeleton-to) 50%, var(--skeleton-from) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s ease-in-out infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-line {
+            height: 16px;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+
+        .skeleton-card {
+            height: 120px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .skeleton-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+        }
+
+        /* ==========================================================================
+           10. PASSWORD STRENGTH INDICATOR
+           ========================================================================== */
+        .password-strength-bar {
+            height: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            width: 0%;
+        }
+
+        .strength-weak { background: #ef4444; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #3b82f6; width: 75%; }
+        .strength-strong { background: #10b981; width: 100%; }
+
+        /* ==========================================================================
+           11. GALLERY PREVIEW OVERLAY
+           ========================================================================== */
+        .gallery-preview-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .gallery-preview-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .gallery-preview-overlay img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            cursor: default;
+        }
+
+        .gallery-preview-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+
+        .gallery-preview-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        /* ==========================================================================
+           12. SEARCH / FILTER INPUTS
+           ========================================================================== */
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input-wrapper svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-input-wrapper input {
+            padding-left: 44px;
+        }
+
+        /* ==========================================================================
+           13. CREDIT BADGE
+           ========================================================================== */
+        .credit-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(245,158,11,0.3);
+            white-space: nowrap;
+        }
+
+        [data-theme="dark"] .credit-badge {
+            box-shadow: 0 4px 10px rgba(245,158,11,0.2);
+        }
+
+        /* ==========================================================================
+           14. CUSTOM CONFIRM MODAL
+           ========================================================================== */
+        .confirm-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirm-modal-overlay.active {
+            display: flex;
+        }
+
+        .confirm-modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeScale 0.3s ease;
+        }
+
+        .confirm-modal-box h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0 0 8px;
+            color: var(--text-main);
+        }
+
+        .confirm-modal-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0 0 24px;
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           15. SCROLLBARS & MODALS & ADSTERRA STRICT CONTAINER
            ========================================================================== */
         ::-webkit-scrollbar { 
             width: 6px; 
@@ -522,16 +793,39 @@
         .ad-strict-container {
             width: 100%;
             margin-bottom: 24px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            max-height: 320px; 
+            min-height: 90px;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .ad-strict-container.empty {
+            min-height: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+            overflow: hidden;
+        }
+
+        .ad-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.5;
         }
 
         @media (max-width: 768px) { 
@@ -554,6 +848,826 @@
             .view-section { 
                 padding: 16px !important; 
             } 
+        }
+
+        /* ==========================================================================
+            16. ADMIN PANEL STYLES
+            ========================================================================== */
+        .admin-stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .admin-stat-card.blue::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+        .admin-stat-card.emerald::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .admin-stat-card.amber::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .admin-stat-card.rose::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .admin-stat-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .admin-stat-card.indigo::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .admin-table th {
+            padding: 14px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .admin-table td {
+            padding: 14px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .admin-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-yellow { background: #fef3c7; color: #92400e; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-purple { background: #ede9fe; color: #5b21b6; }
+
+        /* ==========================================================================
+            17. 2FA & SECURITY STYLES
+            ========================================================================== */
+        .tfa-setup-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px;
+        }
+
+        .tfa-qr-code {
+            width: 200px;
+            height: 200px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 16px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border-color);
+        }
+
+        .tfa-secret-key {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-align: center;
+            letter-spacing: 3px;
+            user-select: all;
+        }
+
+        .tfa-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tfa-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ==========================================================================
+            18. PROFILE PAGE STYLES
+            ========================================================================== */
+        .profile-header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 24px;
+            padding: 48px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .profile-avatar-large {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            box-shadow: 0 8px 32px rgba(59,130,246,0.3);
+        }
+
+        .profile-stat {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .profile-stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ==========================================================================
+            19. WEBHOOK MANAGEMENT EXTENDED
+            ========================================================================== */
+        .webhook-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .webhook-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 20px rgba(26,115,232,0.08);
+        }
+
+        .webhook-status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .webhook-status-indicator.active { background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+        .webhook-status-indicator.paused { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+        .webhook-status-indicator.error { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+
+        /* ==========================================================================
+            20. TEAM MANAGEMENT
+            ========================================================================== */
+        .team-member-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .team-member-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 2px 12px rgba(26,115,232,0.06);
+        }
+
+        .team-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .role-selector {
+            appearance: none;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 8px 32px 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+
+        /* ==========================================================================
+            21. AUDIT LOG
+            ========================================================================== */
+        .audit-log-item {
+            padding: 16px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .audit-log-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .audit-log-item.create { border-left-color: #10b981; }
+        .audit-log-item.update { border-left-color: #3b82f6; }
+        .audit-log-item.delete { border-left-color: #ef4444; }
+        .audit-log-item.read { border-left-color: #8b5cf6; }
+
+        /* ==========================================================================
+            22. RATE LIMIT VISUALIZATION
+            ========================================================================== */
+        .rate-limit-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-hover);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .rate-limit-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .rate-limit-fill.low { background: #10b981; }
+        .rate-limit-fill.medium { background: #f59e0b; }
+        .rate-limit-fill.high { background: #ef4444; }
+
+        /* ==========================================================================
+            23. MODEL MANAGEMENT
+            ========================================================================== */
+        .model-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .model-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            border-color: var(--accent-blue);
+        }
+
+        .model-card.selected {
+            border-color: var(--accent-blue);
+            background: var(--bg-active);
+        }
+
+        .model-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* ==========================================================================
+            24. CHART CONTAINER ENHANCEMENTS
+            ========================================================================== */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        .chart-container-sm {
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+
+        .chart-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+        }
+
+        [data-theme="dark"] .chart-overlay {
+            background: rgba(15,23,42,0.6);
+        }
+
+        /* ==========================================================================
+            25. CODE HIGHLIGHTING
+            ========================================================================== */
+        .code-block-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+        }
+
+        .code-block-header span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .code-block-content {
+            background: #0f172a;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        /* ==========================================================================
+            26. EMPTY STATE ANIMATIONS
+            ========================================================================== */
+        .empty-state-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ==========================================================================
+            27. TOOLTIP
+            ========================================================================== */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip-trigger .tooltip-content {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #1e293b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .tooltip-trigger:hover .tooltip-content {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==========================================================================
+            28. PROGRESS STEPS
+            ========================================================================== */
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0;
+            margin: 24px 0;
+            list-style: none;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .progress-step.completed {
+            color: #10b981;
+        }
+
+        .progress-step.active {
+            color: var(--accent-blue);
+        }
+
+        .progress-step .step-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .progress-step.completed .step-circle {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .progress-step.active .step-circle {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* ==========================================================================
+            29. LOADING SPINNERS
+            ========================================================================== */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .spinner-sm { width: 14px; height: 14px; border-width: 2px; }
+        .spinner-lg { width: 32px; height: 32px; border-width: 3px; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================================================
+            30. DATA TABLE ENHANCEMENTS
+            ========================================================================== */
+        .data-table-wrapper {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            padding: 14px 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 14px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        /* ==========================================================================
+            31. FORM ENHANCEMENTS
+            ========================================================================== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* ==========================================================================
+            32. TOGGLE SWITCH
+            ========================================================================== */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-blue);
+        }
+
+        .toggle-switch .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            left: 22px;
+        }
+
+        /* ==========================================================================
+            33. TABBED INTERFACE
+            ========================================================================== */
+        .tabs-container {
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 14px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--text-main);
+            background: var(--bg-hover);
+        }
+
+        .tab-button.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeScale 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ==========================================================================
+            34. CARD GRID LAYOUTS
+            ========================================================================== */
+        .card-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .card-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .card-grid-4 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+            .card-grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+            .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* ==========================================================================
+            35. PAGE HEADER COMPONENT
+            ========================================================================== */
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        @media (min-width: 768px) {
+            .page-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+
+        /* ==========================================================================
+            36. STATUS PILLS
+            ========================================================================== */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-pill.online { background: #d1fae5; color: #065f46; }
+        .status-pill.offline { background: #fee2e2; color: #991b1b; }
+        .status-pill.pending { background: #fef3c7; color: #92400e; }
+        .status-pill.active { background: #dbeafe; color: #1e40af; }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-pill.online .status-dot { background: #10b981; }
+        .status-pill.offline .status-dot { background: #ef4444; }
+        .status-pill.pending .status-dot { background: #f59e0b; }
+        .status-pill.active .status-dot { background: #3b82f6; }
+
+        /* ==========================================================================
+            37. DIVIDER
+            ========================================================================== */
+        .divider {
+            border: none;
+            height: 1px;
+            background: var(--border-color);
+            margin: 24px 0;
+        }
+
+        .divider-text {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* ==========================================================================
+            38. PRINT STYLES
+            ========================================================================== */
+        @media print {
+            .sidebar, header, .floating-input-wrapper, .btn-primary, .btn-support {
+                display: none !important;
+            }
+            .view-section {
+                padding: 0 !important;
+                display: block !important;
+            }
+            body {
+                overflow: visible !important;
+            }
+            .app-root-view {
+                height: auto !important;
+            }
         }
     </style>
 </head>
@@ -664,6 +1778,15 @@
                     <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest pl-2">System Administration</p>
                 </div>
 
+                <button onclick="switchView('view-billing', this)" class="nav-item w-full" id="nav-billing">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M12 12V8"/>
+                        <path d="M12 16h.01"/>
+                    </svg> 
+                    Billing & Credits
+                </button>
+
                 <button onclick="switchView('view-webhooks', this)" class="nav-item w-full" id="nav-webhooks">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -703,6 +1826,49 @@
                     Help & Support
                 </button>
 
+                <button onclick="switchView('view-profile', this)" class="nav-item w-full" id="nav-profile">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    My Profile
+                </button>
+
+                <button onclick="switchView('view-admin', this)" class="nav-item w-full text-amber-600 hover:bg-amber-50 hover:text-amber-700" id="nav-admin">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    Admin Panel
+                </button>
+
+                <button onclick="switchView('view-team', this)" class="nav-item w-full" id="nav-team">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Team Management
+                </button>
+
+                <button onclick="switchView('view-models', this)" class="nav-item w-full" id="nav-models">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Model Hub
+                </button>
+
+                <button onclick="switchView('view-audit', this)" class="nav-item w-full" id="nav-audit">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Audit Trail
+                </button>
+
             </nav>
 
             <div class="p-4 shrink-0 border-t border-slate-200">
@@ -732,6 +1898,35 @@
                 </div>
                 
                 <div class="flex items-center gap-3 sm:gap-5 shrink-0">
+                    <div id="creditBadge" class="credit-badge hidden">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span id="creditCount">1000</span>
+                    </div>
+
+                    <div class="relative">
+                        <button onclick="toggleNotifications()" id="notificationBell" class="bg-slate-50 border border-slate-200 p-2.5 rounded-full hover:bg-slate-100 transition-all shadow-sm relative" title="Notifications">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            <span id="notificationDot" class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white hidden"></span>
+                        </button>
+                        <div id="notificationDropdown" class="absolute right-0 top-full mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden hidden z-50">
+                            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                                <span class="font-bold text-slate-800 text-sm">Notifications</span>
+                                <button onclick="clearNotifications()" class="text-[11px] text-slate-400 font-bold hover:text-slate-600">Clear All</button>
+                            </div>
+                            <div id="notificationList" class="max-h-64 overflow-y-auto">
+                                <div class="p-6 text-center text-slate-400 text-sm">No notifications yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="toggleDarkMode()" id="darkModeToggle" class="bg-slate-50 border border-slate-200 p-2.5 rounded-full hover:bg-slate-100 transition-all shadow-sm" title="Toggle Dark Mode">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" id="darkModeIcon">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+
                     <button onclick="forceWakeServer()" class="bg-amber-50 text-amber-600 border border-amber-200 px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 hover:bg-amber-100 shadow-sm">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -750,8 +1945,27 @@
                 
                 <div id="view-dashboard" class="view-section active p-6 lg:p-12 max-w-7xl mx-auto w-full">
                     
-                    <div class="ad-strict-container">
-                        <script async="async" data-cfasync="false" src="https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js"></script>
+                    <div class="ad-strict-container" id="adContainer">
+                        <div class="ad-placeholder" id="adPlaceholder">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <span>Loading...</span>
+                        </div>
+                        <script>
+                        (function(){
+                            var c = document.getElementById('adContainer');
+                            var p = document.getElementById('adPlaceholder');
+                            var s = document.createElement('script');
+                            s.async = true;
+                            s.src = 'https://pl29209249.profitablecpmratenetwork.com/4474729a63899bf107ff1c83aed64247/invoke.js';
+                            s.onerror = function() {
+                                if (c) c.classList.add('empty');
+                            };
+                            s.onload = function() {
+                                if (p) p.style.display = 'none';
+                            };
+                            if (c) c.appendChild(s);
+                        })();
+                        </script>
                         <div id="container-4474729a63899bf107ff1c83aed64247"></div>
                     </div>
 
@@ -810,6 +2024,15 @@
                         </button>
                     </div>
                     
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="search-input-wrapper flex-1">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input type="text" id="keySearchInput" placeholder="Search keys by name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pl-11 text-sm outline-none focus:border-blue-500 transition-colors" oninput="filterKeys()">
+                        </div>
+                    </div>
+
                     <div class="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-sm w-full">
                         <div class="w-full overflow-x-auto pb-2">
                             <table class="w-full text-left min-w-[800px]">
@@ -872,11 +2095,21 @@
                             </button>
 
                             <button onclick="switchAITab('audio')" id="tab-audio" class="ai-tab">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
                                 </svg> 
                                 Audio TTS
+                            </button>
+
+                            <button onclick="switchAITab('stt')" id="tab-stt" class="ai-tab">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    <line x1="12" y1="19" x2="12" y2="23"/>
+                                    <line x1="8" y1="23" x2="16" y2="23"/>
+                                </svg> 
+                                Speech-To-Text
                             </button>
 
                             <button onclick="switchAITab('code')" id="tab-code" class="ai-tab">
@@ -893,6 +2126,13 @@
                                 </svg> 
                                 File Upload
                             </button>
+
+                            <button onclick="switchAITab('vision')" id="tab-vision" class="ai-tab">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg> 
+                                Vision
+                            </button>
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
@@ -901,8 +2141,15 @@
                                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                                     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                                 </svg>
-                                <input type="text" id="playgroundBaseUrl" placeholder="https://api.openai.com" class="w-full sm:w-64 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[13px] font-mono outline-none text-slate-700" title="Custom API Endpoint URL">
+                                <input type="text" id="playgroundBaseUrl" placeholder="https://aura-backend-api-1cnr.onrender.com" class="w-full sm:w-64 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[13px] font-mono outline-none text-slate-700" title="Aura Backend API URL">
                             </div>
+                            
+                            <select id="playgroundModelSelect" class="hidden sm:block bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-[13px] font-bold text-slate-700 outline-none cursor-pointer">
+                                <option value="openrouter/free">OpenRouter Free</option>
+                                <option value="openrouter/gpt-4o">GPT-4o</option>
+                                <option value="openrouter/claude-3">Claude 3</option>
+                                <option value="openrouter/llama-3">Llama 3</option>
+                            </select>
                             
                             <select id="testApiKeySelect" class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-[13px] font-bold text-slate-700 outline-none cursor-pointer" onchange="toggleManualKeyInput()">
                                 <option value="">-- Authority Key --</option>
@@ -966,6 +2213,18 @@
                                 Select File to Upload to Server
                             </button>
                         </div>
+
+                        <div class="flex items-center gap-4 px-2" id="advancedControls">
+                            <div class="flex items-center gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Temp</label>
+                                <input type="range" id="playgroundTemperature" min="0" max="2" step="0.1" value="0.7" class="w-20 h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-blue-600">
+                                <span id="tempValue" class="text-[11px] font-mono text-slate-500 w-6 text-right">0.7</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tokens</label>
+                                <input type="number" id="playgroundMaxTokens" value="2048" min="64" max="8192" step="64" class="w-16 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-mono outline-none text-slate-700">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -980,6 +2239,7 @@
                                     <span class="dynamic-url">https://your-api.onrender.com</span>
                                 </code>
                             </div>
+                            <button onclick="copyUrl()" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors">Copy URL</button>
                         </div>
                         
                         <div class="mac-header">
@@ -1003,6 +2263,140 @@ const response = await fetch("<span class="dynamic-url">https://your-api.onrende
 
 console.log(await response.json());
 </pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] p-6 sm:p-8 shadow-sm w-full">
+                        <h2 class="text-2xl font-black text-slate-900 mb-6">All API Endpoints</h2>
+                        <div class="space-y-4" id="apiEndpointsList">
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/execute</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Intent-Based AI Router</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Automatically routes to text, image, video, or audio engine based on prompt analysis.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/chat/completions</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Text Generation</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">OpenRouter-powered text generation. Supports GPT, Claude, Llama models. Body: { model, messages }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/images/generations</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Image Generation</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Pollinations-powered image generation. Body: { prompt }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/video/generations</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Video Generation</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Replicate-powered video generation. Body: { prompt }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/audio/speech</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Audio Generation (TTS)</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Google TTS-powered speech synthesis. Body: { input }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/files/upload</code>
+                                    <span class="text-xs text-slate-500 ml-auto">File Upload</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Multipart file upload (max 100MB). Uses multer storage.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/code/execute</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Code Execution (VM Sandbox)</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Secure VM sandbox for JavaScript execution. Body: { code }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/embeddings</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Text Embeddings</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Generates 1536-dimensional embeddings. Body: { input }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-emerald-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/v1/moderations</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Content Moderation</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Scans content for policy violations. Body: { input }</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/auth/register</code>
+                                    <span class="text-xs text-slate-500 ml-auto">User Registration</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Register with name, email, password. Triggers OTP email verification.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/auth/verify</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Email Verification</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Verify email with OTP code. Returns JWT token and user data.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/auth/login</code>
+                                    <span class="text-xs text-slate-500 ml-auto">User Login</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Authenticate with email and password. Returns JWT token.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/auth/key-login</code>
+                                    <span class="text-xs text-slate-500 ml-auto">API Key Login</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Login with Aura API key (sk-aura-...). Returns JWT token.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">GET</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/auth/session</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Session Validation</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Check if current JWT token is valid. Returns user info and credits.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-sky-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-sky-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">GET</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/billing/usage</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Credit Usage</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Get current credit balance and daily limit.</div>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl overflow-hidden">
+                                <div class="bg-purple-50 px-5 py-4 flex items-center gap-4">
+                                    <span class="bg-purple-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
+                                    <code class="font-mono text-sm font-bold text-slate-800">/api/webhooks/register</code>
+                                    <span class="text-xs text-slate-500 ml-auto">Register Webhook</span>
+                                </div>
+                                <div class="px-5 py-3 text-xs text-slate-500 font-mono border-t border-slate-100">Register a webhook URL for event notifications.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1044,6 +2438,33 @@ console.log(await response.json());
                     </div>
                 </div>
 
+                <div id="view-billing" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <h1 class="text-3xl sm:text-4xl font-black mb-2 text-slate-900 tracking-tight">Billing & Credit Usage</h1>
+                    <p class="text-slate-500 text-sm mb-8">Monitor your daily credit consumption and transaction history.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white border border-slate-200 p-6 rounded-[24px] shadow-sm">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Credits Remaining</p>
+                            <h2 id="billingCreditsRemaining" class="text-4xl font-black text-emerald-500">---</h2>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-6 rounded-[24px] shadow-sm">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Daily Limit</p>
+                            <h2 id="billingDailyLimit" class="text-4xl font-black text-blue-500">---</h2>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-6 rounded-[24px] shadow-sm">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Transactions</p>
+                            <h2 id="billingTransactionCount" class="text-4xl font-black text-indigo-500">---</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 rounded-[24px] p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Recent Transactions</h3>
+                        <div id="billingTransactionsBody" class="min-h-[200px]">
+                            <div class="text-center text-slate-400 py-12">Loading transaction history...</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="view-webhooks" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
                     <h1 class="text-3xl font-black mb-6 text-slate-900">Webhook Engine</h1>
                     
@@ -1057,11 +2478,18 @@ console.log(await response.json());
                 </div>
 
                 <div id="view-logs" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Network Logs</h1>
-                        <button onclick="clearLogs()" class="px-6 py-3 bg-rose-50 text-rose-600 rounded-xl text-sm font-bold border border-rose-200 hover:bg-rose-100 transition-colors shadow-sm">
-                            Purge Cache
-                        </button>
+                        <div class="flex items-center gap-3">
+                            <select id="logFilterSelect" class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none cursor-pointer" onchange="filterLogs()">
+                                <option value="all">All Events</option>
+                                <option value="Success">Success Only</option>
+                                <option value="Failed">Failed Only</option>
+                            </select>
+                            <button onclick="clearLogs()" class="px-6 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-sm font-bold border border-rose-200 hover:bg-rose-100 transition-colors shadow-sm">
+                                Purge Cache
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="bg-white border border-slate-200 rounded-[24px] p-6 min-h-[400px] overflow-x-auto w-full shadow-sm" id="activityLogBody">
@@ -1104,6 +2532,38 @@ console.log(await response.json());
                             <button onclick="saveSettings()" class="w-full bg-slate-800 text-white hover:bg-slate-900 py-4 rounded-xl font-bold text-base transition-colors">Secure Token</button>
                         </div>
                     </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full mb-8">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            Change Password
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <input type="password" id="settingsCurrentPassword" placeholder="Current Password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-mono text-base outline-none focus:border-rose-500 transition-colors">
+                            <input type="password" id="settingsNewPassword" placeholder="New Password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-mono text-base outline-none focus:border-rose-500 transition-colors">
+                        </div>
+                        <button onclick="changePassword()" class="bg-rose-500 text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-rose-600 transition-colors shadow-md">
+                            Update Password
+                        </button>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full mb-8">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                            Profile Settings
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <input type="text" id="settingsDisplayName" placeholder="Display Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-base outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                        <button onclick="updateProfile()" class="bg-blue-500 text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-blue-600 transition-colors shadow-md">
+                            Update Profile
+                        </button>
+                    </div>
                     
                     <div class="bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm w-full">
                         <h3 class="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
@@ -1130,6 +2590,671 @@ console.log(await response.json());
                 <div id="view-support" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
                     <h1 class="text-3xl sm:text-4xl font-black mb-4 text-slate-900 tracking-tight">Help & Support Center</h1>
                     <p class="text-slate-500 mb-8 text-base">If you encounter any architectural bugs or need operational assistance, reach out to the engineering team.</p>
+                    
+                    <div class="mb-10">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6">Frequently Asked Questions</h2>
+                        <div class="space-y-3" id="faqContainer">
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>How do I generate an API key?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Navigate to <strong>Secure API Keys</strong> in the sidebar, click "Deploy New Key", enter a project name and password, select your desired scopes, and click "Deploy Identity". The key will be generated on the server and shown to you once.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>How do credits work?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Every user receives <strong>1,000 free credits daily</strong>. Different AI operations cost different amounts (e.g., text generation costs 5 credits, image generation costs 25 credits). Credits reset automatically each day. You can monitor your usage in the Billing & Credits view.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>What AI models are available?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Aura integrates with multiple AI engines: <strong>OpenRouter</strong> for text generation (GPT, Claude, Llama, etc.), <strong>Pollinations</strong> for image generation, <strong>Replicate</strong> for video generation, and <strong>Google TTS</strong> for audio synthesis. The Auto Router intelligently selects the best engine based on your prompt.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>How do I reset my password?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    On the login page, click "Lost Signature?" and enter your registered email. A 6-digit reset code will be sent to your email. Use this code to set a new password.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>Can I use my own API endpoint?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Yes! In the AI Playground, you can set a custom API endpoint URL. You can also configure the default backend URL in Global Settings. This allows you to point the dashboard to your own server instance.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full text-center flex flex-col items-center">
+                            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Direct Email Protocol</h3>
+                            <p class="text-slate-500 text-sm mb-6">Send an encrypted message directly to our engineering division.</p>
+                            <a href="mailto:aurathem786@gmail.com" class="btn-support w-full">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                Email Aura Support
+                            </a>
+                        </div>
+                        
+                        <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full text-center flex flex-col items-center">
+                            <div class="w-16 h-16 bg-slate-100 text-slate-800 rounded-full flex items-center justify-center mb-6">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">GitHub Issue Tracker</h3>
+                            <p class="text-slate-500 text-sm mb-6">Report system bugs or request advanced architectural features.</p>
+                            <a href="https://github.com/haroon-ansari-786/aura-web/issues" target="_blank" class="btn-support w-full bg-slate-800 text-white border-none hover:bg-slate-900 hover:text-white hover:border-transparent">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                </svg>
+                                Open GitHub Issue
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================================
+                     PROFILE VIEW
+                ========================================================================== -->
+                <div id="view-profile" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <div class="profile-header mb-8">
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-6 mb-8">
+                                <div class="profile-avatar-large" id="profileAvatarLarge">U</div>
+                                <div>
+                                    <h1 class="text-3xl font-black text-white mb-1" id="profileDisplayName">User</h1>
+                                    <p class="text-blue-200 text-sm font-mono" id="profileDisplayEmail">user@example.com</p>
+                                    <div class="flex items-center gap-3 mt-3">
+                                        <span class="status-pill online"><span class="status-dot"></span> Active</span>
+                                        <span class="text-xs text-blue-300 font-mono">Member since <span id="profileMemberSince">N/A</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="profile-stat">
+                                    <div class="profile-stat-value" id="profileCredits">0</div>
+                                    <div class="profile-stat-label">Credits</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="profile-stat-value" id="profileKeys">0</div>
+                                    <div class="profile-stat-label">API Keys</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="profile-stat-value" id="profileLogs">0</div>
+                                    <div class="profile-stat-label">Requests</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="profile-stat-value" id="profileDays">0</div>
+                                    <div class="profile-stat-label">Days Active</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    Edit Profile
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Display Name</label>
+                                        <input type="text" id="profileNameInput" placeholder="Your display name" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" id="profileEmailInput" placeholder="your@email.com" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" id="profilePhoneInput" placeholder="+1 (555) 000-0000" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Company / Organization</label>
+                                        <input type="text" id="profileCompanyInput" placeholder="Your company" class="form-input">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bio</label>
+                                    <textarea id="profileBioInput" placeholder="Tell us about yourself..." class="form-input form-textarea" rows="3"></textarea>
+                                </div>
+                                <button onclick="updateProfileFull()" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                        <polyline points="7 3 7 8 15 8"></polyline>
+                                    </svg>
+                                    Save Profile
+                                </button>
+                            </div>
+
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Security Settings
+                                </h3>
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                        <div>
+                                            <p class="font-bold text-slate-800">Two-Factor Authentication</p>
+                                            <p class="text-sm text-slate-500">Add an extra layer of security to your account</p>
+                                        </div>
+                                        <button onclick="setup2FA()" class="bg-blue-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-600 transition-colors" id="tfaSetupBtn">
+                                            Enable 2FA
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                        <div>
+                                            <p class="font-bold text-slate-800">Session Management</p>
+                                            <p class="text-sm text-slate-500">View and revoke active sessions</p>
+                                        </div>
+                                        <button onclick="loadSessions()" class="bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors">
+                                            Manage
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                        <div>
+                                            <p class="font-bold text-slate-800">API Key Rotation</p>
+                                            <p class="text-sm text-slate-500">Rotate all active API keys for security</p>
+                                        </div>
+                                        <button onclick="rotateAllKeys()" class="bg-amber-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-amber-600 transition-colors">
+                                            Rotate All
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                        <div>
+                                            <p class="font-bold text-slate-800">Delete Account</p>
+                                            <p class="text-sm text-rose-500">Permanently delete your account and all data</p>
+                                        </div>
+                                        <button onclick="deleteAccount()" class="bg-rose-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-rose-600 transition-colors">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                    Recent Activity
+                                </h3>
+                                <div id="profileRecentActivity" class="space-y-3">
+                                    <div class="text-center text-slate-400 text-sm py-8">Loading activity...</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    Quick Actions
+                                </h3>
+                                <div class="space-y-3">
+                                    <button onclick="switchView('view-apikeys', document.getElementById('nav-apikeys'))" class="w-full text-left p-4 bg-slate-50 rounded-xl font-bold text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-3">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg>
+                                        Create New API Key
+                                    </button>
+                                    <button onclick="switchView('view-billing', document.getElementById('nav-billing'))" class="w-full text-left p-4 bg-slate-50 rounded-xl font-bold text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-3">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 12V8"/><path d="M12 16h.01"/></svg>
+                                        View Billing
+                                    </button>
+                                    <button onclick="switchView('view-test', document.getElementById('nav-test'))" class="w-full text-left p-4 bg-slate-50 rounded-xl font-bold text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-3">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                        Open AI Playground
+                                    </button>
+                                    <button onclick="switchView('view-settings', document.getElementById('nav-settings'))" class="w-full text-left p-4 bg-slate-50 rounded-xl font-bold text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-3">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2.001 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                        Global Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================================
+                     ADMIN PANEL VIEW
+                ========================================================================== -->
+                <div id="view-admin" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <div class="page-header">
+                        <div>
+                            <h1>Administration Panel</h1>
+                            <p>Full system oversight and platform management</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="refreshAdminData()" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-900 transition-colors flex items-center gap-2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                                </svg>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-grid-4 mb-8">
+                        <div class="admin-stat-card blue">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Total Users</p>
+                            <h2 class="text-3xl font-black text-slate-900" id="adminTotalUsers">0</h2>
+                            <p class="text-xs text-slate-500 mt-1">Registered accounts</p>
+                        </div>
+                        <div class="admin-stat-card emerald">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Total API Calls</p>
+                            <h2 class="text-3xl font-black text-slate-900" id="adminTotalCalls">0</h2>
+                            <p class="text-xs text-slate-500 mt-1">All time</p>
+                        </div>
+                        <div class="admin-stat-card amber">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Active Keys</p>
+                            <h2 class="text-3xl font-black text-slate-900" id="adminActiveKeys">0</h2>
+                            <p class="text-xs text-slate-500 mt-1">Currently deployed</p>
+                        </div>
+                        <div class="admin-stat-card rose">
+                            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Failed Requests</p>
+                            <h2 class="text-3xl font-black text-slate-900" id="adminFailedReqs">0</h2>
+                            <p class="text-xs text-slate-500 mt-1">Last 24 hours</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <div class="tabs-container">
+                            <button class="tab-button active" onclick="switchAdminTab('users', this)">Users</button>
+                            <button class="tab-button" onclick="switchAdminTab('analytics', this)">Analytics</button>
+                            <button class="tab-button" onclick="switchAdminTab('logs', this)">System Logs</button>
+                            <button class="tab-button" onclick="switchAdminTab('backups', this)">Backups</button>
+                            <button class="tab-button" onclick="switchAdminTab('config', this)">Server Config</button>
+                        </div>
+
+                        <div id="adminTab-users" class="tab-panel active">
+                            <div class="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm mt-6">
+                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="font-bold text-slate-800">User Management</h3>
+                                    <div class="flex gap-3">
+                                        <div class="search-input-wrapper">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                            </svg>
+                                            <input type="text" id="adminUserSearch" placeholder="Search users..." class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 pl-10 text-sm outline-none focus:border-blue-500 transition-colors w-48" oninput="filterAdminUsers()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>API Calls</th>
+                                                <th>Joined</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminUsersBody">
+                                            <tr><td colspan="7" class="text-center text-slate-400 py-12">Loading users...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminTab-analytics" class="tab-panel">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                                <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                    <h3 class="text-sm font-bold text-slate-800 mb-4">API Usage Over Time</h3>
+                                    <div class="chart-container">
+                                        <canvas id="adminChartUsage"></canvas>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                    <h3 class="text-sm font-bold text-slate-800 mb-4">Request Distribution</h3>
+                                    <div class="chart-container">
+                                        <canvas id="adminChartDistribution"></canvas>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                    <h3 class="text-sm font-bold text-slate-800 mb-4">Error Rate</h3>
+                                    <div class="chart-container">
+                                        <canvas id="adminChartErrors"></canvas>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                                    <h3 class="text-sm font-bold text-slate-800 mb-4">Credit Consumption</h3>
+                                    <div class="chart-container">
+                                        <canvas id="adminChartCredits"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminTab-logs" class="tab-panel">
+                            <div class="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm mt-6">
+                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="font-bold text-slate-800">System Event Log</h3>
+                                    <div class="flex gap-3">
+                                        <select id="adminLogLevel" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold outline-none cursor-pointer" onchange="filterAdminLogs()">
+                                            <option value="all">All Levels</option>
+                                            <option value="info">Info</option>
+                                            <option value="warn">Warning</option>
+                                            <option value="error">Error</option>
+                                        </select>
+                                        <button onclick="clearAdminLogs()" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-sm font-bold border border-rose-200 hover:bg-rose-100 transition-colors">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="adminLogsBody" class="min-h-[300px] max-h-[500px] overflow-y-auto">
+                                    <div class="text-center text-slate-400 py-12">Loading system logs...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminTab-backups" class="tab-panel">
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm mt-6">
+                                <h3 class="text-xl font-bold text-slate-900 mb-4">Database Backup & Restore</h3>
+                                <p class="text-slate-500 text-sm mb-6">Create and manage full system backups including users, keys, logs, and configuration.</p>
+                                <div class="flex flex-wrap gap-4 mb-8">
+                                    <button onclick="createFullBackup()" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        Create Backup
+                                    </button>
+                                    <button onclick="document.getElementById('adminImportFile').click()" class="bg-white border border-slate-300 text-slate-700 px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        Restore Backup
+                                    </button>
+                                </div>
+                                <input type="file" id="adminImportFile" accept=".json" class="hidden" onchange="processAdminImport(event)">
+                                <div id="adminBackupsList" class="space-y-3">
+                                    <div class="text-center text-slate-400 py-8">No backups available.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminTab-config" class="tab-panel">
+                            <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm mt-6">
+                                <h3 class="text-xl font-bold text-slate-900 mb-6">Server Configuration</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Server Name</label>
+                                        <input type="text" id="adminServerName" class="form-input" placeholder="Aura Production">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Default Daily Credit Limit</label>
+                                        <input type="number" id="adminCreditLimit" class="form-input" placeholder="1000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Rate Limit (requests/min)</label>
+                                        <input type="number" id="adminRateLimit" class="form-input" placeholder="60">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Max Tokens Per Request</label>
+                                        <input type="number" id="adminMaxTokens" class="form-input" placeholder="4096">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Maintenance Mode</label>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <span class="toggle-switch" onclick="toggleSwitch(this)">
+                                                <span class="toggle-knob"></span>
+                                            </span>
+                                            <span class="text-sm text-slate-600" id="adminMaintenanceLabel">Disabled</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Allow New Registrations</label>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <span class="toggle-switch active" onclick="toggleSwitch(this)">
+                                                <span class="toggle-knob"></span>
+                                            </span>
+                                            <span class="text-sm text-slate-600" id="adminRegistrationsLabel">Enabled</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="saveAdminConfig()" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm mt-4">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                        <polyline points="7 3 7 8 15 8"></polyline>
+                                    </svg>
+                                    Save Configuration
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================================
+                     TEAM MANAGEMENT VIEW
+                ========================================================================== -->
+                <div id="view-team" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <div class="page-header">
+                        <div>
+                            <h1>Team Management</h1>
+                            <p>Manage team members, roles, and permissions</p>
+                        </div>
+                        <button onclick="openModal('inviteModal')" class="btn-primary px-6 py-3 rounded-xl font-bold text-sm">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Invite Member
+                        </button>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm mb-6">
+                        <div class="p-6 border-b border-slate-100">
+                            <h3 class="font-bold text-slate-800">Team Members (<span id="teamMemberCount">0</span>)</h3>
+                        </div>
+                        <div id="teamMembersList" class="divide-y divide-slate-100">
+                            <div class="text-center text-slate-400 py-12">Loading team members...</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Team Roles</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="border border-slate-200 rounded-2xl p-6">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-2">Admin</h4>
+                                <p class="text-sm text-slate-500">Full access to all features including billing, settings, and team management.</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-2xl p-6">
+                                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-2">Developer</h4>
+                                <p class="text-sm text-slate-500">Can create and manage API keys, view analytics, and access the playground.</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-2xl p-6">
+                                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-4">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-2">Viewer</h4>
+                                <p class="text-sm text-slate-500">Read-only access to dashboards and analytics. Cannot create or modify resources.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================================
+                     MODEL HUB VIEW
+                ========================================================================== -->
+                <div id="view-models" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <div class="page-header">
+                        <div>
+                            <h1>Model Hub</h1>
+                            <p>Browse and manage AI models available on the platform</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mb-6 overflow-x-auto pb-2">
+                        <button class="px-5 py-2.5 bg-blue-500 text-white rounded-xl font-bold text-sm hover:bg-blue-600 transition-colors" onclick="filterModels('all')">All Models</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('text')">Text</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('image')">Image</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('video')">Video</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('audio')">Audio</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('code')">Code</button>
+                        <button class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors" onclick="filterModels('embedding')">Embedding</button>
+                    </div>
+
+                    <div class="card-grid-3" id="modelsGrid">
+                        <div class="text-center text-slate-400 py-12 col-span-full">Loading available models...</div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================================
+                     AUDIT TRAIL VIEW
+                ========================================================================== -->
+                <div id="view-audit" class="view-section p-6 lg:p-12 max-w-7xl mx-auto w-full">
+                    <div class="page-header">
+                        <div>
+                            <h1>Audit Trail</h1>
+                            <p>Complete history of all system events and user actions</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <select id="auditFilterAction" class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none cursor-pointer" onchange="filterAuditLogs()">
+                                <option value="all">All Actions</option>
+                                <option value="create">Create</option>
+                                <option value="update">Update</option>
+                                <option value="delete">Delete</option>
+                                <option value="read">Read</option>
+                            </select>
+                            <select id="auditFilterUser" class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none cursor-pointer" onchange="filterAuditLogs()">
+                                <option value="all">All Users</option>
+                            </select>
+                            <button onclick="exportAuditLogs()" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-900 transition-colors flex items-center gap-2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>User</th>
+                                        <th>Action</th>
+                                        <th>Resource</th>
+                                        <th>Details</th>
+                                        <th>IP Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditLogBody">
+                                    <tr><td colspan="6" class="text-center text-slate-400 py-12">Loading audit trail...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t border-slate-100 flex justify-between items-center">
+                            <span class="text-sm text-slate-500" id="auditCount">Showing 0 entries</span>
+                            <div class="flex gap-2">
+                                <button onclick="prevAuditPage()" class="px-4 py-2 bg-slate-100 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-200 transition-colors">Previous</button>
+                                <button onclick="nextAuditPage()" class="px-4 py-2 bg-slate-100 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-200 transition-colors">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>How do credits work?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Every user receives <strong>1,000 free credits daily</strong>. Different AI operations cost different amounts (e.g., text generation costs 5 credits, image generation costs 25 credits). Credits reset automatically each day. You can monitor your usage in the Billing & Credits view.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>What AI models are available?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Aura integrates with multiple AI engines: <strong>OpenRouter</strong> for text generation (GPT, Claude, Llama, etc.), <strong>Pollinations</strong> for image generation, <strong>Replicate</strong> for video generation, and <strong>Google TTS</strong> for audio synthesis. The Auto Router intelligently selects the best engine based on your prompt.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>How do I reset my password?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    On the login page, click "Lost Signature?" and enter your registered email. A 6-digit reset code will be sent to your email. Use this code to set a new password.
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
+                                    <span>Can I use my own API endpoint?</span>
+                                    <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                </button>
+                                <div class="faq-answer px-6 pb-5 text-slate-500 text-sm leading-relaxed hidden">
+                                    Yes! In the AI Playground, you can set a custom API endpoint URL. You can also configure the default backend URL in Global Settings. This allows you to point the dashboard to your own server instance.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-white border border-slate-200 rounded-[24px] p-8 shadow-sm w-full text-center flex flex-col items-center">
@@ -1163,6 +3288,22 @@ console.log(await response.json());
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <div id="galleryPreviewOverlay" class="gallery-preview-overlay" onclick="closeGalleryPreview()">
+        <button class="gallery-preview-close" onclick="event.stopPropagation(); closeGalleryPreview()">&times;</button>
+        <img id="galleryPreviewImage" src="" alt="Preview" onclick="event.stopPropagation()">
+    </div>
+
+    <div id="customConfirmModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-box">
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmMessage">Are you sure?</p>
+            <div class="flex gap-3">
+                <button id="confirmCancelBtn" class="flex-1 bg-white border border-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors">Cancel</button>
+                <button id="confirmOkBtn" class="flex-1 bg-rose-500 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-rose-600 transition-colors">Confirm</button>
             </div>
         </div>
     </div>
@@ -1214,6 +3355,10 @@ console.log(await response.json());
                 <div>
                     <label class="text-[11px] font-bold text-blue-500 uppercase tracking-widest block mb-2">Decryption Password</label>
                     <input type="password" id="keyPasswordInput" placeholder="Create a master password" class="w-full bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-base outline-none text-blue-900 focus:border-[#1a73e8] transition-colors">
+                    <div class="password-strength-bar bg-slate-200" id="passwordStrengthBar">
+                        <div class="fill" style="width:0%"></div>
+                    </div>
+                    <p id="passwordStrengthText" class="text-[11px] font-bold text-slate-400 mt-1"></p>
                 </div>
             </div>
             
@@ -1280,6 +3425,122 @@ console.log(await response.json());
             <button onclick="closeModal('successModal')" class="w-full py-3 text-slate-400 font-bold text-base hover:text-slate-600 transition-colors">
                 Close
             </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         INVITE TEAM MODAL
+    ========================================================================== -->
+    <div id="inviteModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('inviteModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-[24px] shadow-2xl relative z-10 p-8">
+            <h2 class="text-2xl font-black mb-2 tracking-tight">Invite Team Member</h2>
+            <p class="text-slate-500 text-sm mb-6">Send an invitation to join your team.</p>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="inviteEmail" class="form-input" placeholder="colleague@company.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <select id="inviteRole" class="form-input">
+                    <option value="developer">Developer</option>
+                    <option value="admin">Admin</option>
+                    <option value="viewer">Viewer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message (optional)</label>
+                <textarea id="inviteMessage" class="form-input form-textarea" placeholder="Join our team on Aura Platform!" rows="3"></textarea>
+            </div>
+            <div class="flex gap-4 mt-6">
+                <button onclick="sendInvite()" class="flex-1 btn-primary py-3.5 rounded-xl font-bold text-sm">
+                    Send Invitation
+                </button>
+                <button onclick="closeModal('inviteModal')" class="px-6 py-3.5 bg-slate-100 font-bold rounded-xl text-slate-600 hover:bg-slate-200 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         2FA SETUP MODAL
+    ========================================================================== -->
+    <div id="tfaModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('tfaModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-[24px] shadow-2xl relative z-10 p-8">
+            <h2 class="text-2xl font-black mb-2 tracking-tight">Set Up Two-Factor Authentication</h2>
+            <p class="text-slate-500 text-sm mb-6">Scan the QR code below with your authenticator app.</p>
+            <div class="tfa-setup-container mx-auto">
+                <div class="tfa-qr-code" id="tfaQRCode">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" stroke="#1a73e8" stroke-width="2">
+                        <rect x="10" y="10" width="100" height="100" rx="8"/>
+                        <rect x="20" y="20" width="20" height="20" rx="2"/>
+                        <rect x="50" y="20" width="20" height="20" rx="2"/>
+                        <rect x="80" y="20" width="20" height="20" rx="2"/>
+                        <rect x="20" y="50" width="20" height="20" rx="2"/>
+                        <rect x="50" y="50" width="20" height="20" rx="2"/>
+                        <rect x="80" y="50" width="20" height="20" rx="2"/>
+                        <rect x="20" y="80" width="20" height="20" rx="2"/>
+                        <rect x="50" y="80" width="20" height="20" rx="2"/>
+                        <rect x="80" y="80" width="20" height="20" rx="2"/>
+                    </svg>
+                </div>
+                <p class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Secret Key</p>
+                <div class="tfa-secret-key" id="tfaSecretKey">JBSWY3DPEHPK3PXP</div>
+                <div class="mt-6">
+                    <label class="form-label">Verify Code</label>
+                    <input type="text" id="tfaVerificationCode" class="form-input text-center text-2xl tracking-[0.5em] font-mono" placeholder="000000" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                </div>
+                <button onclick="verifyTFA()" class="btn-primary w-full py-3.5 rounded-xl font-bold text-sm mt-4">
+                    Verify & Enable
+                </button>
+            </div>
+            <button onclick="closeModal('tfaModal')" class="w-full text-center text-slate-500 font-bold py-3 text-sm hover:text-slate-800 transition-colors mt-2">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         SESSION MANAGEMENT MODAL
+    ========================================================================== -->
+    <div id="sessionModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('sessionModal')"></div>
+        <div class="bg-white w-full max-w-lg rounded-[24px] shadow-2xl relative z-10 p-8">
+            <h2 class="text-2xl font-black mb-2 tracking-tight">Active Sessions</h2>
+            <p class="text-slate-500 text-sm mb-6">Manage your active login sessions across devices.</p>
+            <div id="sessionsList" class="space-y-4">
+                <div class="text-center text-slate-400 py-8">Loading sessions...</div>
+            </div>
+            <button onclick="closeModal('sessionModal')" class="w-full text-center text-slate-500 font-bold py-3 text-sm hover:text-slate-800 transition-colors mt-2">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         KEY ROTATE CONFIRM MODAL
+    ========================================================================== -->
+    <div id="rotateModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('rotateModal')"></div>
+        <div class="bg-white w-full max-w-md rounded-[24px] shadow-2xl relative z-10 p-8">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-black mb-2 text-center tracking-tight">Rotate All API Keys</h2>
+            <p class="text-slate-500 text-sm mb-6 text-center">This will invalidate all existing keys and generate new ones. This action cannot be undone.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmRotateAll()" class="flex-1 bg-amber-500 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-amber-600 transition-colors">
+                    Confirm Rotation
+                </button>
+                <button onclick="closeModal('rotateModal')" class="px-6 py-3.5 bg-slate-100 font-bold rounded-xl text-slate-600 hover:bg-slate-200 transition-colors">
+                    Cancel
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1575,6 +3836,14 @@ console.log(await response.json());
                 finalEndpoint = '/v1/code/execute';
                 requestPayload = { code: userMessage };
             }
+            else if (aiMode === 'vision') {
+                finalEndpoint = '/v1/images/analysis';
+                requestPayload = { image: userMessage, prompt: userMessage };
+            }
+            else if (aiMode === 'stt' || aiMode === 'audio_transcription') {
+                finalEndpoint = '/v1/audio/transcriptions';
+                requestPayload = { input: userMessage };
+            }
 
             try {
                 let fetchResultObject = { ok: false, data: null };
@@ -1649,6 +3918,20 @@ console.log(await response.json());
                         `;
                         createChatBubble('ai', audioHtml, null, true);
                     }
+                    else if (aiMode === 'vision' || responseData.type === 'analysis') {
+                        const analysisHtml = `
+                            <strong class="block text-[11px] mb-2 text-purple-600 uppercase tracking-widest">[SYSTEM] Vision Analysis Complete</strong>
+                            <p class="text-sm text-slate-700">${escapeHTML(responseData.analysis || 'Analysis complete.')}</p>
+                        `;
+                        createChatBubble('ai', analysisHtml, null, true);
+                    }
+                    else if (aiMode === 'stt' || aiMode === 'audio_transcription' || responseData.type === 'transcription') {
+                        const sttHtml = `
+                            <strong class="block text-[11px] mb-2 text-amber-600 uppercase tracking-widest">[SYSTEM] Speech-To-Text Result</strong>
+                            <p class="text-sm text-slate-700">${escapeHTML(responseData.text || 'Transcription complete.')}</p>
+                        `;
+                        createChatBubble('ai', sttHtml, null, true);
+                    }
                     
                     logActivity(`Playground [${aiMode.toUpperCase()}]`, customEndpointUrl, "Success");
                 } else {
@@ -1692,13 +3975,21 @@ console.log(await response.json());
                 headersList['Authorization'] = `Bearer ${storedSessionKey}`;
             }
 
-            const maxRetries = 10; 
+            // Pre-wake: ping server before actual request to trigger cold start
+            try {
+                await fetch(baseUrlString + '/api/admin/ping', { method: 'GET', signal: AbortSignal.timeout(5000) });
+            } catch (e) {}
+
+            let lastError = null;
+            const maxRetries = 15;
+            const timeoutMs = 25000;
+            
             for (let attempt = 0; attempt < maxRetries; attempt++) {
                 try {
                     const controllerObject = new AbortController();
                     const timeoutId = setTimeout(function() { 
                         controllerObject.abort(); 
-                    }, 8000);
+                    }, timeoutMs);
                     
                     const serverResponse = await fetch(baseUrlString + endpointUrl, { 
                         method: 'POST', 
@@ -1710,7 +4001,7 @@ console.log(await response.json());
                     clearTimeout(timeoutId);
                     
                     if (serverResponse.status === 502 || serverResponse.status === 503 || serverResponse.status === 504) {
-                        throw new Error("Render Cold Start");
+                        throw new Error("SERVER_COLD_START");
                     }
                     
                     testPing(); 
@@ -1718,14 +4009,17 @@ console.log(await response.json());
                     
                     return { ok: serverResponse.ok, data: responseJson };
                 } catch (connectionError) {
-                    if (attempt === maxRetries - 1) {
-                        throw new Error("Server refused to wake up after multiple attempts.");
+                    lastError = connectionError;
+                    if (attempt < maxRetries - 1) {
+                        const delay = Math.min(3000 * (attempt + 1), 15000);
+                        await new Promise(function(resolveFunc) { 
+                            setTimeout(resolveFunc, delay); 
+                        });
                     }
-                    await new Promise(function(resolveFunc) { 
-                        setTimeout(resolveFunc, 3000); 
-                    });
                 }
             }
+            
+            throw new Error("Server unreachable: " + (lastError ? lastError.message : "Connection failed after " + maxRetries + " attempts."));
         }
 
         // ==============================================================================
@@ -1893,8 +4187,9 @@ console.log(await response.json());
                                 <td class="p-3 sm:p-5 text-xs font-mono text-slate-500 break-all">${maskedSecret}</td>
                                 <td class="p-3 sm:p-5 flex flex-wrap gap-2 max-w-[300px]">${scopeBadgesHTML}</td>
                                 <td class="p-3 sm:p-5 text-right whitespace-nowrap">
-                                    <button onclick="promptUnlockKey(${actualIndex})" class="text-blue-600 font-bold text-[11px] bg-blue-50 px-4 py-2 rounded-lg mr-2 hover:bg-blue-100 transition-colors">Decrypt</button>
-                                    <button onclick="deleteKey(${actualIndex})" class="text-rose-600 font-bold text-[11px] bg-rose-50 px-4 py-2 rounded-lg hover:bg-rose-100 transition-colors">Revoke</button>
+                                    <button onclick="copyKeyDirect(${actualIndex})" class="text-emerald-600 font-bold text-[11px] bg-emerald-50 px-3 py-2 rounded-lg mr-1 hover:bg-emerald-100 transition-colors" title="Copy key to clipboard">Copy</button>
+                                    <button onclick="promptUnlockKey(${actualIndex})" class="text-blue-600 font-bold text-[11px] bg-blue-50 px-3 py-2 rounded-lg mr-1 hover:bg-blue-100 transition-colors">View</button>
+                                    <button onclick="deleteKey(${actualIndex})" class="text-rose-600 font-bold text-[11px] bg-rose-50 px-3 py-2 rounded-lg hover:bg-rose-100 transition-colors">Revoke</button>
                                 </td>
                             </tr>
                         `;
@@ -1908,7 +4203,7 @@ console.log(await response.json());
                 if (myGallery.length > 0) {
                     let galleryHTML = "";
                     for (let g = 0; g < myGallery.length; g++) { 
-                        galleryHTML += `<div class="gallery-item"><img src="${myGallery[g]}" alt="Aura Generated Media"></div>`; 
+                        galleryHTML += `<div class="gallery-item cursor-pointer" onclick="openGalleryPreview('${myGallery[g]}')"><img src="${myGallery[g]}" alt="Aura Generated Media"></div>`; 
                     }
                     galleryGrid.innerHTML = galleryHTML;
                 } else {
@@ -2108,6 +4403,12 @@ console.log(await response.json());
             
             localStorage.setItem('aura_logs', JSON.stringify(myLogs)); 
             updateUI(); 
+            
+            if (statusResult === 'Success') {
+                addNotification(actionName + ' completed successfully.', 'success');
+            } else if (statusResult === 'Failed') {
+                addNotification(actionName + ' failed.', 'error');
+            }
         }
 
         function clearLogs() { 
@@ -2243,16 +4544,28 @@ console.log(await response.json());
 
         async function forceWakeServer() { 
             showToast("[SYSTEM] Transmitting Wake Signal..."); 
-            try { 
-                let baseUrlString = CONFIG.url;
-                if (baseUrlString.endsWith('/')) {
-                    baseUrlString = baseUrlString.slice(0, -1);
+            let baseUrlString = CONFIG.url;
+            if (baseUrlString.endsWith('/')) {
+                baseUrlString = baseUrlString.slice(0, -1);
+            }
+            
+            for (let attempt = 0; attempt < 5; attempt++) {
+                try { 
+                    const resp = await fetch(baseUrlString + '/api/admin/ping', { 
+                        signal: AbortSignal.timeout(15000)
+                    }); 
+                    if (resp.ok === true) {
+                        testPing(); 
+                        showToast("[SYSTEM] Neural Engine Online", "success");
+                        return;
+                    }
+                } catch (error) {
+                    // Server still sleeping, retry
                 }
-                await fetch(baseUrlString + '/api/admin/ping'); 
-                testPing(); 
-            } catch (error) {
-                // Ignore wake payload network errors
-            } 
+                await new Promise(function(r) { setTimeout(r, 3000); });
+            }
+            testPing();
+            showToast("[SYSTEM] Server is cold starting (may take 30-60s)..."); 
         }
 
         function processLogout() {
@@ -2475,9 +4788,583 @@ console.log(await response.json());
             }); 
         }
 
+        // ==============================================================================
+        // [NEW FEATURES] DARK MODE, SEARCH, FILTERS, AUTO-REFRESH, KEYBOARD SHORTCUTS
+        // ==============================================================================
+
+        let autoRefreshTimer = null;
+        let currentLogFilter = 'all';
+        let currentKeySearch = '';
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('aura_theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('aura_theme', 'dark');
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('aura_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        function filterKeys() {
+            const searchInput = document.getElementById('keySearchInput');
+            if (searchInput === null) return;
+            currentKeySearch = searchInput.value.toLowerCase();
+            
+            const rows = document.querySelectorAll('#keyTableBody tr');
+            const emptyState = document.getElementById('emptyState');
+            let visibleCount = 0;
+            
+            for (let i = 0; i < rows.length; i++) {
+                const nameCell = rows[i].querySelector('td:first-child');
+                if (nameCell !== null) {
+                    const name = nameCell.innerText.toLowerCase();
+                    if (name.includes(currentKeySearch)) {
+                        rows[i].style.display = '';
+                        visibleCount++;
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+            
+            if (emptyState !== null) {
+                if (visibleCount === 0 && myKeys.length > 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = '<p class="text-lg font-bold text-slate-700 mb-1">No keys match your search.</p>';
+                } else if (myKeys.length === 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L22 22"/></svg><p class="text-lg font-bold text-slate-700 mb-1">No Access Keys Deployed</p>';
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+
+        function filterLogs() {
+            const filterSelect = document.getElementById('logFilterSelect');
+            if (filterSelect === null) return;
+            currentLogFilter = filterSelect.value;
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const activityLogBody = document.getElementById('activityLogBody');
+            if (activityLogBody === null) return;
+
+            let filteredLogs = myLogs;
+            if (currentLogFilter !== 'all') {
+                filteredLogs = myLogs.filter(function(log) {
+                    return log.status === currentLogFilter;
+                });
+            }
+
+            if (filteredLogs.length === 0) {
+                activityLogBody.innerHTML = `<div class="p-12 text-center text-slate-400 text-base">${myLogs.length === 0 ? 'System event stream is empty.' : 'No logs match the selected filter.'}</div>`;
+                return;
+            }
+
+            let logsHTML = "";
+            for (let l = 0; l < filteredLogs.length; l++) {
+                const logItem = filteredLogs[l];
+                let statusClass = 'text-rose-500';
+                if (logItem.status === 'Success') {
+                    statusClass = 'text-emerald-500';
+                }
+                logsHTML += `
+                    <div class="border-b border-slate-100 py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-3 sm:gap-6">
+                            <span class="text-slate-400 font-mono text-[10px] sm:text-[12px]">${logItem.time}</span>
+                            <span class="font-bold text-[11px] sm:text-sm text-slate-800 max-w-[100px] sm:max-w-none truncate">${logItem.action}</span>
+                            <span class="text-[10px] sm:text-[12px] text-slate-500 truncate max-w-[150px] hidden sm:block">${logItem.target}</span>
+                        </div>
+                        <span class="text-[9px] sm:text-[11px] font-black uppercase ${statusClass}">${logItem.status}</span>
+                    </div>
+                `;
+            }
+            activityLogBody.innerHTML = logsHTML;
+        }
+
+        function openGalleryPreview(imageUrl) {
+            const overlay = document.getElementById('galleryPreviewOverlay');
+            const image = document.getElementById('galleryPreviewImage');
+            if (overlay !== null && image !== null) {
+                image.src = imageUrl;
+                overlay.classList.add('active');
+            }
+        }
+
+        function closeGalleryPreview() {
+            const overlay = document.getElementById('galleryPreviewOverlay');
+            if (overlay !== null) {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function showConfirm(title, message, onConfirm) {
+            const modal = document.getElementById('customConfirmModal');
+            const titleEl = document.getElementById('confirmTitle');
+            const msgEl = document.getElementById('confirmMessage');
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+            
+            if (modal === null || titleEl === null || msgEl === null || okBtn === null || cancelBtn === null) {
+                if (window.confirm(message)) onConfirm();
+                return;
+            }
+            
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            modal.classList.add('active');
+            
+            const cleanup = function() {
+                modal.classList.remove('active');
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+            
+            const handleOk = function() {
+                cleanup();
+                onConfirm();
+            };
+            
+            const handleCancel = function() {
+                cleanup();
+            };
+            
+            okBtn.addEventListener('click', handleOk);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrength() {
+            const passwordInput = document.getElementById('keyPasswordInput');
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            if (passwordInput === null || strengthBar === null) return;
+            
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+            const fill = strengthBar.querySelector('.fill');
+            if (fill === null) return;
+            
+            if (password.length === 0) {
+                fill.style.width = '0%';
+                if (strengthText !== null) strengthText.innerText = '';
+                return;
+            }
+            
+            const strengthMap = {
+                0: { class: 'strength-weak', label: 'Weak' },
+                1: { class: 'strength-weak', label: 'Weak' },
+                2: { class: 'strength-fair', label: 'Fair' },
+                3: { class: 'strength-good', label: 'Good' },
+                4: { class: 'strength-strong', label: 'Strong' },
+                5: { class: 'strength-strong', label: 'Very Strong' }
+            };
+            
+            const info = strengthMap[strength] || strengthMap[0];
+            fill.className = 'fill ' + info.class;
+            if (strengthText !== null) strengthText.innerText = info.label;
+        }
+
+        function startAutoRefresh() {
+            if (autoRefreshTimer !== null) {
+                clearInterval(autoRefreshTimer);
+            }
+            autoRefreshTimer = setInterval(function() {
+                testPing();
+                if (usageChartInstance !== null) {
+                    usageChartInstance.data.datasets[0].data[5] = myLogs.length;
+                    usageChartInstance.update();
+                }
+                fetchCredits();
+            }, 30000);
+        }
+
+        async function fetchCredits() {
+            try {
+                let baseUrlString = CONFIG.url;
+                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                
+                const response = await fetch(baseUrlString + '/api/auth/credits', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('aura_session_token') }
+                });
+                
+                if (response.ok === true) {
+                    const data = await response.json();
+                    const badge = document.getElementById('creditBadge');
+                    const count = document.getElementById('creditCount');
+                    if (badge !== null && count !== null) {
+                        badge.classList.remove('hidden');
+                        count.innerText = data.credits || data.credits_remaining || '1000';
+                    }
+                }
+            } catch (e) {
+                // Silent fail for credit fetch
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('notificationDropdown');
+                const bell = document.getElementById('notificationBell');
+                if (dropdown !== null && bell !== null && dropdown.classList.contains('hidden') === false) {
+                    if (bell.contains(e.target) === false && dropdown.contains(e.target) === false) {
+                        dropdown.classList.add('hidden');
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const galleryOverlay = document.getElementById('galleryPreviewOverlay');
+                    if (galleryOverlay !== null && galleryOverlay.classList.contains('active')) {
+                        closeGalleryPreview();
+                        return;
+                    }
+                    const confirmModal = document.getElementById('customConfirmModal');
+                    if (confirmModal !== null && confirmModal.classList.contains('active')) {
+                        const cancelBtn = document.getElementById('confirmCancelBtn');
+                        if (cancelBtn !== null) cancelBtn.click();
+                        return;
+                    }
+                    const openModals = document.querySelectorAll('.fixed.inset-0.z-\\[100\\], .fixed.inset-0.z-\\[110\\]');
+                    for (let i = 0; i < openModals.length; i++) {
+                        if (openModals[i].classList.contains('hidden') === false) {
+                            const modalId = openModals[i].id;
+                            if (modalId !== 'customConfirmModal' && modalId !== 'galleryPreviewOverlay') {
+                                closeModal(modalId);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function copyUrl() {
+            const url = CONFIG.url || "https://your-api.onrender.com";
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                textArea.remove();
+            }
+            showToast("[SYSTEM] API URL copied to clipboard.", "success");
+        }
+
+        let notificationHistory = JSON.parse(localStorage.getItem('aura_notifications')) || [];
+
+        function addNotification(message, type) {
+            notificationHistory.unshift({ message: message, type: type || 'info', time: new Date().toLocaleTimeString() });
+            if (notificationHistory.length > 20) notificationHistory.pop();
+            localStorage.setItem('aura_notifications', JSON.stringify(notificationHistory));
+            updateNotificationUI();
+        }
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown === null) return;
+            dropdown.classList.toggle('hidden');
+            updateNotificationUI();
+        }
+
+        function updateNotificationUI() {
+            const list = document.getElementById('notificationList');
+            const dot = document.getElementById('notificationDot');
+            if (list === null) return;
+            
+            if (notificationHistory.length === 0) {
+                list.innerHTML = '<div class="p-6 text-center text-slate-400 text-sm">No notifications yet.</div>';
+                if (dot !== null) dot.classList.add('hidden');
+            } else {
+                let html = '';
+                for (let i = 0; i < notificationHistory.length; i++) {
+                    const n = notificationHistory[i];
+                    html += '<div class="px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
+                        '<p class="text-sm text-slate-700">' + n.message + '</p>' +
+                        '<p class="text-[10px] text-slate-400 mt-1 font-mono">' + n.time + '</p></div>';
+                }
+                list.innerHTML = html;
+                if (dot !== null) dot.classList.remove('hidden');
+            }
+        }
+
+        function clearNotifications() {
+            notificationHistory = [];
+            localStorage.setItem('aura_notifications', JSON.stringify(notificationHistory));
+            updateNotificationUI();
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown !== null) dropdown.classList.add('hidden');
+        }
+
+        function copyKeyDirect(index) {
+            if (myKeys[index] !== undefined && myKeys[index].key !== undefined) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(myKeys[index].key);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = myKeys[index].key;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand("copy");
+                    textArea.remove();
+                }
+                showToast("[SYSTEM] Key copied to clipboard.", "success");
+            }
+        }
+
+        function overrideDeleteKey() {
+            const originalDeleteKey = window.deleteKey;
+            window.deleteKey = function(targetIndex) {
+                showConfirm(
+                    'Revoke Access Key',
+                    'Are you sure you want to permanently revoke this key? This action cannot be undone.',
+                    function() {
+                        myKeys.splice(targetIndex, 1);
+                        localStorage.setItem('aura_keys', JSON.stringify(myKeys));
+                        updateUI();
+                        populateTestKeys();
+                        showToast("[SYSTEM] Key Revoked", "success");
+                    }
+                );
+            };
+        }
+
+        // Client-side keepalive: pings server every 4 min from browser
+        function startClientKeepAlive() {
+            setInterval(function() {
+                let baseUrlString = CONFIG.url;
+                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                fetch(baseUrlString + '/api/admin/ping', { 
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000)
+                }).catch(function() {});
+            }, 4 * 60 * 1000);
+        }
+
+        // Override the init to add new features
+        const originalInit = window.init;
+        window.init = function() {
+            initTheme();
+            setupKeyboardShortcuts();
+            overrideDeleteKey();
+            originalInit();
+            startAutoRefresh();
+            startClientKeepAlive();
+            setTimeout(function() {
+                fetchCredits();
+            }, 2000);
+            
+            const userDataString = localStorage.getItem('aura_user_data');
+            if (userDataString !== null) {
+                try {
+                    const userData = JSON.parse(userDataString);
+                    const displayName = document.getElementById('settingsDisplayName');
+                    if (displayName !== null) displayName.value = userData.name || '';
+                } catch (e) {}
+            }
+            
+            const tempSlider = document.getElementById('playgroundTemperature');
+            const tempLabel = document.getElementById('tempValue');
+            if (tempSlider !== null && tempLabel !== null) {
+                tempSlider.addEventListener('input', function() {
+                    tempLabel.innerText = parseFloat(this.value).toFixed(1);
+                });
+            }
+            
+            // Add password strength listener
+            const passwordInput = document.getElementById('keyPasswordInput');
+            if (passwordInput !== null) {
+                passwordInput.addEventListener('input', updatePasswordStrength);
+            }
+        };
+
         // Initialize App
         window.onload = function() { 
             init(); 
+        };
+
+        // ==============================================================================
+        async function changePassword() {
+            const currentPw = document.getElementById('settingsCurrentPassword');
+            const newPw = document.getElementById('settingsNewPassword');
+            if (currentPw === null || newPw === null) return;
+            
+            const currentValue = currentPw.value.trim();
+            const newValue = newPw.value.trim();
+            if (currentValue === "" || newValue === "") {
+                showToast("[SYSTEM] Both password fields are required.", "error");
+                return;
+            }
+            if (newValue.length < 6) {
+                showToast("[SYSTEM] New password must be at least 6 characters.", "error");
+                return;
+            }
+            
+            try {
+                let baseUrlString = CONFIG.url;
+                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                const response = await fetch(baseUrlString + '/api/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('aura_session_token')
+                    },
+                    body: JSON.stringify({ currentPassword: currentValue, newPassword: newValue })
+                });
+                const data = await response.json();
+                if (response.ok === true && data.success === true) {
+                    showToast("[SYSTEM] Password updated successfully.", "success");
+                    currentPw.value = '';
+                    newPw.value = '';
+                } else {
+                    throw new Error(data.message || "Password change failed.");
+                }
+            } catch (e) {
+                showToast("[ERROR] " + e.message, "error");
+            }
+        }
+
+        async function updateProfile() {
+            const nameInput = document.getElementById('settingsDisplayName');
+            if (nameInput === null) return;
+            const newName = nameInput.value.trim();
+            if (newName === "") {
+                showToast("[SYSTEM] Name cannot be empty.", "error");
+                return;
+            }
+            try {
+                let baseUrlString = CONFIG.url;
+                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                const response = await fetch(baseUrlString + '/api/auth/update-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('aura_session_token')
+                    },
+                    body: JSON.stringify({ name: newName })
+                });
+                const data = await response.json();
+                if (response.ok === true && data.success === true) {
+                    const userData = JSON.parse(localStorage.getItem('aura_user_data') || '{}');
+                    userData.name = newName;
+                    localStorage.setItem('aura_user_data', JSON.stringify(userData));
+                    const sidebarProfileName = document.getElementById('sidebarProfileName');
+                    const sidebarProfileInitials = document.getElementById('sidebarProfileInitials');
+                    if (sidebarProfileName !== null) sidebarProfileName.innerText = newName;
+                    if (sidebarProfileInitials !== null) sidebarProfileInitials.innerText = newName.substring(0, 2).toUpperCase();
+                    showToast("[SYSTEM] Profile updated.", "success");
+                } else {
+                    throw new Error(data.message || "Update failed.");
+                }
+            } catch (e) {
+                showToast("[ERROR] " + e.message, "error");
+            }
+        }
+
+        function toggleFaq(button) {
+            const answer = button.nextElementSibling;
+            const chevron = button.querySelector('.faq-chevron');
+            if (answer === null) return;
+            
+            if (answer.classList.contains('hidden')) {
+                answer.classList.remove('hidden');
+                if (chevron !== null) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                answer.classList.add('hidden');
+                if (chevron !== null) chevron.style.transform = '';
+            }
+        }
+
+        async function loadBillingData() {
+            try {
+                let baseUrlString = CONFIG.url;
+                if (baseUrlString.endsWith('/')) baseUrlString = baseUrlString.slice(0, -1);
+                const token = localStorage.getItem('aura_session_token');
+                if (token === null || token === "") return;
+                
+                const [usageRes, txRes] = await Promise.all([
+                    fetch(baseUrlString + '/api/billing/usage', { headers: { 'Authorization': 'Bearer ' + token } }),
+                    fetch(baseUrlString + '/api/billing/transactions', { headers: { 'Authorization': 'Bearer ' + token } })
+                ]);
+                
+                if (usageRes.ok === true) {
+                    const usage = await usageRes.json();
+                    const remaining = document.getElementById('billingCreditsRemaining');
+                    const limit = document.getElementById('billingDailyLimit');
+                    if (remaining !== null) remaining.innerText = usage.credits_remaining || usage.credits || 0;
+                    if (limit !== null) limit.innerText = usage.limit || 1000;
+                }
+                
+                if (txRes.ok === true) {
+                    const txData = await txRes.json();
+                    const txBody = document.getElementById('billingTransactionsBody');
+                    const txCount = document.getElementById('billingTransactionCount');
+                    const transactions = txData.transactions || [];
+                    
+                    if (txCount !== null) txCount.innerText = transactions.length;
+                    
+                    if (txBody !== null) {
+                        if (transactions.length === 0) {
+                            txBody.innerHTML = '<div class="text-center text-slate-400 py-12">No transactions recorded yet.</div>';
+                        } else {
+                            let html = '';
+                            for (let i = 0; i < transactions.length; i++) {
+                                const tx = transactions[i];
+                                html += '<div class="flex justify-between items-center border-b border-slate-100 py-3">' +
+                                    '<div><span class="text-sm font-bold text-slate-700">' + (tx.scope || 'unknown') + '</span>' +
+                                    '<span class="text-xs text-slate-400 ml-3 font-mono">' + new Date(tx.timestamp).toLocaleString() + '</span></div>' +
+                                    '<span class="text-sm font-bold text-rose-500">-' + tx.cost + '</span></div>';
+                            }
+                            txBody.innerHTML = html;
+                        }
+                    }
+                }
+            } catch (e) {
+                const txBody = document.getElementById('billingTransactionsBody');
+                if (txBody !== null) txBody.innerHTML = '<div class="text-center text-rose-400 py-12">Failed to load transactions. Server may be sleeping.</div>';
+            }
+        }
+
+        // Override switchView to load billing data when billing view is opened
+        const originalSwitchView = window.switchView;
+        window.switchView = function(viewId, buttonElement) {
+            if (originalSwitchView) originalSwitchView(viewId, buttonElement);
+            if (viewId === 'view-billing') {
+                loadBillingData();
+            }
+        };
+
+        // [OVERRIDE] updateUI to use renderLogs
+        // ==============================================================================
+        const originalUpdateUI = window.updateUI;
+        window.updateUI = function() {
+            if (originalUpdateUI) originalUpdateUI();
+            renderLogs();
         };
     </script>
 </body>
